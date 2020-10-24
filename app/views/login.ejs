@@ -1,36 +1,133 @@
 <!DOCTYPE html>
-   <html>
-      <head>
-        <title><%= title %></title>
-        <link rel="stylesheet" href="/css/bootstrap.min.css" />
-      </head>
-      <body>
-        <div class="container">
-          <% if (message.length > 0) { %>
-             <div class="alert alert-warning" role="alert">
-               <strong>Warning!</strong> <%= message %>.
-             </div>
-           <% } %>
-      <form class="form-signin" action="/" method="post"> 
-        <div class="form-group">
-          <h2 class="form-signin-heading">Please log in</h2>
-            <label for="role">Choose a role:</label>
-            <select id="role" name="role" class="form-control">
-                <option value="pet_owner">Pet Owner</option>
-                <option value="care_taker">Care Taker</option>
-            </select>
-          <label for="inputName" class="sr-only form-control">Phone Number</label>
-          <input type="text" id="phoneno" name="phoneno" class="form-control"
-            placeholder="Phone Number" required="">
-          <label for="inputPassword" class="sr-only form-control">Password</label>
-          <input type="password" id="password" name="password" 
-            class="form-control" placeholder="Password" required="">
-          <button class="btn btn-lg btn-primary btn-block" 
-            type="submit">Log In</button> 
-            <br> 
-            <p>Don't have an account? <a href="/signup">Sign up</a>
+<html style="font-size: 16px;">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <title>Pet Caring</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <link href="/stylesheets/landing.css" rel="stylesheet">
+    <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
+    <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i">
+  </head>
+  <body class="u-body"><header class="u-clearfix u-header u-header" id="sec-4bb3"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+        <!-- <a href="https://nicepage.com" class="u-image u-logo u-image-1">
+          <img src="images/default-logo.png" class="u-logo-image u-logo-image-1">
+        </a> -->
+        <span style="text-align:right"><a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#signup">Sign Up</a>
+        <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#login">Log In</a></span>
+      </div></header> 
+    <section class="u-align-center u-clearfix u-section-1" id="sec-c138">
+      <div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
+        <h1 class="u-custom-font u-text u-text-default u-text-1">Need a care taker for your <b style="">
+            <font class="u-text-palette-3-base">best friends?</font></b>
+        </h1>
+        <img src="images/db8e8ab2-1d21-c465-6593-d024fb1a5eb3.jpg" alt="" class="u-expanded-width u-image u-image-contain u-image-default u-image-1" data-image-width="1600" data-image-height="1000">
+        <div class="u-expanded-width u-list u-repeater u-list-1">
+          <div class="u-align-center-xs u-align-left-lg u-align-left-md u-align-left-sm u-align-left-xl u-container-style u-list-item u-repeater-item u-list-item-1">
+            <div class="u-container-layout u-similar-container u-valign-top u-container-layout-1"><span class="u-align-left u-icon u-icon-rounded u-palette-1-light-1 u-radius-10 u-spacing-22 u-icon-1"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 512.04 512.04" style=""><use xlink:href="#svg-a7c4"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 512.04 512.04" id="svg-a7c4"><g><path d="m460.764 11.476c-75.872-25.291-150.353-1.045-153.487 0-6.125 2.042-10.256 7.773-10.256 14.23 0 6.415.319 12.876.94 19.376-27.04-5.283-55.744-5.497-83.88 0 .62-6.5.94-12.961.94-19.376 0-6.457-4.131-12.188-10.256-14.23-3.133-1.045-77.616-25.292-153.487 0-50.371 16.789-51.769 102.858-49.241 155.944 3.019 63.396 14.775 122.733 15.274 125.229 2.135 10.677 14.609 15.562 23.427 9.264.77-.55 9.159-6.583 21.896-17.224 54.372 201.112 49.855 184.095 50.98 189.259 5.197 23.793 26.186 38.093 48.146 38.093h188.52c23.065 0 43.227-15.624 47.939-37.148 1.422-6.518-4.168 14.538 51.186-190.203 12.737 10.641 21.126 16.674 21.896 17.224 8.841 6.315 21.293 1.407 23.427-9.264.499-2.495 12.256-61.833 15.274-125.229 2.527-53.05 1.141-139.152-49.238-155.945zm-428.761 154.517c-3.469-72.861 7.013-118.807 28.761-126.057 38.913-12.97 84.413-12.28 123.875-2.873-5.747 86.106-75.558 169.874-142.179 225.338-3.687-22.957-8.69-59.287-10.457-96.408zm224.017 221.915-32.703-25.186c-1.445-5.474 2.634-11.683 9.121-11.683h47.164c6.497 0 10.563 6.218 9.121 11.683zm112.893 80.566c-1.721 7.86-9.558 13.566-18.634 13.566h-79.26v-67.818l39.049-30.073c1.62-1.248 2.967-2.813 3.96-4.6 14.575-26.236-4.37-58.509-34.427-58.509h-47.164c-30.012 0-49.023 32.235-34.427 58.509.993 1.787 2.34 3.352 3.96 4.6l39.049 30.073v67.818h-79.26c-9.076 0-16.913-5.706-18.634-13.567-1.622-7.44 4.431 15.376-55.418-205.994 53.174-49.836 103.51-114.631 120.879-185.388 30.863-8.062 63.935-8.08 94.868 0 17.402 70.892 67.87 135.707 120.879 185.388-59.427 219.805-53.779 198.48-55.42 205.995zm111.138-302.772c-1.753 37.167-6.772 73.639-10.469 96.676-41.305-34.452-135.522-123.664-142.188-225.338 21.626-5.198 73.007-14.062 123.883 2.897 21.714 7.238 32.201 53.077 28.774 125.765z"></path><path d="m328.02 225.04c-8.284 0-15 6.716-15 15v32c0 8.284 6.716 15 15 15s15-6.716 15-15v-32c0-8.284-6.716-15-15-15z"></path><path d="m184.02 225.04c-8.284 0-15 6.716-15 15v32c0 8.284 6.716 15 15 15s15-6.716 15-15v-32c0-8.284-6.716-15-15-15z"></path>
+</g></svg></span>
+              <h5 class="u-text u-text-palette-1-dark-2 u-text-2">Dogs and Puppies</h5>
+              <p class="u-text u-text-grey-50 u-text-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit nullam nunc justo sagittis suscipit ultrices.</p>
+            </div>
+          </div>
+          <div class="u-align-center-xs u-align-left-lg u-align-left-md u-align-left-sm u-align-left-xl u-container-style u-list-item u-repeater-item u-list-item-2">
+            <div class="u-container-layout u-similar-container u-valign-top u-container-layout-2"><span class="u-align-left u-icon u-icon-rounded u-palette-1-light-1 u-radius-10 u-spacing-22 u-icon-2"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 0 512 512" style=""><use xlink:href="#svg-3fcf"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 0 512 512" id="svg-3fcf"><g><path d="m328 225c-8.284 0-15 6.716-15 15v32c0 8.284 6.716 15 15 15s15-6.716 15-15v-32c0-8.284-6.716-15-15-15z"></path><path d="m199 272v-32c0-8.284-6.716-15-15-15s-15 6.716-15 15v32c0 8.284 6.716 15 15 15s15-6.716 15-15z"></path><path d="m279.582 306.199h-47.164c-30.012 0-49.023 32.235-34.427 58.509.993 1.787 2.34 3.352 3.96 4.6l44.896 34.577c5.394 4.154 12.91 4.154 18.305 0l44.896-34.577c1.619-1.248 2.967-2.813 3.96-4.599 14.578-26.24-4.373-58.51-34.426-58.51zm9.12 41.682-32.702 25.186-32.703-25.186c-1.445-5.474 2.634-11.683 9.121-11.683h47.164c6.497.001 10.564 6.219 9.12 11.683z"></path><path d="m500.121 409.577-48.165-13.761c3.83-18.51 3.044-28.984 3.044-65.925l46.909-20.104c7.614-3.263 11.142-12.082 7.878-19.696-3.264-7.615-12.084-11.141-19.696-7.878l-35.091 15.039v-282.252c0-8.284-6.716-15-15-15-56.434 0-115.433 53.421-139.579 78.003-28.453-6.512-59.001-6.83-88.843 0-24.146-24.582-83.147-78.003-139.578-78.003-8.284 0-15 6.716-15 15v282.252l-35.091-15.039c-7.614-3.263-16.433.265-19.696 7.878-3.263 7.614.264 16.433 7.878 19.696l46.909 20.104c0 36.955-.786 47.415 3.044 65.925l-48.165 13.761c-7.966 2.276-12.578 10.578-10.302 18.543 1.882 6.589 7.888 10.883 14.416 10.883 2.847 0-.52.747 53.136-14.583 22.423 51.506 73.538 87.58 132.871 87.58h108c59.333 0 110.448-36.074 132.871-87.579l49.008 14.002c8.012 2.288 16.281-2.382 18.544-10.302 2.275-7.966-2.337-16.268-10.302-18.544zm-413.121-377.942c34.648 7.225 71.01 36.86 92.256 56.765-38.283 16.063-70.513 43.764-92.256 78.65zm338 278.474-46.909 20.104c-7.614 3.263-11.142 12.082-7.878 19.696 3.263 7.615 12.081 11.142 19.696 7.878l35.091-15.039c0 23.315.507 31.406-1.997 44.795l-34.882-9.966c-7.965-2.273-16.268 2.336-18.544 10.302-2.275 7.965 2.337 16.268 10.302 18.543l33.836 9.667c-18.566 38.956-58.078 65.911-103.715 65.911h-108c-45.637 0-85.149-26.955-103.715-65.91l33.835-9.667c7.966-2.276 12.578-10.578 10.302-18.543s-10.579-12.581-18.543-10.302l-34.883 9.966c-2.534-13.557-1.996-21.723-1.996-44.796l35.091 15.039c7.615 3.263 16.433-.264 19.696-7.878s-.264-16.433-7.878-19.696l-46.909-20.104v-38.109c0-67.841 40.187-126.463 98-153.34v49.34c0 8.284 6.716 15 15 15s15-6.716 15-15v-59.96c8.436-2.11 17.12-3.582 26-4.366v96.326c0 8.284 6.716 15 15 15s15-6.716 15-15v-96.327c8.88.785 17.564 2.256 26 4.366v59.961c0 8.284 6.716 15 15 15s15-6.716 15-15v-49.34c57.813 26.876 98 85.499 98 153.34zm0-143.059c-21.743-34.886-53.973-62.588-92.256-78.65 21.245-19.904 57.606-49.54 92.256-56.765z"></path>
+</g></svg></span>
+              <h5 class="u-text u-text-palette-1-dark-2 u-text-4">Cats and Kittens</h5>
+              <p class="u-text u-text-grey-50 u-text-5">Lorem ipsum dolor sit amet, consectetur adipiscing elit nullam nunc justo sagittis suscipit ultrices.</p>
+            </div>
+          </div>
+          <div class="u-align-center-xs u-align-left-lg u-align-left-md u-align-left-sm u-align-left-xl u-container-style u-list-item u-repeater-item u-list-item-3">
+            <div class="u-container-layout u-similar-container u-valign-top u-container-layout-3"><span class="u-align-left u-icon u-icon-rounded u-palette-1-light-1 u-radius-10 u-spacing-22 u-icon-3"><svg class="u-svg-link" preserveAspectRatio="xMidYMin slice" viewBox="0 1 511.99999 511" style=""><use xlink:href="#svg-fc3d"></use></svg><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" xml:space="preserve" class="u-svg-content" viewBox="0 1 511.99999 511" id="svg-fc3d"><path d="m180.996094 225.480469c0 41.359375 33.648437 75.003906 75.003906 75.003906s75.003906-33.644531 75.003906-75.003906c0-41.355469-33.648437-75-75.003906-75s-75.003906 33.644531-75.003906 75zm120.007812 0c0 24.816406-20.191406 45.003906-45.003906 45.003906s-45.003906-20.1875-45.003906-45.003906c0-24.8125 20.191406-45 45.003906-45s45.003906 20.1875 45.003906 45zm0 0"></path><path d="m316.003906 330.488281h-120.007812c-8.28125 0-15 6.714844-15 15 0 8.285157 6.71875 15 15 15h120.007812c8.285156 0 15-6.714843 15-15 0-8.285156-6.714844-15-15-15zm0 0"></path><path d="m5.921875 187.808594c12.394531 21.679687 39.964844 29.066406 61.363281 16.757812l12.460938-7.082031 41.53125 210.90625c1.382812 7.03125 7.550781 12.101563 14.71875 12.101563h45v77.003906c0 8.285156 6.71875 15 15 15h120.007812c8.285156 0 15-6.714844 15-15v-77.003906h45.003906c7.164063 0 13.332032-5.070313 14.71875-12.101563l41.53125-210.90625 12.421876 7.0625c21.757812 12.441406 49.21875 4.589844 61.402343-16.742187 12.308594-21.546876 4.796875-49.089844-16.773437-61.410157l-210.980469-119.992187c-13.773437-7.867188-30.882813-7.867188-44.628906-.015625l-211.035157 120.023437c-21.542968 12.304688-29.054687 39.847656-16.742187 61.398438zm295.082031 294.6875h-90.007812v-62.003906h90.007812zm62.667969-92.003906h-215.34375l-41.085937-208.640626 148.757812-84.566406 148.753906 84.566406zm-326.148437-238.019532 211.035156-120.019531c2.292968-1.3125 4.859375-1.964844 7.433594-1.964844 2.582031 0 5.164062.660157 7.476562 1.980469l210.984375 119.988281c7.175781 4.101563 9.703125 13.246094 5.574219 20.46875-4.050782 7.097657-13.1875 9.734375-20.488282 5.558594l-203.539062-115.707031-203.605469 115.746094c-7.140625 4.105468-16.304687 1.605468-20.425781-5.601563-4.125-7.214844-1.589844-16.367187 5.554688-20.449219zm0 0"></path></svg></span>
+              <h5 class="u-text u-text-palette-1-dark-2 u-text-6">Birds for Sale</h5>
+              <p class="u-text u-text-grey-50 u-text-7">Lorem ipsum dolor sit amet, consectetur adipiscing elit nullam nunc justo sagittis suscipit ultrices.</p>
+            </div>
+          </div>
         </div>
-    </form> 
-  </div> 
-</body> 
-</html> 
+        <p class="u-text u-text-black u-text-8">Image by <a href="https://www.freepik.com/vectors/sale" class="u-border-1 u-border-grey-75 u-btn u-button-style u-none u-text-body-color u-btn-1">Freepik</a>
+        </p>
+      </div>
+    </section>
+    
+    
+    <footer class="u-align-center u-clearfix u-footer u-grey-80 u-footer" id="sec-7ddd"><div class="u-clearfix u-sheet u-sheet-1">
+        <!-- <p class="u-small-text u-text u-text-variant u-text-1">Sample text. Click to select the text box. Click again or double click to start editing the text.</p> -->
+      </div></footer>
+    <section class="u-backlink u-clearfix u-grey-80">
+        <span>Pet Care</span>
+      </a>
+      <br>
+      <p>© 2020. All Rights Reserved.</p>
+    </section>
+    <!-- Modal -->
+    <div class="modal fade" id="signup" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Sign Up</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-signin" action="/signup" method="post">
+                  <select id="role" name="role" class="form-control">
+                      <option value="pet_owner">Pet Owner</option>
+                      <option value="care_taker">Care Taker</option>
+                  </select>
+                <label for="inputName" class="sr-only form-control">Phone Number</label>
+                <input type="text" id="phoneno" name="phoneno" class="form-control"
+                  placeholder="Phone Number" required="">
+                <label for="inputPassword" class="sr-only form-control">Password</label>
+                <input type="password" id="password" name="password" 
+                  class="form-control" placeholder="Password" required="">
+                <button class="btn btn-lg btn-primary btn-block" 
+                  type="submit">Sign Up</button> 
+          </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="login" role="dialog">
+      <div class="modal-dialog">
+      
+        <!-- Modal content-->
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Log In</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-signin" action="/" method="post"> 
+              <div class="form-group">
+                  <select id="role" name="role" class="form-control">
+                      <option value="pet_owner">Pet Owner</option>
+                      <option value="care_taker">Care Taker</option>
+                  </select>
+                <label for="inputName" class="sr-only">Phone Number</label>
+                <input type="text" id="phoneno" name="phoneno" class="form-control"
+                  placeholder="Phone Number" required="">
+                <label for="inputPassword" class="sr-only form-control">Password</label>
+                <input type="password" id="password" name="password" 
+                  class="form-control" placeholder="Password" required="">
+                <button class="btn btn-lg btn-primary btn-block" 
+                  type="submit">Log In</button> 
+              </div>
+            </form> 
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
+
+

@@ -9,7 +9,6 @@ var flash = require('connect-flash');
 var session = require('express-session');
 var passport = require("passport");
 var indexRouter = require('./routes/index');
-var signupRouter = require('./routes/signup');
 var poRouter = require('./routes/pet_owner');
 var ctRouter = require('./routes/care_taker');
 
@@ -31,7 +30,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/', indexRouter);
-app.use("/signup", signupRouter);
 app.use('/pet_owner', poRouter);
 app.use('/care_taker', ctRouter);
 
