@@ -1,0 +1,79 @@
+<!DOCTYPE html> 
+<html> 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head> 
+        <title><%= title %></title> 
+        <% include ../partials/_ct_header %>
+        <link href="/stylesheets/ct_availability.css" rel="stylesheet">
+        <link rel="stylesheet" href="/css/bootstrap.min.css" />
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <script>
+        $( function() {
+            $('#daterangepicker').daterangepicker();
+        } );
+        </script>
+    </head> 
+    <body> 
+      <div class="row justify-content-center">
+        <div class="column">
+          <div class="card">
+            <h3>Sun</h3>
+            <p>Some text</p>
+            <p>Some text</p>
+          </div>
+        </div>
+      
+        <div class="column">
+          <div class="card">
+            <h3>Mon</h3>
+            <p>Some text</p>
+            <p>Some text</p>
+          </div>
+        </div>
+        
+        <div class="column">
+          <div class="card">
+            <h3>Tue</h3>
+            <p>Some text</p>
+            <p>Some text</p>
+          </div>
+        </div>
+        
+        <div class="column">
+          <div class="card">
+            <h3>Wed</h3>
+            <p>Some text</p>
+            <p>Some text</p>
+          </div>
+        </div>
+      <div class="column">
+        <div class="card">
+          <h3>Thurs</h3>
+          <p>Some text</p>
+          <p>Some text</p>
+        </div>
+      </div>
+    <div class="column">
+      <div class="card">
+        <h3>Fri</h3>
+        <p>Some text</p>
+        <p>Some text</p>
+      </div>
+    </div>
+  <div class="column">
+    <div class="card">
+      <h3>Sat</h3>
+      <p>Some text</p>
+      <p>Some text</p>
+    </div>
+  </div>
+</div>
+  <div class="row justify-content-md-center m-2">
+    <label for="daterangepicker">Apply for leave:&nbsp;</label> 
+    <input type="text" style="width: 300px;" id="daterangepicker">
+  </div>
+ </body>
+</html> 
