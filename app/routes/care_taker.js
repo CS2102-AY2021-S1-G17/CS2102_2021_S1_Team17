@@ -7,4 +7,10 @@ router.get('/', function(req, res, next) {
     }
 });
 
+/* GET Profile page. */ 
+router.get('/profile',  function(req, res, next) {
+      res.render('profile', { title: 'Profile Page', user : req.user,
+      avatar: gravatar.url(req.user.email ,  {s: '100', r: 'x', d:
+      'retro'}, true) });
+  }); 
 module.exports = router;

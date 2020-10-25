@@ -72,7 +72,7 @@
             <h4 class="modal-title">Sign Up</h4>
           </div>
           <div class="modal-body">
-            <form class="form-signin" action="/signup" method="post">
+            <form class="form-signin" action="/" method="post">
                   <select id="role" name="role" class="form-control">
                       <option value="pet_owner">Pet Owner</option>
                       <option value="care_taker">Care Taker</option>
@@ -83,6 +83,7 @@
                 <label for="inputPassword" class="sr-only form-control">Password</label>
                 <input type="password" id="password" name="password" 
                   class="form-control" placeholder="Password" required="">
+                <input type="text" id="signup" name="signup" value="signup" class="form-control" hidden> 
                 <button class="btn btn-lg btn-primary btn-block" 
                   type="submit">Sign Up</button> 
           </form>
@@ -115,6 +116,7 @@
                 <label for="inputPassword" class="sr-only form-control">Password</label>
                 <input type="password" id="password" name="password" 
                   class="form-control" placeholder="Password" required="">
+                <input type="text" id="login" name="login" value="login" class="form-control" hidden> 
                 <button class="btn btn-lg btn-primary btn-block" 
                   type="submit">Log In</button> 
               </div>
