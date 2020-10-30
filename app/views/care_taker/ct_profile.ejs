@@ -3,7 +3,6 @@
     <head> 
         <title><%= title %></title> 
         <% include ../partials/_ct_header %>
-        <link href="/stylesheets/ct_profile.css" rel="stylesheet">
     </head> 
     <body> 
    <div class="row justify-content-center">
@@ -22,7 +21,8 @@
                 <div class="media-body">
                     <h2 class="text-white display-6">Jim Doe</h2>
                     <p class="text-light">Full Time Employee</p>
-                    <a href="/care_taker/profile_edit" class="text-light">Edit Profile</a></p>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit">Edit Profile</a></span>
+                    <!-- <a href="/care_taker/profile_edit" class="text-light">Edit Profile</a></p> -->
                 </div>
             </div>
         </div>
@@ -44,15 +44,15 @@
         </div>
 
 <div class="row justify-content-center">
-    <div class="col m-2">
+    <div class="col">
     <table class="table">
     <thead>
       <tr>
-        <th scope="col">#</th>
-        <th scope="col">Pet Owner</th>
-        <th scope="col">Pet Category</th>
-        <th scope="col">Date Range</th>
-        <th scope="col">Status</th>
+        <th scope="col" style="width: 5%;">#</th>
+        <th scope="col" style="width: 20%;">Pet Owner</th>
+        <th scope="col" style="width: 20%;">Pet Category</th>
+        <th scope="col" style="width: 20%;">Date Range</th>
+        <th scope="col" style="width: 15%;">Status</th>
       </tr>
     </thead>
     <tbody>
@@ -61,26 +61,80 @@
         <td>Mark</td>
         <td>Otto</td>
         <td>@mdo</td>
-        <td>Pending</td>
+        <td>
+          <button class="btn btn-success">
+            Approve  
+          </button>
+          <button class="btn btn-danger">
+            Reject 
+          </button>
+        </td>
       </tr>
       <tr>
         <th scope="row">2</th>
         <td>Jacob</td>
         <td>Thornton</td>
         <td>@fat</td>
-        <td>Pending</td>
+        <td>
+          <button class="btn btn-success">
+            Approve  
+          </button>
+          <button class="btn btn-danger">
+            Reject 
+          </button>
+        </td>
       </tr>
       <tr>
         <th scope="row">3</th>
         <td>Larry</td>
         <td>the Bird</td>
         <td>@twitter</td>
-        <td>Pending</td>
+        <td>
+          <button class="btn btn-success">
+            Approve  
+          </button>
+          <button class="btn btn-danger">
+            Reject 
+          </button>
+        </td>
       </tr>
     </tbody>
   </table>
   </section>
   </div>
   </div>
+  <div class="modal fade" id="edit" role="dialog">
+    <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Edit Profile</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form class="form-signin" action="/" method="post">
+          <label for="inputType" class="sr-only form-control">Type</label>
+          <input type="text" id="type" name="type" class="form-control" placeholder="name" required="" value="Full-Time" readonly>
+          <label for="inputName" class="sr-only form-control">Name</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="name" required="">
+          <label for="inputPassword" class="sr-only form-control">Password</label>
+          <input type="password" id="password" name="password" 
+            class="form-control" placeholder="Password" required="">
+          <input type="text" id="signup" name="signup" value="signup" class="form-control" hidden> 
+           <label for="inputCategory" class="sr-only form-control">Category</label>
+          <select id="cat" name="cat" class="form-control selectpicker" multiple data-live-search="true">
+            <option value="dog">Dog</option>
+            <option value="cat">Cat</option>
+            <option value="bird">Bird</option>
+        </select>
+          <button class="btn btn-lg btn-primary btn-block" 
+            type="submit">Update</button> 
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
  </body>
 </html> 
