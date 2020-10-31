@@ -7,26 +7,107 @@
 </head> 
 <body>
     <div class="row justify-content-center">
-   <div class="col m-2">
-       <section class="card">
-           <div class="twt-feed blue-bg">
-               <div class="corner-ribon black-ribon">
-                   <i class="fa fa-twitter"></i>
-               </div>
-               <div class="fa fa-twitter wtt-mark"></div>
-               <div class="media">
-                   <a href="#">
-                       <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="images/profilepic.jpeg">
-                   </a>
-                   <div class="media-body">
-                       <h2 class="text-white display-6">Jim Doe</h2>
-                       <p class="text-light">Pet Owner</p>
-                       <a href="/pet_owner/profile_edit" class="text-light">Add Pet</a>
-                   </div>
-               </div>
-           </div>
-       </section>
+        <div class="col m-2">
+         <section class="card">
+             <div class="twt-feed blue-bg">
+                 <div class="corner-ribon black-ribon">
+                     <i class="fa fa-twitter"></i>
+                 </div>
+                 <div class="fa fa-twitter wtt-mark"></div>
+     
+                 <div class="media">
+                     <a href="#">
+                         <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="images/profilepic.jpeg">
+                     </a>
+                     <div class="media-body">
+                         <h2 class="text-white display-6">Jim Doe</h2>
+                         <p class="text-light">Pet Owner</p>
+                         <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#addpet">Add New Pet</a>
+                     </div>
+                 </div>
+             </div>
+             <div class="weather-category twt-category">
+                 <ul>
+                     <li class="active">
+                         <h5>88888888</h5>
+                         Phone No
+                     </li>
+                     <li>
+                         <h5>1234-1234-1234-1234</h5>
+                         Card No
+                     </li>
+                     <li>
+                         <h5>NUS</h5>
+                         Preferred Transfer Location
+                     </li>
+                 </ul>
+             </div>
+          </section>
+        </div>
+      </div>
+    <div class="row justify-content-center">
+       <div class="col m-2">
+           <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">My Pet</th>
+                <th scope="col">Category</th>
+                <th scope="col">Special Requirements</th>
+            </tr>
+            </thead>
+    <tbody>
+      <tr>
+        <th scope="row">1</th>
+        <td>Otto</td>
+        <td>Dog</td>
+        <td>Don't feed chocolate</td>
+      </tr>
+      <tr>
+        <th scope="row">2</th>
+        <td>Thornton</td>
+        <td>Cat</td>
+        <td>Null</td>
+      </tr>
+      <tr>
+        <th scope="row">3</th>
+        <td>the Bird</td>
+        <td>Bird</td>
+        <td>Null</td>
+      </tr>
+    </tbody>
+  </table>
        </div>
     </div>
+    <div class="modal fade" id="addpet" role="dialog">
+                        <div class="modal-dialog">
+                    
+                       <div class="modal-content">
+                       <div class="modal-header">
+                        <h4 class="modal-title">Add Pet</h4>
+                        <button class="close" type="button" data-dismiss="modal">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-newpet" action="/" method="post">
+                            <label for="inputName" class="sr-only form-control">Pet Name</label>
+                            <input type="text" id="petname" name="petname" class="form-control"
+                  placeholder="Pet Name" required="">
+                            <br>
+                            <select id="category" name="category" class="form-control">
+                                <option value="dog">Dog</option>
+                                <option value="cat">Cat</option>
+                                <option value="bird">Bird</option>
+                            </select>
+                            <label for="requirement" class="sr-only form-control">Special Requirements</label>
+                            <input type="text" id="petrequire" name="petrequire" class="form-control"
+                  placeholder="Special Requirements" required="">
+                            </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+                        </div>
+                       </div>
+                        </div>
+                        </div>
 </body>
 </html>

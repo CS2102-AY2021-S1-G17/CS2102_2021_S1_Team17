@@ -16,4 +16,8 @@ router.get('/pets',  function(req, res, next) {
 router.get('/history',  function(req, res, next) {
       res.render('pet_owner/po_history', { title: 'History Transaction Page', user : req.user });
 }); 
+
+router.get('/bid',  function(req, res, next) {
+      res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user });
+}); 
 module.exports = router;
