@@ -1,5 +1,10 @@
-/*========================================================CREATE TABLE============================================================*/
-/*clear all history*/
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- CREATE TABLE --
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS pet_owner CASCADE;
 DROP TABLE IF EXISTS care_taker CASCADE;
 DROP TABLE IF EXISTS admin CASCADE;
@@ -11,20 +16,30 @@ DROP TABLE IF EXISTS salary CASCADE;
 DROP TABLE IF EXISTS pay CASCADE;
 DROP TABLE IF EXISTS bids CASCADE;
 
+CREATE TABLE users(
+	phone INTEGER PRIMARY KEY,
+	password VARCHAR NOT NULL,
+	role VARCHAR NOT NULL CHECK(role IN ('Pet Owner', 'Caretaker', 'Both')),
+	UNIQUE(phone, password)
+);
+
 CREATE TABLE pet_owner(
 	phone INTEGER,
 	password VARCHAR NOT NULL,
 	transfer_location VARCHAR NOT NULL,
 	name VARCHAR NOT NULL,	
 	card VARCHAR(16),
-	PRIMARY KEY(phone)
+	PRIMARY KEY(phone),
+	FOREIGN KEY (phone, password) REFERENCES users(phone, password)
+	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE care_taker(
 	phone INTEGER,
 	password VARCHAR NOT NULL,
 	transfer_location VARCHAR NOT NULL,
-	name VARCHAR NOT NULL,	
+	name VARCHAR NOT NULL,
+	bank_account VARCHAR NOT NULL,
 	is_full_time BOOLEAN NOT NULL,
 	avg_rating FLOAT8 DEFAULT 0 CHECK(avg_rating >= 0 AND avg_rating <= 5),
 	care_limit INTEGER NOT NULL 
@@ -33,7 +48,9 @@ CREATE TABLE care_taker(
 		WHEN is_full_time IS NOT TRUE AND avg_rating < 4 THEN 2 
 		WHEN is_full_time IS NOT TRUE AND avg_rating >= 4 THEN 5
 		END),
-	PRIMARY KEY (phone)
+	PRIMARY KEY (phone),
+	FOREIGN KEY (phone, password) REFERENCES users(phone, password)
+	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE admin(
@@ -121,7 +138,158 @@ CREATE TABLE bids(
 	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-/*======================================================== AVAIL TRIGGER ============================================================*/
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- CT TRIGGERS --
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+DROP TRIGGER IF EXISTS update_ratelimit_dailyprice ON care_taker;
+DROP TRIGGER IF EXISTS init_salary_availability ON care_taker;
+
+/* 
+Given an update on caretaker, check if rating and limit have been changed, 
+if yes, update correspondingly on capable and availability
+*/
+
+CREATE OR REPLACE FUNCTION update_ratelimit_dailyprice() RETURNS TRIGGER AS
+$update_ratelimit_dailyprice$
+DECLARE
+	cat VARCHAR;
+	dif INTEGER;
+	day DATE;
+BEGIN
+	IF NEW.avg_rating != OLD.avg_rating AND NEW.is_full_time AND NEW.avg_rating > 4 THEN
+		FOR cat IN (SELECT category_name FROM capable WHERE phone = NEW.phone) LOOP
+			UPDATE capable 
+				SET daily_price = (SELECT base_price FROM category WHERE category_name = cat) + 10 * (NEW.avg_rating - 4)
+				WHERE capable.phone = NEW.phone AND capable.category_name = cat;
+		END LOOP;
+	END IF;
+	IF NEW.care_limit != OLD.care_limit THEN
+		dif := NEW.care_limit - OLD.care_limit;
+		FOR day IN (
+			SELECT A.available_date 
+			FROM availability A 
+			WHERE A.phone = NEW.phone AND A.available_date > CURRENT_DATE
+			) LOOP
+			UPDATE availability 
+				SET remaining_limit = remaining_limit + dif
+				WHERE availability.phone = NEW.phone AND availability.available_date = day;
+		END LOOP;
+	END IF;
+	RETURN NEW;
+END;
+$update_ratelimit_dailyprice$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER update_ratelimit_dailyprice 
+	AFTER UPDATE ON care_taker
+	FOR EACH ROW
+	WHEN (OLD.avg_rating IS DISTINCT FROM NEW.avg_rating OR OLD.care_limit IS DISTINCT FROM NEW.care_limit)
+	EXECUTE PROCEDURE update_ratelimit_dailyprice();
+
+/*
+Given a newly inserted caretaker, 
+initialize his/her salary and availability for current and next year
+*/
+
+CREATE OR REPLACE FUNCTION init_salary_availability() RETURNS TRIGGER AS
+$init_salary_availability$
+DECLARE 
+	y INTEGER;
+	m INTEGER;
+	curr_m INTEGER;
+	pt DATE;
+	d DATE;
+	ed DATE;
+BEGIN
+	y := date_part('year', (SELECT CURRENT_TIMESTAMP));
+	m := date_part('month', (SELECT CURRENT_TIMESTAMP));
+	curr_m := m;
+	pt := make_date(y, m, 1);
+	d := CURRENT_DATE;
+	ed := make_date(y+1, 12, 31);
+
+	IF NEW.is_full_time THEN
+		INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, pt, 3000, 0);
+		WHILE d <= ed LOOP
+			m := date_part('month', d);
+			IF m != curr_m THEN
+				INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, d, 3000, 0);
+				curr_m := m;
+			END IF;
+			INSERT INTO availability (phone, available_date, remaining_limit) VALUES (NEW.phone, d, 5);
+			d := d + INTEGER '1';
+		END LOOP;
+	ELSE 
+		INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, pt, 0, NULL);
+	END IF;
+
+	RETURN NEW;
+END;
+$init_salary_availability$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER init_salary_availability 
+	AFTER INSERT ON care_taker
+	FOR EACH ROW
+	EXECUTE PROCEDURE init_salary_availability();
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- CAPABLE TRIGGERS --
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
+DROP TRIGGER IF EXISTS check_daily_price ON capable;
+
+/*
+Before inserting or updating on capable, 
+check that full time caretaker has correct daily price according to base price and rating,
+if rating > 4, price = base + 10 * (rating - 4); if rating <= 4, price = base.
+
+If daily price is incorrect, the function will halt procedure and return an error message.
+*/
+
+CREATE OR REPLACE FUNCTION check_daily_price() RETURNS TRIGGER AS
+$check_daily_price$
+DECLARE
+	ft BOOLEAN;
+	rt FLOAT8;
+	name VARCHAR;
+	bp FLOAT8;
+BEGIN
+	SELECT C.is_full_time, C.avg_rating, C.name INTO ft, rt, name 
+		FROM care_taker C WHERE NEW.phone = C.phone;
+	SELECT G.base_price INTO bp 
+		FROM category G WHERE G.category_name = NEW.category_name;
+	IF ft THEN
+		IF rt <= 4 AND NEW.daily_price != bp THEN
+			Raise Notice 'Caretaker % has incorrect daily price on category %', name, NEW.category_name;
+			RETURN NULL;
+		END IF;
+		IF rt > 4 AND NEW.daily_price != bp + 10 * (rt - 4) THEN
+			Raise Notice 'Caretaker % has incorrect daily price on category %', name, NEW.category_name;
+			RETURN NULL;
+		END IF;
+	END IF;
+	RETURN NEW;
+END;
+$check_daily_price$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER check_daily_price
+	BEFORE INSERT OR UPDATE ON capable
+	FOR EACH ROW
+	EXECUTE PROCEDURE check_daily_price();
+
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- AVAIL TRIGGERS --
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+
 DROP TRIGGER IF EXISTS work_cleared_before_delete ON availability;
 DROP TRIGGER IF EXISTS check_minimum_requirement ON availability;
 DROP TRIGGER IF EXISTS check_bids_after_takeleave ON availability;
@@ -289,171 +457,12 @@ CREATE TRIGGER check_bids_no_limit
 	WHEN (NEW.remaining_limit = 0)
 	EXECUTE PROCEDURE check_bids_no_limit();
 
-/*======================================================== CAPABLE TRIGGER ============================================================*/
-DROP TRIGGER IF EXISTS check_daily_price ON capable;
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
+-- BIDS TRIGGERS --
+-----------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------
 
-/*
-Before inserting or updating on capable, 
-check that full time caretaker has correct daily price according to base price and rating,
-if rating > 4, price = base + 10 * (rating - 4); if rating <= 4, price = base.
-
-If daily price is incorrect, the function will halt procedure and return an error message.
-*/
-
-CREATE OR REPLACE FUNCTION check_daily_price() RETURNS TRIGGER AS
-$check_daily_price$
-DECLARE
-	ft BOOLEAN;
-	rt FLOAT8;
-	name VARCHAR;
-	bp FLOAT8;
-BEGIN
-	SELECT C.is_full_time, C.avg_rating, C.name INTO ft, rt, name 
-		FROM care_taker C WHERE NEW.phone = C.phone;
-	SELECT G.base_price INTO bp 
-		FROM category G WHERE G.category_name = NEW.category_name;
-	IF ft THEN
-		IF rt <= 4 AND NEW.daily_price != bp THEN
-			Raise Notice 'Caretaker % has incorrect daily price on category %', name, NEW.category_name;
-			RETURN NULL;
-		END IF;
-		IF rt > 4 AND NEW.daily_price != bp + 10 * (rt - 4) THEN
-			Raise Notice 'Caretaker % has incorrect daily price on category %', name, NEW.category_name;
-			RETURN NULL;
-		END IF;
-	END IF;
-	RETURN NEW;
-END;
-$check_daily_price$
-LANGUAGE plpgsql;
-
-CREATE TRIGGER check_daily_price
-	BEFORE INSERT OR UPDATE ON capable
-	FOR EACH ROW
-	EXECUTE PROCEDURE check_daily_price();
-/*======================================================== CT TRIGGER ============================================================*/
-DROP TRIGGER IF EXISTS update_ratelimit_dailyprice ON care_taker;
-DROP TRIGGER IF EXISTS init_salary_availability ON care_taker;
-
-/* 
-Given an update on caretaker, check if rating and limit have been changed, 
-if yes, update correspondingly on capable and availability
-*/
-
-CREATE OR REPLACE FUNCTION update_ratelimit_dailyprice() RETURNS TRIGGER AS
-$update_ratelimit_dailyprice$
-DECLARE
-	cat VARCHAR;
-	dif INTEGER;
-	day DATE;
-BEGIN
-	IF NEW.avg_rating != OLD.avg_rating AND NEW.is_full_time AND NEW.avg_rating > 4 THEN
-		FOR cat IN (SELECT category_name FROM capable WHERE phone = NEW.phone) LOOP
-			UPDATE capable 
-				SET daily_price = (SELECT base_price FROM category WHERE category_name = cat) + 10 * (NEW.avg_rating - 4)
-				WHERE capable.phone = NEW.phone AND capable.category_name = cat;
-		END LOOP;
-	END IF;
-	IF NEW.care_limit != OLD.care_limit THEN
-		dif := NEW.care_limit - OLD.care_limit;
-		FOR day IN (
-			SELECT A.available_date 
-			FROM availability A 
-			WHERE A.phone = NEW.phone AND A.available_date > CURRENT_DATE
-			) LOOP
-			UPDATE availability 
-				SET remaining_limit = remaining_limit + dif
-				WHERE availability.phone = NEW.phone AND availability.available_date = day;
-		END LOOP;
-	END IF;
-	RETURN NEW;
-END;
-$update_ratelimit_dailyprice$
-LANGUAGE plpgsql;
-
-CREATE TRIGGER update_ratelimit_dailyprice 
-	AFTER UPDATE ON care_taker
-	FOR EACH ROW
-	WHEN (OLD.avg_rating IS DISTINCT FROM NEW.avg_rating OR OLD.care_limit IS DISTINCT FROM NEW.care_limit)
-	EXECUTE PROCEDURE update_ratelimit_dailyprice();
-
-/*
-Given a newly inserted caretaker, 
-initialize his/her salary for current month and availability for current and next year
-*/
-
-CREATE OR REPLACE FUNCTION init_salary_availability() RETURNS TRIGGER AS
-$init_salary_availability$
-DECLARE 
-	y INTEGER;
-	m INTEGER;
-	pt DATE;
-	d DATE;
-	ed DATE;
-BEGIN
-	y := date_part('year', (SELECT CURRENT_TIMESTAMP));
-	m := date_part('month', (SELECT CURRENT_TIMESTAMP));
-	pt := make_date(y, m, 1);
-	d := CURRENT_DATE;
-	ed := make_date(y+1, 12, 31);
-
-	IF NEW.is_full_time THEN
-		INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, pt, 3000, 0);
-		WHILE d <= ed LOOP
-			INSERT INTO availability (phone, available_date, remaining_limit) VALUES (NEW.phone, d, 5);
-			d := d + INTEGER '1';
-		END LOOP;
-	ELSE 
-		INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, pt, 0, NULL);
-	END IF;
-
-	RETURN NEW;
-END;
-$init_salary_availability$
-LANGUAGE plpgsql;
-
-CREATE TRIGGER init_salary_availability 
-	AFTER INSERT ON care_taker
-	FOR EACH ROW
-	EXECUTE PROCEDURE init_salary_availability();
-
-/*
-At the start of each year, call this procedure to 
-initialize availability and salary for the specified year for full time caretakers.
-
-E.g. 'CALL avail_salary_year(2019);'
-*/
-
-CREATE OR REPLACE FUNCTION avail_salary_year(y INTEGER) RETURNS void AS
-$$
-DECLARE
-	m INTEGER := 0;
-	curr_m INTEGER;
-	d DATE;
-	ed DATE;
-	ct_phone INTEGER;
-BEGIN
-	ed := make_date(y, 12, 31);
-	FOR ct_phone IN (SELECT C.phone FROM care_taker C WHERE C.is_full_time IS TRUE) LOOP
-		d := make_date(y, 1, 1);
-		WHILE d <= ed LOOP
-			curr_m := date_part('month', d);
-			IF curr_m > m THEN
-				INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (ct_phone, d, 3000, 0);
-				m := curr_m;
-			END IF;
-			IF d NOT IN (SELECT A.available_date FROM availability A WHERE A.phone = ct_phone AND A.available_date = d) THEN
-				INSERT INTO availability (phone, available_date, remaining_limit) VALUES (ct_phone, d, 5);
-			END IF;
-			d := d + INTEGER '1';
-		END LOOP;
-	END LOOP;
-END;
-$$
-LANGUAGE plpgsql;
-
-
-/*======================================================== BIDS TRIGGER ============================================================*/
 DROP TRIGGER IF EXISTS bids_capable_check ON bids;
 DROP TRIGGER IF EXISTS bids_availability_check ON bids;
 DROP TRIGGER IF EXISTS update_avail_upon_success_bid ON bids;
@@ -590,8 +599,6 @@ CREATE TRIGGER update_avg_rating_limit
 	FOR EACH ROW 
 	WHEN (NEW.rating IS NOT NULL)
 	EXECUTE PROCEDURE update_avg_rating_limit();
-
-
 
 /*
 After a bid has been placed successfully, aka status = 'Success',
