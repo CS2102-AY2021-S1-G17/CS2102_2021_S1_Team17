@@ -11,6 +11,7 @@ var passport = require("passport");
 var indexRouter = require('./routes/index');
 var poRouter = require('./routes/pet_owner');
 var ctRouter = require('./routes/care_taker');
+var adRouter = require('./routes/admin');
 
 // view engine setup
 require('./auth/init').initPassport();
@@ -32,6 +33,7 @@ app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/', indexRouter);
 app.use('/pet_owner', poRouter);
 app.use('/care_taker', ctRouter);
+app.use('/admin', adRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
