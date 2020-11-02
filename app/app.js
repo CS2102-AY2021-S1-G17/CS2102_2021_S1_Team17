@@ -14,11 +14,11 @@ var adRouter = require('./routes/admin');
 
 //passport
 var passport = require("passport");
-const initializePassport = require("./auth/passportConfig");
-initializePassport(passport);
+// const initializePassport = require("./auth/passportConfig");
+// initializePassport(passport);
 
 // view engine setup
-//require('./auth/init').initPassport();
+require('./auth/init').initPassport();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));

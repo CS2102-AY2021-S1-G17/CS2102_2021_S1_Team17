@@ -16,7 +16,6 @@ router.get('/', function(req, res, next) {
 }); 
 
 router.post("/", async function (req, res, next) {
-      console.log(req.body);
       /*--------------------------Sign up PO------------------------------ */
       if (req.body.signup_po) {
         let {username, phoneno, password, location, card, petname, category, requirement} = req.body;
@@ -62,18 +61,14 @@ router.post("/", async function (req, res, next) {
             req.flash("success", "Sign up success.");
         } catch (e) {
             console.log(e);
-            console.log('Error')
             req.flash("error", "Sign up failed.");
         } finally {
-            console.log("corr");
             res.redirect("/");
         }      
       } else {
         /*--------------------------Login------------------------------ */
-        console.log("Try login");
-        passport.authenticate("local", function (err, user, info) {
+          passport.authenticate("local", function (err, user, info) {
             if (err || !user) {
-                console.log(err);
                 return res.render("login", {title: 'Login Page', successFlash: req.flash("success"),
                 errorFlash: req.flash("error")});
             }
@@ -83,14 +78,12 @@ router.post("/", async function (req, res, next) {
                     errorFlash: req.flash("error")});
                 }
             });
-            return res.redirect("/per_owner"); //+ user.role);
+            if (user.role == "Pet Owner") {
+              return res.redirect("/pet_owner");
+            } else {
+              return res.redirect("/care_taker");
+            }
         })(req, res, next);
-        //passport.authenticate('local',{
-        //  successRedirect:'/pet_owner',
-        //  failureRedirect:"/",
-        //  failureFlash: true
-        //});
-        console.log("end login");
       }
 });
 
