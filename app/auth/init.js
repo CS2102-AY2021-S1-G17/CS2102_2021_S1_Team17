@@ -35,11 +35,11 @@ exports.initPassport = () => {
                         if (isMatch){
                             return done(null, user);
                         } else {
-                            return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
+                            return done(null, false, req.flash('error', 'Oops! Wrong password.'));
                         }
                     })
                 } else {
-                    return done(null, false, req.flash('loginMessage', 'User not found.'))
+                    return done(null, false, req.flash('error', 'User not found.'))
                 }
             });
       }))
