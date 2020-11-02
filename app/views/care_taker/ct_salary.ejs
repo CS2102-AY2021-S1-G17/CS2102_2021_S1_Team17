@@ -3,6 +3,13 @@
     <head> 
         <title><%= title %></title> 
         <% include ../partials/_ct_header %>
+        <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+        <style>
+          #chart {
+            height: 300px;
+            width: 300px;
+          }
+        </style>
     </head> 
     <body> 
         <div class="row justify-content-center">
@@ -10,13 +17,11 @@
         <section class="card">
             <div class="twt-feed blue-bg">
                 <div class="corner-ribon black-ribon">
-                    <i class="fa fa-twitter"></i>
                 </div>
-                <div class="fa fa-twitter wtt-mark"></div>
     
                 <div class="media">
                     <a href="#">
-                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/profilepic.jpeg">
+                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                     </a>
                     <div class="media-body">
                         <h2 class="text-white display-6">Jim Doe</h2>
@@ -24,39 +29,51 @@
                     </div>
                 </div>
             </div>
-      
-        <table class="table">
-            <thead>
-              <tr>
-                <th scope="col">#</th>
-                <th scope="col">Month</th>
-                <th scope="col">Pet Day</th>
-                <th scope="col">Salary</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">1</th>
-                <td>May</td>
-                <td>24</td>
-                <td>$3000</td>
-              </tr>
-              <tr>
-                <th scope="row">2</th>
-                <td>June</td>
-                <td>28</td>
-                <td>$4000</td>
-              </tr>
-              <tr>
-                <th scope="row">3</th>
-                <td>July</td>
-                <td>20</td>
-                <td>$2000</td>
-              </tr>
-            </tbody>
-          </table>
-        </section>
-        </div>
-    </div>
-    </body>
+  <div id="myChart"></div>
+</section>
+  <script>
+    let myConfig = {
+      type: 'line',
+      title: {
+        text: 'Monthly Salary',
+        fontSize: 24,
+      },
+      legend: {
+        draggable: true,
+      },
+      scaleX: {
+        // Set scale label
+        label: { text: 'Month' },
+        // Convert text on scale indices
+        labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+      },
+      scaleY: {
+        // Scale label with unicode character
+        label: { text: 'Salary' }
+      },
+      plot: {
+        // Animation docs here:
+        // https://www.zingchart.com/docs/tutorials/styling/animation#effect
+        animation: {
+          effect: 'ANIMATION_EXPAND_BOTTOM',
+          method: 'ANIMATION_STRONG_EASE_OUT',
+          sequence: 'ANIMATION_BY_NODE',
+          speed: 275,
+        }
+      },
+      series: [
+        {
+          // Plot 1 values, linear data
+          values: [2300,2000,0,2900,2500,1700,1500, 4000,2900,2500,1700,1500],
+          text: '$',
+        }
+      ]
+    };
+
+    // Render Method[3]
+    zingchart.render({
+      id: 'myChart',
+      data: myConfig,
+    });
+  </script>
 </html>

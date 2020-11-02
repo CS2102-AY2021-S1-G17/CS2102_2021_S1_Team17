@@ -3,6 +3,8 @@
     <head> 
         <title><%= title %></title> 
         <% include ../partials/_ct_header %>
+        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     </head> 
     <body> 
    <div class="row justify-content-center">
@@ -10,13 +12,10 @@
     <section class="card">
         <div class="twt-feed blue-bg">
             <div class="corner-ribon black-ribon">
-                <i class="fa fa-twitter"></i>
             </div>
-            <div class="fa fa-twitter wtt-mark"></div>
-
             <div class="media">
                 <a href="#">
-                    <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/profilepic.jpeg">
+                    <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                 </a>
                 <div class="media-body">
                     <h2 class="text-white display-6">Jim Doe</h2>
@@ -45,6 +44,7 @@
 
 <div class="row justify-content-center">
     <div class="col">
+      <font size="4">
     <table class="table">
     <thead>
       <tr>
@@ -58,48 +58,49 @@
     <tbody>
       <tr>
         <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
+        <td>Mar</td>
+        <td><img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td>
         <td>@mdo</td>
         <td>
-          <button class="btn btn-success">
-            Approve  
+          <button class="btn">
+            <i class="fa fa-times" style="color:green"></i>
           </button>
-          <button class="btn btn-danger">
-            Reject 
+          <button class="btn">
+            <i class="fa fa-check" style="color:red"></i>
           </button>
         </td>
       </tr>
       <tr>
         <th scope="row">2</th>
         <td>Jacob</td>
-        <td>Thornton</td>
+        <td><img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg"></td>
         <td>@fat</td>
         <td>
-          <button class="btn btn-success">
-            Approve  
+          <button class="btn">
+            <i class="fa fa-times" style="color:green"></i>
           </button>
-          <button class="btn btn-danger">
-            Reject 
+          <button class="btn">
+            <i class="fa fa-check" style="color:red"></i>
           </button>
         </td>
       </tr>
       <tr>
         <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
+        <td>Jim</td>
+        <td><img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg"></td>
         <td>@twitter</td>
         <td>
-          <button class="btn btn-success">
-            Approve  
+          <button class="btn">
+            <i class="fa fa-times" style="color:green"></i>
           </button>
-          <button class="btn btn-danger">
-            Reject 
+          <button class="btn">
+            <i class="fa fa-check" style="color:red"></i>
           </button>
         </td>
       </tr>
     </tbody>
   </table>
+</font>
   </section>
   </div>
   </div>
