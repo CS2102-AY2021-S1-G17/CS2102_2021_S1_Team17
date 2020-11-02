@@ -7,14 +7,18 @@ var app = express();
 var flash = require('connect-flash');
 require('dotenv').config();
 var session = require('express-session');
-var passport = require("passport");
 var indexRouter = require('./routes/index');
 var poRouter = require('./routes/pet_owner');
 var ctRouter = require('./routes/care_taker');
 var adRouter = require('./routes/admin');
 
+//passport
+var passport = require("passport");
+const initializePassport = require("./auth/passportConfig");
+initializePassport(passport);
+
 // view engine setup
-require('./auth/init').initPassport();
+//require('./auth/init').initPassport();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(logger('dev'));
@@ -23,12 +27,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(session({ cookie: { maxAge: 60000 }, 
-  secret: 'woot',
-  resave: false, 
-  saveUninitialized: false}));
+
+//app.use(session({ cookie: { maxAge: 60000 }, 
+//  secret: 'woot',
+//  resave: false, 
+//  saveUninitialized: false}));
+
+app.use(
+  session({
+    secret:"secret",
+    resave:false,
+    saveUninitialized:false
+  })
+);
+
 app.use(passport.initialize());
 app.use(passport.session());
+
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 app.use('/', indexRouter);
 app.use('/pet_owner', poRouter);

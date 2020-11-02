@@ -70,6 +70,7 @@ router.post("/", async function (req, res, next) {
         }      
       } else {
         /*--------------------------Login------------------------------ */
+        console.log("Try login");
         passport.authenticate("local", function (err, user, info) {
             if (err || !user) {
                 console.log(err);
@@ -82,8 +83,14 @@ router.post("/", async function (req, res, next) {
                     errorFlash: req.flash("error")});
                 }
             });
-            return res.redirect("/" + user.role);
+            return res.redirect("/per_owner"); //+ user.role);
         })(req, res, next);
+        //passport.authenticate('local',{
+        //  successRedirect:'/pet_owner',
+        //  failureRedirect:"/",
+        //  failureFlash: true
+        //});
+        console.log("end login");
       }
 });
 
