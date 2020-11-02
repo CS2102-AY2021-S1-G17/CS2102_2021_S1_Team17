@@ -11,13 +11,23 @@
     <link id="u-theme-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:100,100i,300,300i,400,400i,500,500i,700,700i,900,900i|Open+Sans:300,300i,400,400i,600,600i,700,700i,800,800i">
     <link id="u-page-google-font" rel="stylesheet" href="https://fonts.googleapis.com/css?family=Josefin+Sans:100,100i,300,300i,400,400i,600,600i,700,700i">
   </head>
+  <div>
+    <% if (successFlash.length > 0) { %>
+      <div class="alert alert-success mb-2" role="alert">
+          <%= successFlash %>
+      </div>
+    <% } %>
+    <% if (errorFlash.length > 0) { %>
+        <div class="alert alert-danger mb-2" role="alert">
+            <%= errorFlash %>
+        </div>
+    <% } %>
+  </div>
   <body class="u-body"><header class="u-clearfix u-header u-header" id="sec-4bb3"><div class="u-clearfix u-sheet u-valign-middle u-sheet-1">
         <!-- <a href="https://nicepage.com" class="u-image u-logo u-image-1">
           <img src="images/default-logo.png" class="u-logo-image u-logo-image-1">
         </a> -->
-        <span style="text-align:right"><a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#signup_po">Sign Up As Pet Owner</a>
-        <span style="text-align:right"><a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#signup_ct">Sign Up As Care Taker</a>
-        <span style="text-align:right"><a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#signup_both">Sign Up As Both</a>
+        <span style="text-align:right"><a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#signup">Sign Up</a>
         <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#login">Log In</a></span>
       </div></header> 
     <section class="u-align-center u-clearfix u-section-1" id="sec-c138">
@@ -60,10 +70,8 @@
       <br>
       <p>© 2020. All Rights Reserved.</p>
     </section>
-    <!-------------------- Sign up PO -------------------------------->
-    <div class="modal fade" id="signup_po" role="dialog">
+    <div class="modal fade" id="signup" role="dialog">
       <div class="modal-dialog">
-      
         <!-- Modal content-->
         <div class="modal-content">
           <div class="modal-header">
@@ -71,199 +79,174 @@
             <h4 class="modal-title">Sign Up</h4>
           </div>
           <div class="modal-body">
-            <form class="form-signin" action="/" method="post">
+                <label for="role">Sign Up as:</label>
+                <select id="role" name="role" class="form-contorl">
+                  <option value="care_taker">Care Taker</option>
+                  <option value="pet_owner">Pet Owner</option>
+                  <option value="both">Both</option>
+                </select>
+                <!-------------------- Sign up CT -------------------------------->
+                <div id="ct">
+                <form class="form-signin" action="/" method="post">
                 <!-- User Name-->
                   <label for="inputName" class="sr-only form-control">User Name</label>
-                  <input type="text" id="username" name="username" class="form-control"
+                  <input type="text" id="username" name="username" class="form-control ct"
                     placeholder="User Name" required="">
                 <!-- Phone-->
                   <label for="inputName" class="sr-only form-control">Phone Number</label>
-                  <input type="text" id="phoneno" name="phoneno" class="form-control"
+                  <input type="text" id="phoneno" name="phoneno" class="form-control ct"
                     placeholder="Phone Number" required="">
                 <!-- Password-->
                   <label for="inputPassword" class="sr-only form-control">Password</label>
                   <input type="password" id="password" name="password" 
-                    class="form-control" placeholder="Password" required="">
+                    class="form-control ct" placeholder="Password" required="">
                 <!-- Transfer Location-->
                   <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
                   <input type="text" id="location" name="location" 
-                    class="form-control" placeholder="Location Where You Want Caretaker To Pick Up Your Pet">
-                <!-- Card -->
-                  <label for="inputName" class="sr-only form-control">Credit Card Number</label>
-                  <input type="text" id="card" name="card" class="form-control"
-                    placeholder="Credit Card Number" >
-
-                <!-- petname -->
-                  <label for="inputName" class="sr-only form-control">Pet Name</label>
-                  <input type="text" id="petname" name="petname" class="form-control"
-                    placeholder="Pet Name" required="">
-                <!-- Category -->
-                <label for="inputName">Which pet category does your pet belong to?</label>
-                  <select id="category" name="category" class="form-control">
-                    <option value="dog">Dog</option>
-                    <option value="cat">Cat</option>
-                    <option value="bird">Bird</option>
-                  </select>
-                <!-- Requirement -->
-                  <label for="inputName" class="sr-only form-control">Requirement</label>
-                  <input type="text" id="requirement" name="requirement" class="form-control"
-                    placeholder="Any Special Requirement For Pet">
-
-                <input type="text" id="signup_po" name="signup_po" value="signup_po" class="form-control" hidden> 
-                <button class="btn btn-lg btn-primary btn-block" 
-                  type="submit">Sign Up</button> 
-          </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-------------------- Sign up CT -------------------------------->
-    <div class="modal fade" id="signup_ct" role="dialog">
-      <div class="modal-dialog">
-      
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Sign Up</h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-signin" action="/" method="post">
-                <!-- User Name-->
-                  <label for="inputName" class="sr-only form-control">User Name</label>
-                  <input type="text" id="username" name="username" class="form-control"
-                    placeholder="User Name" required="">
-                <!-- Phone-->
-                  <label for="inputName" class="sr-only form-control">Phone Number</label>
-                  <input type="text" id="phoneno" name="phoneno" class="form-control"
-                    placeholder="Phone Number" required="">
-                <!-- Password-->
-                  <label for="inputPassword" class="sr-only form-control">Password</label>
-                  <input type="password" id="password" name="password" 
-                    class="form-control" placeholder="Password" required="">
-                <!-- Transfer Location-->
-                  <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
-                  <input type="text" id="location" name="location" 
-                    class="form-control" placeholder="Location Where You Want Pet Owner To Pick Up Your Pet">
+                    class="form-control ct" placeholder="Location Where You Want Pet Owner To Pick Up Your Pet">
                 <!-- Bank Account -->
                   <label for="inputName" class="sr-only form-control">Bank Account</label>
-                  <input type="text" id="ba" name="ba" class="form-control"
+                  <input type="text" id="ba" name="ba" class="form-control ct"
                     placeholder="Bank Account" required="">
                 <!-- Category -->
                 <label for="category">Which pet category do you want to take care of?</label>
-                <select id="category" name="category" class="form-control">
+                <select id="category" name="category" class="form-control ct">
                   <option value="dog">Dog</option>
                   <option value="cat">Cat</option>
                   <option value="bird">Bird</option>
                 </select>
                 <!-- ft -->
                 <label for="ft">Do you want to become full-time caretaker?</label>
-                <select id="ft" name="ft" class="form-control">
+                <select id="ft" name="ft" class="form-control ct">
                   <option value="TRUE">Yes</option>
                   <option value="FALSE">No</option>
                 </select>
 
                 <!-- pt daily price -->
                   <label for="price" class="sr-only form-control">Daily Price</label>
-                  <input type="text" id="price" name="price" class="form-control"
+                  <input type="text" id="price" name="price" class="form-control ct"
                     placeholder="What is your daily price?">
-
                 <input type="text" id="signup_ct" name="signup_ct" value="signup_ct" class="form-control" hidden> 
                 <button class="btn btn-lg btn-primary btn-block" 
-                  type="submit">Sign Up</button> 
-          </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-------------------- Sign up Both -------------------------------->
-    <div class="modal fade" id="signup_both" role="dialog">
-      <div class="modal-dialog">
-      
-        <!-- Modal content-->
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-            <h4 class="modal-title">Sign Up</h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-signin" action="/" method="post">
-                <!-- User Name-->
-                  <label for="inputName" class="sr-only form-control">User Name</label>
-                  <input type="text" id="username" name="username" class="form-control"
-                    placeholder="User Name" required="">
-                <!-- Phone-->
-                  <label for="inputName" class="sr-only form-control">Phone Number</label>
-                  <input type="text" id="phoneno" name="phoneno" class="form-control"
-                    placeholder="Phone Number" required="">
-                <!-- Password-->
-                  <label for="inputPassword" class="sr-only form-control">Password</label>
-                  <input type="password" id="password" name="password" 
-                    class="form-control" placeholder="Password" required="">
-                <!-- Transfer Location-->
-                  <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
-                  <input type="text" id="p_location" name="p_location" 
-                    class="form-control" placeholder="Location Where You Want Caretaker To Pick Up Your Pet">
-                <!-- Card -->
-                  <label for="inputName" class="sr-only form-control">Credit Card Number</label>
-                  <input type="text" id="card" name="card" class="form-control"
-                    placeholder="Credit Card Number" >
-
-                <!-- petname -->
-                  <label for="inputName" class="sr-only form-control">Pet Name</label>
-                  <input type="text" id="petname" name="petname" class="form-control"
-                    placeholder="Pet Name" required="">
-                <!-- Category -->
-                <label for="inputName">Which pet category does your pet belong to?</label>
-                  <select id="p_category" name="p_category" class="form-control">
-                    <option value="dog">Dog</option>
-                    <option value="cat">Cat</option>
-                    <option value="bird">Bird</option>
-                  </select>
-                <!-- Requirement -->
-                  <label for="inputName" class="sr-only form-control">Requirement</label>
-                  <input type="text" id="requirement" name="requirement" class="form-control"
-                    placeholder="Any Special Requirement For Pet">
-                <!------------------------------------------------------------------------------------>
-                <!-- Transfer Location-->
-                  <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
-                  <input type="text" id="c_location" name="c_location" 
-                    class="form-control" placeholder="Location Where You Want Pet Owner To Pick Up Your Pet">
-                <!-- Bank Account -->
-                  <label for="inputName" class="sr-only form-control">Bank Account</label>
-                  <input type="text" id="ba" name="ba" class="form-control"
-                    placeholder="Bank Account" required="">
-                <!-- Category -->
-                <label for="category">Which pet category do you want to take care of?</label>
-                <select id="c_category" name="c_category" class="form-control">
-                  <option value="dog">Dog</option>
-                  <option value="cat">Cat</option>
-                  <option value="bird">Bird</option>
-                </select>
-                <!-- ft -->
-                <label for="ft">Do you want to become full-time caretaker?</label>
-                <select id="b_ft" name="b_ft" class="form-control">
-                  <option value="TRUE">Yes</option>
-                  <option value="FALSE">No</option>
-                </select>
-
-                <!-- pt daily price -->
-                  <label for="price" class="sr-only form-control">Daily Price</label>
-                  <input type="text" id="b_price" name="b_price" class="form-control"
-                    placeholder="What is your daily price?">
-                <!------------------------------------------------------------------------------------>
-                <input type="text" id="signup_both" name="signup_both" value="signup_both" class="form-control" hidden> 
+                type="submit">Sign Up</button> 
+              </form>
+              </div>
+              <!-------------------- Sign up PO -------------------------------->
+              <div id="po">
+                  <form class="form-signin" action="/" method="post">
+                   <!-- User Name-->
+                   <label for="inputName" class="sr-only form-control">User Name</label>
+                   <input type="text" id="username" name="username" class="form-control po"
+                     placeholder="User Name" required="">
+                 <!-- Phone-->
+                   <label for="inputName" class="sr-only form-control">Phone Number</label>
+                   <input type="text" id="phoneno" name="phoneno" class="form-control po"
+                     placeholder="Phone Number" required="">
+                 <!-- Password-->
+                   <label for="inputPassword" class="sr-only form-control">Password</label>
+                   <input type="password" id="password" name="password" 
+                     class="form-control po" placeholder="Password" required="">
+                 <!-- Transfer Location-->
+                   <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
+                   <input type="text" id="location" name="location" 
+                     class="form-control po" placeholder="Location Where You Want Caretaker To Pick Up Your Pet">
+                 <!-- Card -->
+                   <label for="inputName" class="sr-only form-control">Credit Card Number</label>
+                   <input type="text" id="card" name="card" class="form-control po"
+                     placeholder="Credit Card Number" >
+ 
+                 <!-- petname -->
+                   <label for="inputName" class="sr-only form-control">Pet Name</label>
+                   <input type="text" id="petname" name="petname" class="form-control po"
+                     placeholder="Pet Name" required="">
+                 <!-- Category -->
+                 <label for="inputName">Which pet category does your pet belong to?</label>
+                   <select id="category" name="category" class="form-control po">
+                     <option value="dog">Dog</option>
+                     <option value="cat">Cat</option>
+                     <option value="bird">Bird</option>
+                   </select>
+                 <!-- Requirement -->
+                   <label for="inputName" class="sr-only form-control">Requirement</label>
+                   <input type="text" id="requirement" name="requirement" class="form-control po"
+                     placeholder="Any Special Requirement For Pet">
+                <input type="text" id="signup_po" name="signup_po" value="signup_po" class="form-control" hidden> 
                 <button class="btn btn-lg btn-primary btn-block" 
-                  type="submit">Sign Up</button> 
-          </form>
+                type="submit">Sign Up</button> 
+                  </form>
+              </div>
+              <!-------------------- Sign up Both -------------------------------->
+              <div id="both">
+                <form class="form-signin" action="/" method="post">
+                  <!-- User Name-->
+                     <label for="inputName" class="sr-only form-control">User Name</label>
+                     <input type="text" id="username" name="username" class="form-control both"
+                       placeholder="User Name" required="">
+                   <!-- Phone-->
+                     <label for="inputName" class="sr-only form-control">Phone Number</label>
+                     <input type="text" id="phoneno" name="phoneno" class="form-control both"
+                       placeholder="Phone Number" required="">
+                   <!-- Password-->
+                     <label for="inputPassword" class="sr-only form-control">Password</label>
+                     <input type="password" id="password" name="password" 
+                       class="form-control both" placeholder="Password" required="">
+                   <!-- Transfer Location-->
+                     <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
+                     <input type="text" id="p_location" name="p_location" 
+                       class="form-control both" placeholder="Location Where You Want Caretaker To Pick Up Your Pet">
+                   <!-- Card -->
+                     <label for="inputName" class="sr-only form-control">Credit Card Number</label>
+                     <input type="text" id="card" name="card" class="form-control both"
+                       placeholder="Credit Card Number" >
+   
+                   <!-- petname -->
+                     <label for="inputName" class="sr-only form-control">Pet Name</label>
+                     <input type="text" id="petname" name="petname" class="form-control both"
+                       placeholder="Pet Name" required="">
+                   <!-- Category -->
+                   <label for="inputName">Which pet category does your pet belong to?</label>
+                     <select id="p_category" name="p_category" class="form-control both">
+                       <option value="dog">Dog</option>
+                       <option value="cat">Cat</option>
+                       <option value="bird">Bird</option>
+                     </select>
+                   <!-- Requirement -->
+                     <label for="inputName" class="sr-only form-control">Requirement</label>
+                     <input type="text" id="requirement" name="requirement" class="form-control both"
+                       placeholder="Any Special Requirement For Pet">
+                   <!------------------------------------------------------------------------------------>
+                   <!-- Transfer Location-->
+                     <label for="inputPassword" class="sr-only form-control">Transfer Location</label>
+                     <input type="text" id="c_location" name="c_location" 
+                       class="form-control both" placeholder="Location Where You Want Pet Owner To Pick Up Your Pet">
+                   <!-- Bank Account -->
+                     <label for="inputName" class="sr-only form-control">Bank Account</label>
+                     <input type="text" id="ba" name="ba" class="form-control both"
+                       placeholder="Bank Account" required="">
+                   <!-- Category -->
+                   <label for="category">Which pet category do you want to take care of?</label>
+                   <select id="c_category" name="c_category" class="form-control btoh">
+                     <option value="dog">Dog</option>
+                     <option value="cat">Cat</option>
+                     <option value="bird">Bird</option>
+                   </select>
+                   <!-- ft -->
+                   <label for="ft">Do you want to become full-time caretaker?</label>
+                   <select id="b_ft" name="b_ft" class="form-control both">
+                     <option value="TRUE">Yes</option>
+                     <option value="FALSE">No</option>
+                   </select>
+   
+                   <!-- pt daily price -->
+                     <label for="price" class="sr-only form-control">Daily Price</label>
+                     <input type="text" id="b_price" name="b_price" class="form-control"
+                       placeholder="What is your daily price?">
+                   <!------------------------------------------------------------------------------------>
+                   <input type="text" id="signup_both" name="signup_both" value="signup_both" class="form-control" hidden> 
+                    <button class="btn btn-lg btn-primary btn-block" 
+                      type="submit">Sign Up</button> 
+                </form>
+              </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -310,6 +293,31 @@
     </div>
     
     <script>
+       $("#role").change(function() {
+        if ($(this).val() == "both") {
+          $('#both').show();
+          $('#po').hide();
+          $('#ct').hide();
+          $('.ct').removeAttr('required');
+          $('.po').removeAttr('required');
+          $('.both').attr('required', '');
+        } else if ($(this).val() == "pet_owner") {
+          $('#ct').hide();
+          $('#both').hide();
+          $('#po').show();
+          $('.ct').removeAttr('required');
+          $('.both').removeAttr('required');
+          $('.po').attr('required', '');
+        } else {
+          $('#po').hide();
+          $('#both').hide();
+          $('#ct').show();
+          $('.both').removeAttr('required');
+          $('.po').removeAttr('required');
+          $('.co').attr('required', '');
+        }
+      });
+      $("#role").trigger("change");
       $("#ft").change(function() {
         if ($(this).val() == "FALSE") {
           $('#price').show();

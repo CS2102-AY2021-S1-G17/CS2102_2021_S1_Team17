@@ -18,7 +18,7 @@ exports.initPassport = () => {
           passwordField: 'password'
         },
         function(req, phoneno, password, done) { 
-            db.query("select * from users u join " + req.body.role + " v on u.phone_no = v.phone_no where u.phone_no = $1",
+            db.query("select * from users u join " + req.body.role + " v on u.phone = v.phone where u.phone = $1",
             [phoneno], (err, data) => {
                if (err)
                    return done(err);

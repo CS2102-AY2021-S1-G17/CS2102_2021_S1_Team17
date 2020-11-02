@@ -9,12 +9,14 @@ router.get('/', function(req, res, next) {
   if (req.user) {
     return res.redirect("/" + req.user.role);
   } else {
-    res.render('login', { title: 'Login Page', message:
-    req.flash('loginMessage') }); 
+    res.render('login', { title: 'Login Page', 
+    successFlash: req.flash("success"),
+    errorFlash: req.flash("error")}); 
   }
 }); 
 
 router.post("/", async function (req, res, next) {
+      console.log(req.body);
       /*--------------------------Sign up PO------------------------------ */
       if (req.body.signup_po) {
         let {username, phoneno, password, location, card, petname, category, requirement} = req.body;
@@ -24,12 +26,9 @@ router.post("/", async function (req, res, next) {
                 [phoneno, hashedP, location, username, card, petname, requirement, category]);
             req.flash("success", "Sign up success.");
         } catch (e) {
-            console.log('below');
             console.log(e);
-            console.log('above');
             req.flash("error", "Sign up failed.");
         } finally {
-            console.log("corr");
             res.redirect("/");
         }      
       } else if (req.body.signup_ct) {   /*-------Sign up CT -----------*/
@@ -44,10 +43,8 @@ router.post("/", async function (req, res, next) {
             req.flash("success", "Sign up success.");
         } catch (e) {
             console.log(e);
-            console.log('Error')
             req.flash("error", "Sign up failed.");
         } finally {
-            console.log("corr");
             res.redirect("/");
         }      
       } else if (req.body.signup_both) {   /*-------Sign up Both -----------*/
@@ -76,13 +73,13 @@ router.post("/", async function (req, res, next) {
         passport.authenticate("local", function (err, user, info) {
             if (err || !user) {
                 console.log(err);
-                return res.render("login", {title: 'Login Page', message:
-                req.flash('loginMessage'), isError: true});
+                return res.render("login", {title: 'Login Page', successFlash: req.flash("success"),
+                errorFlash: req.flash("error")});
             }
             req.logIn(user, function (err) {
                 if (err) {
-                    return res.render("login", {title: 'Login Page', message:
-                    req.flash('loginMessage'), isError: true});
+                    return res.render("login", {title: 'Login Page', successFlash: req.flash("success"),
+                    errorFlash: req.flash("error")});
                 }
             });
             return res.redirect("/" + user.role);
