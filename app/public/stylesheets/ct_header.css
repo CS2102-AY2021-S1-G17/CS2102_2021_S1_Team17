@@ -1,3 +1,10 @@
+.checked {
+  color: orange;
+}
+.fa-star-half-full {
+  color: orange;
+}
+
 .header {
   overflow: hidden;
   background-color: #f1f1f1;
