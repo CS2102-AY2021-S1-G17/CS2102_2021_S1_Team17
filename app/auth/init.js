@@ -1,6 +1,8 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const db = require('../db');
+const bcrypt = require("bcrypt");
+
 passport.serializeUser((user, done) => {
     done(null, user);
 });
@@ -14,23 +16,31 @@ exports.initPassport = () => {
       new LocalStrategy(
         {
           passReqToCallback: true,
-          usernameField: 'phoneno',
+          usernameField: 'phone',
           passwordField: 'password'
         },
-        function(req, phoneno, password, done) { 
-            db.query("select * from users u join " + req.body.role + " v on u.phone = v.phone where u.phone = $1",
-            [phoneno], (err, data) => {
-               if (err)
-                   return done(err);
-                if (!data.rows.length) {
-                   return done(null, false, req.flash('loginMessage', 'No user found.')); 
-               } 
-               
-               if (!(data.rows[0].password == password))
-                   return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-               var user = data.rows[0];
-               user.role = req.body.role;
-               return done(null, user);		
+        function(req, phone, password, done) { 
+            db.query("select * from users u where u.phone = $1",[phone], (err, results)=>{
+                if(err){
+                    throw err;
+                }
+                if (results.rows.length > 0) {
+                    const user = results.rows[0];
+    
+                    //compare password
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (err) {
+                            throw err;
+                        }
+                        if (isMatch){
+                            return done(null, user);
+                        } else {
+                            return done(null, false, req.flash('error', 'Oops! Wrong password.'));
+                        }
+                    })
+                } else {
+                    return done(null, false, req.flash('error', 'User not found.'))
+                }
             });
       }))
   };
