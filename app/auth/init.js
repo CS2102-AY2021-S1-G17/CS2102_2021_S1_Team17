@@ -1,6 +1,7 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const db = require('../db');
+const bcrypt = require('bcrypt');
 passport.serializeUser((user, done) => {
     done(null, user);
 });
@@ -18,19 +19,30 @@ exports.initPassport = () => {
           passwordField: 'password'
         },
         function(req, phoneno, password, done) { 
-            db.query("select * from users u join " + req.body.role + " v on u.phone_no = v.phone_no where u.phone_no = $1",
-            [phoneno], (err, data) => {
-               if (err)
-                   return done(err);
-                if (!data.rows.length) {
+            db.query("SELECT * from USERS u JOIN " + req.body.role + " v ON u.phone = v.phone WHERE u.phone = $1",
+            [phoneno], (err, results) => {
+                if (err){
+                    return done(null, false, { message: "an error occures while trying to access db" })
+                }
+                console.log(results.rows);
+
+                if (results.rows.length > 0) {
+                    const user = results.rows[0];
+
+                    bcrypt.compare(password, user.password, (err, isMatch) => {
+                        if (err) {
+                            console.log(err);
+                        }
+                        if (isMatch) {
+                            return done(null, user);
+                        } else {
+                        //password is incorrect
+                            return done(null, false, { message: "Password is incorrect" });
+                        }
+                    });
+                } else {
                    return done(null, false, req.flash('loginMessage', 'No user found.')); 
-               } 
-               
-               if (!(data.rows[0].password == password))
-                   return done(null, false, req.flash('loginMessage', 'Oops! Wrong password.'));
-               var user = data.rows[0];
-               user.role = req.body.role;
-               return done(null, user);		
+                }
             });
       }))
   };
