@@ -80,23 +80,6 @@ router.post("/signup", async function (req, res, next) {
   } 
 });
 router.post("/", async function (req, res, next) {
-<<<<<<< HEAD
-    /*--------------------------Login------------------------------ */
-    passport.authenticate("local", function (err, user, info) {
-        if (err || !user) {
-            console.log(err);
-            return res.render("login", {title: 'Login Page', successFlash: req.flash("success"),
-            errorFlash: req.flash("error")});
-        }
-        req.logIn(user, function (err) {
-            if (err) {
-                return res.render("login", {title: 'Login Page', successFlash: req.flash("success"),
-                errorFlash: req.flash("error")});
-            }
-        });
-        return res.redirect("/" + user.role);
-    })(req, res, next);
-=======
       /*--------------------------Sign up PO------------------------------ */
       if (req.body.signup_po) {
         let {username, phoneno, password, location, card, petname, category, requirement} = req.body;
@@ -166,7 +149,6 @@ router.post("/", async function (req, res, next) {
             }
         })(req, res, next);
       }
->>>>>>> login
 });
 
 router.get("/logout", function (req, res) {
