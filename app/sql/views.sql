@@ -149,7 +149,7 @@ BEGIN
 		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
 			B.total_cost, B.transfer_method, B.payment_method
 		FROM bids B, pet_owner P
-		WHERE B.start_date >= CURRENT_DATE AND B.ct_phone = _phone AND B.status = 'Success' AND P.phone = B.po_phone
+		WHERE B.end_date >= CURRENT_DATE AND B.ct_phone = _phone AND B.status = 'Success' AND P.phone = B.po_phone
 		ORDER BY B.start_date ASC
 		);
 END;
@@ -160,10 +160,17 @@ LANGUAGE plpgsql;
 SELECT * FROM search_ct(...);
 */
 
-CREATE OR REPLACE FUNCTION search_ct(_category VARCHAR, _start_date DATE, _end_date DATE, _location VARCHAR) --location直接从table里找
+CREATE OR REPLACE FUNCTION search_ct(_phone INTEGER, _category VARCHAR, _start_date DATE, _end_date DATE, _location VARCHAR)
 	RETURNS TABLE (phone INTEGER, name VARCHAR, transfer_location VARCHAR, avg_rating FLOAT8) AS
 $$
+DECLARE
+	loc VARCHAR;
 BEGIN
+	IF _location IS NOT NULL THEN
+		loc := _location;
+	ELSE
+		SELECT P.transfer_location INTO loc FROM pet_owner P WHERE P.phone = _phone;
+	END IF;
 	RETURN QUERY(
 		SELECT T.phone, T.name, T.transfer_location, T.avg_rating
 		FROM care_taker T, capable C, availability A
@@ -278,13 +285,11 @@ LANGUAGE plpgsql;
 
 /*
 
-CREATE OR REPLACE FUNCTION underperforming_fulltime()
+CREATE OR REPLACE FUNCTION underperforming_fulltime(y INTEGER)
 	RETURNS TABLE () AS
 $$
+DECLARE
 BEGIN
-	RETURN QUERY(
-
-		);
 END;
 $$
 LANGUAGE plpgsql;*/

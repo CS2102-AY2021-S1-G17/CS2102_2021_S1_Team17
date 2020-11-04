@@ -217,7 +217,7 @@ BEGIN
 	curr_m := m;
 	pt := make_date(y, m, 1);
 	d := CURRENT_DATE;
-	ed := make_date(y+1, 12, 31);
+	ed := make_date(y+1, 12, 31); -- end of next year
 
 	IF NEW.is_full_time THEN
 		INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, pt, 3000, 0);
@@ -479,6 +479,7 @@ DROP TRIGGER IF EXISTS update_avg_rating_limit ON bids;
 DROP TRIGGER IF EXISTS update_salary_upon_success_bid ON bids;
 DROP TRIGGER IF EXISTS autocharge_accepted_bids ON bids;
 DROP TRIGGER IF EXISTS check_payment_method ON bids;
+DROP TRIGGER IF EXISTS auto_accept_fulltime ON bids;
 
 /*
 Before placing a bid, check that caretaker is capable of taking care of pet
@@ -748,3 +749,29 @@ CREATE TRIGGER check_payment_method
 	BEFORE INSERT ON bids
 	FOR EACH ROW 
 	EXECUTE PROCEDURE check_payment_method();
+
+/*
+Fulltime caretaker will auto accept a pending bid
+*/
+
+CREATE OR REPLACE FUNCTION auto_accept_fulltime() RETURNS TRIGGER AS
+$auto_accept_fulltime$
+DECLARE
+	ft BOOLEAN;
+BEGIN
+	SELECT C.is_full_time INTO ft FROM care_taker C WHERE C.phone = NEW.ct_phone;
+	IF ft THEN
+		UPDATE bids
+			SET status = 'Accepted'
+			WHERE ct_phone = NEW.ct_phone AND po_phone = NEW.po_phone AND pet_name = NEW.pet_name
+			AND start_date = NEW.start_date AND end_date = NEW.end_date;
+	END IF;
+	RETURN NEW;
+END;
+$auto_accept_fulltime$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER auto_accept_fulltime
+	AFTER INSERT ON bids
+	FOR EACH ROW
+	EXECUTE PROCEDURE auto_accept_fulltime();
