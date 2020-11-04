@@ -7,7 +7,11 @@ const bcrypt = require("bcrypt");
 /* GET login page. */ 
 router.get('/', function(req, res, next) { 
   if (req.user) {
-    return res.redirect("/" + req.user.role);
+    if (user.role == "Pet Owner") {
+      return res.redirect("/pet_owner");
+    } else {
+      return res.redirect("/care_taker");
+    }
   } else {
     res.render('login', { title: 'Login Page', 
     successFlash: req.flash("success"),
