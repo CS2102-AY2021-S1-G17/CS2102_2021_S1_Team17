@@ -1,9 +1,10 @@
 var express = require('express');
+var db = require('../db');
 var router = express.Router();
 
 router.get('/', async(req, res, next)=> { 
   try{
-    var po_info = await db.query("SELECT * FROM pet_owner WHERE phone=$1;",[req.user.phone]);
+    var data = await db.query("SELECT * FROM pet_owner WHERE phone=$1;",[req.user.phone]);
     var name = data.rows.name;
     res.render('pet_owner/po_profile', { title: 'Petowner Page'});
   } catch (err) {

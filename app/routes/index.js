@@ -142,6 +142,7 @@ router.post("/", async function (req, res, next) {
                     errorFlash: req.flash("error")});
                 }
             });
+            console.log(user.role);
             if (user.role == "Pet Owner") {
               return res.redirect("/pet_owner");
             } else {
