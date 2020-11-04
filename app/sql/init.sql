@@ -19,14 +19,14 @@ DROP TABLE IF EXISTS bids CASCADE;
 CREATE TABLE users(
 	phone INTEGER PRIMARY KEY,
 	password VARCHAR NOT NULL,
-	role VARCHAR NOT NULL CHECK(role IN ('Pet Owner', 'Caretaker', 'Both')),
+	role VARCHAR NOT NULL CHECK(role IN ('Pet Owner', 'Caretaker', 'Both', 'Admin')),
 	UNIQUE(phone, password)
 );
 
 CREATE TABLE pet_owner(
 	phone INTEGER,
 	password VARCHAR NOT NULL,
-	transfer_location VARCHAR NOT NULL,
+	transfer_location VARCHAR,
 	name VARCHAR NOT NULL,	
 	card VARCHAR(16),
 	PRIMARY KEY(phone),
@@ -37,7 +37,7 @@ CREATE TABLE pet_owner(
 CREATE TABLE care_taker(
 	phone INTEGER,
 	password VARCHAR NOT NULL,
-	transfer_location VARCHAR NOT NULL,
+	transfer_location VARCHAR,
 	name VARCHAR NOT NULL,
 	bank_account VARCHAR NOT NULL,
 	is_full_time BOOLEAN NOT NULL,
@@ -54,9 +54,11 @@ CREATE TABLE care_taker(
 );
 
 CREATE TABLE admin(
-	email VARCHAR PRIMARY KEY,
+	phone INTEGER PRIMARY KEY,
 	password VARCHAR NOT NULL,
-	name VARCHAR NOT NULL
+	name VARCHAR NOT NULL,
+	FOREIGN KEY (phone, password) REFERENCES users(phone, password)
+	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE category(
@@ -98,11 +100,11 @@ CREATE TABLE salary(
 );
 
 CREATE TABLE pay(
-	email VARCHAR REFERENCES admin(email) ON DELETE CASCADE ON UPDATE CASCADE,
-	phone INTEGER,
+	ad_phone INTEGER NOT NULL REFERENCES admin(phone) ON DELETE CASCADE ON UPDATE CASCADE,
+	ct_phone INTEGER,
 	pay_time DATE, 
-	PRIMARY KEY(email, phone, pay_time),
-	FOREIGN KEY (phone, pay_time) REFERENCES salary(phone, pay_time)
+	PRIMARY KEY(ct_phone, pay_time),
+	FOREIGN KEY (ct_phone, pay_time) REFERENCES salary(phone, pay_time)
 	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -124,7 +126,7 @@ CREATE TABLE bids(
 	transfer_method VARCHAR NOT NULL CHECK(transfer_method IN ('PO deliver', 'CT pick up', 'via PCS')),
 	total_cost FLOAT8 NOT NULL CHECK (total_cost = daily_price * (end_date - start_date + 1)),
 	payment_method VARCHAR NOT NULL CHECK(payment_method IN ('Cash', 'Credit Card')),
-	rating INTEGER CHECK(rating >= 0 and rating <= 5),
+	rating INTEGER CHECK(rating >= 1 and rating <= 5),
 	comment VARCHAR(500),
 
 	PRIMARY KEY (po_phone, ct_phone, pet_name, start_date, end_date),
@@ -159,10 +161,16 @@ DECLARE
 	dif INTEGER;
 	day DATE;
 BEGIN
-	IF NEW.avg_rating != OLD.avg_rating AND NEW.is_full_time AND NEW.avg_rating > 4 THEN
+	IF OLD.avg_rating != NEW.avg_rating AND NEW.is_full_time THEN
 		FOR cat IN (SELECT category_name FROM capable WHERE phone = NEW.phone) LOOP
 			UPDATE capable 
-				SET daily_price = (SELECT base_price FROM category WHERE category_name = cat) + 10 * (NEW.avg_rating - 4)
+				SET daily_price = 
+					(CASE 
+						WHEN NEW.avg_rating >= 4 
+						THEN (SELECT base_price FROM category WHERE category_name = cat) + 10 * (NEW.avg_rating - 4)
+						WHEN NEW.avg_rating < 4 
+						THEN (SELECT base_price FROM category WHERE category_name = cat)
+					END)
 				WHERE capable.phone = NEW.phone AND capable.category_name = cat;
 		END LOOP;
 	END IF;
@@ -174,7 +182,7 @@ BEGIN
 			WHERE A.phone = NEW.phone AND A.available_date > CURRENT_DATE
 			) LOOP
 			UPDATE availability 
-				SET remaining_limit = remaining_limit + dif
+				SET remaining_limit = (CASE WHEN remaining_limit + dif >= 0 THEN remaining_limit + dif ELSE 0 END)
 				WHERE availability.phone = NEW.phone AND availability.available_date = day;
 		END LOOP;
 	END IF;
@@ -209,7 +217,7 @@ BEGIN
 	curr_m := m;
 	pt := make_date(y, m, 1);
 	d := CURRENT_DATE;
-	ed := make_date(y+1, 12, 31);
+	ed := make_date(y+1, 12, 31); -- end of next year
 
 	IF NEW.is_full_time THEN
 		INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (NEW.phone, pt, 3000, 0);
@@ -465,11 +473,13 @@ CREATE TRIGGER check_bids_no_limit
 
 DROP TRIGGER IF EXISTS bids_capable_check ON bids;
 DROP TRIGGER IF EXISTS bids_availability_check ON bids;
+DROP TRIGGER IF EXISTS bids_time_check ON bids;
 DROP TRIGGER IF EXISTS update_avail_upon_success_bid ON bids;
 DROP TRIGGER IF EXISTS update_avg_rating_limit ON bids;
 DROP TRIGGER IF EXISTS update_salary_upon_success_bid ON bids;
 DROP TRIGGER IF EXISTS autocharge_accepted_bids ON bids;
 DROP TRIGGER IF EXISTS check_payment_method ON bids;
+DROP TRIGGER IF EXISTS auto_accept_fulltime ON bids;
 
 /*
 Before placing a bid, check that caretaker is capable of taking care of pet
@@ -509,6 +519,10 @@ $bids_availability_check$
 DECLARE
 	day DATE := NEW.start_date;
 BEGIN
+	IF NEW.start_date - CURRENT_DATE < 3 THEN
+		Raise Notice 'You must place a bid at least 3 days in advance';
+		RETURN NULL;
+	END IF;
 	WHILE (day <= NEW.end_date) LOOP
 		IF day NOT IN (
 			SELECT A.available_date
@@ -533,6 +547,33 @@ CREATE TRIGGER bids_availability_check
 	BEFORE INSERT ON bids
 	FOR EACH ROW 
 	EXECUTE PROCEDURE bids_availability_check();
+
+/*
+Check that ct must accept bids 2 days in advance
+Check that po must pay 1 day in advance
+*/
+
+CREATE OR REPLACE FUNCTION bids_time_check() RETURNS TRIGGER AS
+$bids_time_check$
+BEGIN
+	IF NEW.status = 'Accepted' AND NEW.start_date - CURRENT_DATE < 2 THEN
+		Raise Notice 'You must accept a bid at least 2 days in advance';
+		RETURN NULL;
+	ELSIF NEW.status = 'Success' AND NEW.start_date - CURRENT_DATE < 1 THEN
+		Raise Notice 'You must pay for a bid at least 1 day in advance';
+		RETURN NULL;
+	ELSE
+		RETURN NEW;
+	END IF;
+END;
+$bids_time_check$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER bids_time_check
+	BEFORE UPDATE ON bids
+	FOR EACH ROW
+	WHEN (NEW.status != OLD.status)
+	EXECUTE PROCEDURE bids_time_check();
 
 /*
 After a bid has been placed successfully, aka status = 'Success',
@@ -564,7 +605,7 @@ CREATE TRIGGER update_avail_upon_success_bid
 
 /*
 When there is a new rating, 
-update the average rating and care limit of caretaker correspondingly
+update the average rating, care limit of caretaker correspondingly
 */
 
 CREATE OR REPLACE FUNCTION update_avg_rating_limit() RETURNS TRIGGER AS
@@ -572,6 +613,8 @@ $update_avg_rating_limit$
 DECLARE
 	avg_rt NUMERIC;
 	ft BOOLEAN;
+	cat VARCHAR;
+	bp FLOAT8;
 BEGIN
 	SELECT AVG(B.rating) INTO avg_rt FROM bids B WHERE B.ct_phone = NEW.ct_phone;
 	SELECT C.is_full_time INTO ft FROM care_taker C WHERE C.phone = NEW.ct_phone;
@@ -706,3 +749,29 @@ CREATE TRIGGER check_payment_method
 	BEFORE INSERT ON bids
 	FOR EACH ROW 
 	EXECUTE PROCEDURE check_payment_method();
+
+/*
+Fulltime caretaker will auto accept a pending bid
+*/
+
+CREATE OR REPLACE FUNCTION auto_accept_fulltime() RETURNS TRIGGER AS
+$auto_accept_fulltime$
+DECLARE
+	ft BOOLEAN;
+BEGIN
+	SELECT C.is_full_time INTO ft FROM care_taker C WHERE C.phone = NEW.ct_phone;
+	IF ft THEN
+		UPDATE bids
+			SET status = 'Accepted'
+			WHERE ct_phone = NEW.ct_phone AND po_phone = NEW.po_phone AND pet_name = NEW.pet_name
+			AND start_date = NEW.start_date AND end_date = NEW.end_date;
+	END IF;
+	RETURN NEW;
+END;
+$auto_accept_fulltime$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER auto_accept_fulltime
+	AFTER INSERT ON bids
+	FOR EACH ROW
+	EXECUTE PROCEDURE auto_accept_fulltime();

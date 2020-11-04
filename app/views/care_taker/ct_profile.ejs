@@ -18,8 +18,8 @@
                     <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                 </a>
                 <div class="media-body">
-                    <h2 class="text-white display-6">Jim Doe</h2>
-                    <p class="text-light">Full Time Employee</p>
+                    <h2 class="text-white display-6"><%= profile.name %></h2>
+                    <p class="text-light"><%= profile.is_full_time ? 'Full Time Employee' : 'Part Time Employee' %></p>
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit">Edit Profile</a></span>
                 </div>
             </div>
@@ -27,21 +27,52 @@
         <div class="weather-category twt-category">
             <ul>
                 <li class="active">
-                    <h5>88888888</h5>
+                    <h5><%= profile.phone %></h5>
                     Phone No
                 </li>
                 <li>
-                  <span class="fa fa-star checked"></span>
-                  <span class="fa fa-star checked"></span>
-                  <span class="fa fa-star checked"></span>
-                  <i class="fa fa-star-half-full"></i>
-                  <span class="fa fa-star"></span>
-                    <h5>3.5/5.0</h5>
+                  <%if (profile.avg_rating >=1) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=2) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=3) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=4) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=5) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <!-- <i class="fa fa-star-half-full"></i> -->
+                    <h5><%= profile.avg_rating %>/5</h5>
                     Rating
                 </li>
                 <li><span>
-                    <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
-                    <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg"></span><br/>
+                  <% cat_list.forEach(function (cat) { %>
+                    <%if (cat == 'dog') { %>
+                      <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
+                    <% } %>
+                    <%if (cat == 'cat') { %>
+                      <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
+                    <% } %>
+                    <%if (cat == 'bird') { %>
+                      <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
+                    <% } %>
+                  <% }) %>
+                      <br/>
                     Category
                 </li>
             </ul>
@@ -53,57 +84,38 @@
     <table class="table">
     <thead>
       <tr>
-        <th scope="col" style="width: 5%;">#</th>
-        <th scope="col" style="width: 20%;">Pet Owner</th>
-        <th scope="col" style="width: 20%;">Pet Category</th>
-        <th scope="col" style="width: 20%;">Date Range</th>
+        <th scope="col" style="width: 15%;">Pet Owner</th>
+        <th scope="col" style="width: 15%;">Pet Name</th>
+        <th scope="col" style="width: 25%;">Start Date</th>
+        <th scope="col" style="width: 25%;">End Date</th>
+        <th scope="col" style="width: 5%;">View Details</th>
         <th scope="col" style="width: 15%;">Action</th>
       </tr>
     </thead>
     <tbody>
       <tr>
-        <th scope="row">1</th>
-        <td>Mar</td>
-        <td><img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td>
-        <td>@mdo</td>
-        <td>
-          <button class="btn">
-            <i class="fa fa-check fa-2x" style="color:green"></i>
-          </button>
-          <button class="btn">
-            <i class="fa fa-times fa-2x" style="color:red"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td><img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg"></td>
-        <td>@fat</td>
-        <td>
-          <button class="btn">
-            <i class="fa fa-check fa-2x" style="color:green"></i>
-          </button>
-          <button class="btn">
-            <i class="fa fa-times fa-2x" style="color:red"></i>
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Jim</td>
-        <td><img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg"></td>
-        <td>@twitter</td>
-        <td>
-          <button class="btn">
-            <i class="fa fa-check fa-2x" style="color:green"></i>
-          </button>
-          <button class="btn">
-            <i class="fa fa-times fa-2x" style="color:red"></i>
-          </button>
-        </td>
-      </tr>
-    </tbody>
+        <% pending_bids.forEach(function (bid) { %>
+            <td><%- bid.petowner %></td>
+            <td><%- bid.pet_name %></td>
+            <td><%- bid.start_date.toDateString() %></td>
+            <td><%- bid.end_date.toDateString() %></td>
+            <td>
+              <button class="btn">
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/eye-regular.svg">
+              </button>
+            </td>
+            <td>
+              <button class="btn">
+                <i class="fa fa-check fa-2x" style="color:green"></i>
+              </button>
+              <button class="btn">
+                <i class="fa fa-times fa-2x" style="color:red"></i>
+              </button>
+            </td>
+        <% }); %>
+        <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        </tr>
+      </tbody>
   </table>
 </font>
   </section>

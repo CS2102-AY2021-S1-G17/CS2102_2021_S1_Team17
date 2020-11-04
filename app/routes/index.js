@@ -9,8 +9,12 @@ router.get('/', function(req, res, next) {
   if (req.user) {
     if (user.role == "Pet Owner") {
       return res.redirect("/pet_owner");
-    } else {
+    } else if (user.role == "Caretake"){
       return res.redirect("/care_taker");
+    } else {
+      res.render('login', { title: 'Login Page', 
+      successFlash: req.flash("success"),
+      errorFlash: req.flash("error")}); 
     }
   } else {
     res.render('login', { title: 'Login Page', 
@@ -29,7 +33,6 @@ router.get('/signup', function(req, res, next) {
   }
 }); 
 router.post("/signup", async function (req, res, next) {
-  console.log(req.body);
   /*--------------------------Sign up PO------------------------------ */
   if (req.body.signup_po) {
     let {username, phoneno, password, location, card, petname, category, requirement} = req.body;
@@ -75,10 +78,8 @@ router.post("/signup", async function (req, res, next) {
         req.flash("success", "Sign up success.");
     } catch (e) {
         console.log(e);
-        console.log('Error')
         req.flash("error", "Sign up failed.");
     } finally {
-        console.log("corr");
         res.redirect("/");
     }      
   } 
