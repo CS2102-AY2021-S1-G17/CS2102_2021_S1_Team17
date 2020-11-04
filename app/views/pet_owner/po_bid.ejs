@@ -9,11 +9,16 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
         <script>
         $( function() {
             $('#daterangepicker').daterangepicker();
         } );
+        $(document).ready( function () {
+            $('#table').DataTable();
+        } );
         </script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 </head>
 <body>
     <div class="row justify-content-center">
@@ -54,43 +59,55 @@
         </div>
       </div>
     <div class="row justify-content-center">
-        <div class="column">
-          <div class="card" id="card-day">
-            <h3>Care Taker A</h3>
-            <p>Rating: 5.0/5.0</p>
-            <p>Can Take Care: Dog, Cat</p>
-              <p>Phone No: 12345678</p>
-          </div>
-        </div>
-     
-        <div class="column">
-          <div class="card" id="card-day">
-            <h3>Care Taker B</h3>
-            <p>Rating: 5.0/5.0</p>
-            <p>Can Take Care: Bird</p>
-              <p>Phone No: 12345678</p>
-          </div>
-        </div>
-      </div>  
-    <div class="row justify-content-center">
-        <div class="column">
-          <div class="card" id="card-day">
-            <h3>Care Taker C</h3>
-            <p>Rating: 5.0/5.0</p>
-            <p>Can Take Care: Dog, Bird</p>
-              <p>Phone No: 12345678</p>
-          </div>
-        </div>
-     
-        <div class="column">
-          <div class="card" id="card-day">
-            <h3>Care Taker D</h3>
-            <p>Rating: 5.0/5.0</p>
-            <p>Can Take Care: Cat</p>
-              <p>Phone No: 12345678</p>
-          </div>
-        </div>
-      </div>
+    <table id="table" class="display" style="width:80%">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Phone Number</th>
+                <th>Category</th>
+                <th>Transfer Location</th>
+                <th>Average Rating</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <th>Kevin</th>
+                <th>12345678</th>
+                <th>Cat, Bird</th>
+                <th>NUS</th>
+                <th>4.3/5.0</th>
+            </tr>
+            <tr>
+                <th>Jiayi</th>
+                <th>11111111</th>
+                <th>Cat</th>
+                <th>NUS</th>
+                <th>5.0/5.0</th>
+            </tr>
+            <tr>
+                <th>Yongyan</th>
+                <th>88888888</th>
+                <th>Dog, Bird</th>
+                <th>NTU</th>
+                <th>4.1/5.0</th>
+            </tr>
+            <tr>
+                <th>Siyang</th>
+                <th>66666666</th>
+                <th>Bird</th>
+                <th>NUS</th>
+                <th>4.6/5.0</th>
+            </tr>
+            <tr>
+                <th>Minghao</th>
+                <th>00000000</th>
+                <th>Dog</th>
+                <th>NTU</th>
+                <th>3.9/5.0</th>
+            </tr>
+        </tbody>
+    </table>
+    </div>
     <div class="modal fade" id="create" role="dialog">
         <div class="modal-dialog">
                     
