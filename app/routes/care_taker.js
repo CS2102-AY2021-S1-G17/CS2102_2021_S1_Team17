@@ -13,6 +13,7 @@ router.get('/', async(req, res)=> {
         var full_part = "Part Time Employee";
       }
       var rate = data.rows.avg_rating;
+      
       res.render('care_taker/ct_profile', { title: 'Caretaker Page'});
     } catch (err) {
       throw err;

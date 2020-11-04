@@ -1,3 +1,11 @@
+DROP PROCEDURE IF EXISTS register_pet_owner;
+DROP PROCEDURE IF EXISTS register_caretaker;
+DROP PROCEDURE IF EXISTS register_admin;
+DROP PROCEDURE IF EXISTS place_bid;
+DROP PROCEDURE IF EXISTS take_leave;
+DROP PROCEDURE IF EXISTS add_pet;
+DROP PROCEDURE IF EXISTS init_avail_salary_year;
+
 /*
 CALL register_pet_owner(...);
 */
@@ -25,6 +33,8 @@ BEGIN
 		UPDATE users
 			SET role = 'Both'
 			WHERE phone = _phone;
+	ELSIF 'Admin' IN (SELECT U.role FROM users U WHERE U.phone = _phone) THEN
+		Raise Notice 'Do not use an admin account to register as pet owner';
 	ELSE
 		INSERT INTO users (phone, password, role)
 			VALUES (_phone, _password, 'Pet Owner');
@@ -75,6 +85,8 @@ BEGIN
 		UPDATE users
 			SET role = 'Both'
 			WHERE phone = _phone;
+	ELSIF 'Admin' IN (SELECT U.role FROM users U WHERE U.phone = _phone) THEN
+		Raise Notice 'Do not use an admin account to register as caretaker';
 	ELSE
 		INSERT INTO users (phone, password, role)
 			VALUES (_phone, _password, 'Caretaker');
@@ -87,20 +99,25 @@ END;
 $$
 LANGUAGE plpgsql;
 
-
 /*
 CALL register_admin(...);
 */
 
 CREATE OR REPLACE PROCEDURE register_admin(
-	_email VARCHAR,
+	_phone VARCHAR,
 	_password VARCHAR,
 	_name VARCHAR
 	) AS
 $$
 BEGIN
-	INSERT INTO admin (email, password, name)
-		VALUES (_email, _password, _name);
+	IF _phone IN (SELECT U.phone FROM users U WHERE U.phone = _phone) THEN
+		Raise Notice 'Account already registered';
+	END IF;
+	-- If account already registered, insertion will fail here
+	INSERT INTO users (phone, password, role)
+		VALUES (_phone, _password, 'Admin');
+	INSERT INTO admin (phone, password, name)
+		VALUES (_phone, _password, _name);
 END;
 $$
 LANGUAGE plpgsql;
@@ -130,20 +147,69 @@ BEGIN
 	INSERT INTO bids (po_phone, ct_phone, pet_name, start_date, end_date, 
 		status, category_name, daily_price, transfer_method, total_cost, payment_method, rating, comment)
 		VALUES (_po_phone, _ct_phone, _pet_name, _start_date, _end_date, 
-		'pending', _category, _daily_price, _transfer_method, _total_cost, _payment_method, NULL, NULL);
+		'Pending', _category, _daily_price, _transfer_method, _total_cost, _payment_method, NULL, NULL);
 END;
 $$
 LANGUAGE plpgsql;
 
-/**/
+/*
+CALL take_leave(...);
+*/
 
+CREATE OR REPLACE PROCEDURE take_leave(_phone INTEGER, _start DATE, _end DATE) AS
+$$
+BEGIN
+	-- if avail triggers violated, deletion will fail with notice here
+	DELETE FROM availability 
+		WHERE phone = _phone AND available_date >= _start AND available_date <= _end;
+END;
+$$
+LANGUAGE plpgsql;
 
+/*
+CALL add_pet(...);
+*/
 
+CREATE OR REPLACE PROCEDURE add_pet(
+	_phone INTEGER, pet_name VARCHAR, 
+	_requirements VARCHAR(500), _category VARCHAR
+	) AS
+$$
+BEGIN
+	INSERT INTO owns_pet (phone, name, special_requirements, category_name)
+		VALUES (_phone, pet_name, _requirements, _category);
+END;
+$$
+LANGUAGE plpgsql;
 
+/*
+CALL add_capable(...);
+*/
 
-
-
-
+CREATE OR REPLACE PROCEDURE add_capable(
+	_phone INTEGER, _category VARCHAR, _daily_price FLOAT8
+	) AS
+$$
+DECLARE
+	avg_rt FLOAT8;
+	bp FLOAT8;
+	dp FLOAT8;
+	ft BOOLEAN;
+BEGIN
+	SELECT is_full_time, avg_rating INTO ft, avg_rt FROM care_taker WHERE phone = _phone;
+	SELECT base_price INTO bp FROM category WHERE category_name = _category;
+	IF ft AND avg_rt > 4 THEN
+		dp := bp + 10 * (avg_rt - 4);
+	ELSIF ft AND avg_rt <= 4 THEN
+		dp := bp;
+	ELSE
+		dp := _daily_price;
+	END IF;
+	INSERT INTO capable (phone, category_name, daily_price)
+		VALUES (_phone, _category, dp);
+END;
+$$
+LANGUAGE plpgsql;
 
 /*
 At the start of each year, call this procedure to 
