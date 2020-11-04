@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS bids CASCADE;
 CREATE TABLE users(
 	phone INTEGER PRIMARY KEY,
 	password VARCHAR NOT NULL,
-	role VARCHAR NOT NULL CHECK(role IN ('Pet Owner', 'Caretaker', 'Both')),
+	role VARCHAR NOT NULL CHECK(role IN ('Pet Owner', 'Caretaker', 'Both', 'Admin')),
 	UNIQUE(phone, password)
 );
 
@@ -54,9 +54,11 @@ CREATE TABLE care_taker(
 );
 
 CREATE TABLE admin(
-	email VARCHAR PRIMARY KEY,
+	phone INTEGER PRIMARY KEY,
 	password VARCHAR NOT NULL,
-	name VARCHAR NOT NULL
+	name VARCHAR NOT NULL,
+	FOREIGN KEY (phone, password) REFERENCES users(phone, password)
+	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
 CREATE TABLE category(
@@ -98,11 +100,11 @@ CREATE TABLE salary(
 );
 
 CREATE TABLE pay(
-	email VARCHAR REFERENCES admin(email) ON DELETE CASCADE ON UPDATE CASCADE,
-	phone INTEGER,
+	ad_phone INTEGER REFERENCES admin(phone) ON DELETE CASCADE ON UPDATE CASCADE,
+	ct_phone INTEGER,
 	pay_time DATE, 
-	PRIMARY KEY(email, phone, pay_time),
-	FOREIGN KEY (phone, pay_time) REFERENCES salary(phone, pay_time)
+	PRIMARY KEY(ad_phone, ct_phone, pay_time),
+	FOREIGN KEY (ct_phone, pay_time) REFERENCES salary(phone, pay_time)
 	ON DELETE CASCADE ON UPDATE CASCADE
 );
 
@@ -564,7 +566,7 @@ CREATE TRIGGER update_avail_upon_success_bid
 
 /*
 When there is a new rating, 
-update the average rating and care limit of caretaker correspondingly
+update the average rating, care limit & daily price of caretaker correspondingly
 */
 
 CREATE OR REPLACE FUNCTION update_avg_rating_limit() RETURNS TRIGGER AS
@@ -572,6 +574,8 @@ $update_avg_rating_limit$
 DECLARE
 	avg_rt NUMERIC;
 	ft BOOLEAN;
+	cat VARCHAR;
+	bp FLOAT8;
 BEGIN
 	SELECT AVG(B.rating) INTO avg_rt FROM bids B WHERE B.ct_phone = NEW.ct_phone;
 	SELECT C.is_full_time INTO ft FROM care_taker C WHERE C.phone = NEW.ct_phone;
@@ -588,6 +592,18 @@ BEGIN
 		UPDATE care_taker
 			SET avg_rating = avg_rt
 			WHERE phone = NEW.ct_phone;
+		FOR cat IN (SELECT category_name FROM capable WHERE phone = NEW.ct_phone) LOOP
+			SELECT base_price INTO bp FROM category WHERE category_name = cat;
+			IF avg_rt <= 4 THEN
+				UPDATE capable
+					SET daily_price = bp
+					WHERE phone = NEW.ct_phone AND category_name = cat;
+			ELSE
+				UPDATE capable
+					SET daily_price = bp + 10 * (avg_rt - 4)
+					WHERE phone = NEW.ct_phone AND category_name = cat;
+			END IF;
+		END LOOP;
 	END IF;
 	RETURN NEW;
 END;
