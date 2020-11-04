@@ -1,8 +1,14 @@
 var express = require('express');
 var router = express.Router();
 
-router.get('/', function(req, res, next) { 
-    res.render('pet_owner/po_profile', { title: 'Petowner Page'});
+router.get('/', async(req, res, next)=> { 
+  try{
+    var po_info = await db.query("SELECT * FROM pet_owner WHERE phone=$1;",[req.user.phone]);
+    var name = data.rows.name;
+    res.render('pet_owner/po_profile', { title: 'Petowner Page', user : req.user });
+  } catch (err) {
+    throw err;
+  }
 });
 
 router.get('/po_profile',  function(req, res, next) {
