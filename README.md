@@ -10,7 +10,7 @@
     [:username]: replace with database username \
     [:password]: replace with database password
 
-3. In sql terminal, run \i path\to\file\sql\init.sql to execute `sql\init.sql` file.
+3. In sql terminal, run \i path/to/file/sql/init.sql to execute `sql/init.sql` file.
 4. Run `npm install` to install packages and dependencies.
 5. Run `npm start`, open a browser and go to  `localhost:3000`.\
 In development mode, run `nodemon start` to avoid restart server after making changes.
