@@ -26,7 +26,7 @@ CREATE TABLE users(
 CREATE TABLE pet_owner(
 	phone INTEGER,
 	password VARCHAR NOT NULL,
-	transfer_location VARCHAR NOT NULL,
+	transfer_location VARCHAR,
 	name VARCHAR NOT NULL,	
 	card VARCHAR(16),
 	PRIMARY KEY(phone),
@@ -37,7 +37,7 @@ CREATE TABLE pet_owner(
 CREATE TABLE care_taker(
 	phone INTEGER,
 	password VARCHAR NOT NULL,
-	transfer_location VARCHAR NOT NULL,
+	transfer_location VARCHAR,
 	name VARCHAR NOT NULL,
 	bank_account VARCHAR NOT NULL,
 	is_full_time BOOLEAN NOT NULL,
@@ -100,10 +100,10 @@ CREATE TABLE salary(
 );
 
 CREATE TABLE pay(
-	ad_phone INTEGER REFERENCES admin(phone) ON DELETE CASCADE ON UPDATE CASCADE,
+	ad_phone INTEGER NOT NULL REFERENCES admin(phone) ON DELETE CASCADE ON UPDATE CASCADE,
 	ct_phone INTEGER,
 	pay_time DATE, 
-	PRIMARY KEY(ad_phone, ct_phone, pay_time),
+	PRIMARY KEY(ct_phone, pay_time),
 	FOREIGN KEY (ct_phone, pay_time) REFERENCES salary(phone, pay_time)
 	ON DELETE CASCADE ON UPDATE CASCADE
 );
@@ -126,7 +126,7 @@ CREATE TABLE bids(
 	transfer_method VARCHAR NOT NULL CHECK(transfer_method IN ('PO deliver', 'CT pick up', 'via PCS')),
 	total_cost FLOAT8 NOT NULL CHECK (total_cost = daily_price * (end_date - start_date + 1)),
 	payment_method VARCHAR NOT NULL CHECK(payment_method IN ('Cash', 'Credit Card')),
-	rating INTEGER CHECK(rating >= 0 and rating <= 5),
+	rating INTEGER CHECK(rating >= 1 and rating <= 5),
 	comment VARCHAR(500),
 
 	PRIMARY KEY (po_phone, ct_phone, pet_name, start_date, end_date),
@@ -161,10 +161,16 @@ DECLARE
 	dif INTEGER;
 	day DATE;
 BEGIN
-	IF NEW.avg_rating != OLD.avg_rating AND NEW.is_full_time AND NEW.avg_rating > 4 THEN
+	IF OLD.avg_rating != NEW.avg_rating AND NEW.is_full_time THEN
 		FOR cat IN (SELECT category_name FROM capable WHERE phone = NEW.phone) LOOP
 			UPDATE capable 
-				SET daily_price = (SELECT base_price FROM category WHERE category_name = cat) + 10 * (NEW.avg_rating - 4)
+				SET daily_price = 
+					(CASE 
+						WHEN NEW.avg_rating >= 4 
+						THEN (SELECT base_price FROM category WHERE category_name = cat) + 10 * (NEW.avg_rating - 4)
+						WHEN NEW.avg_rating < 4 
+						THEN (SELECT base_price FROM category WHERE category_name = cat)
+					END)
 				WHERE capable.phone = NEW.phone AND capable.category_name = cat;
 		END LOOP;
 	END IF;
@@ -176,7 +182,7 @@ BEGIN
 			WHERE A.phone = NEW.phone AND A.available_date > CURRENT_DATE
 			) LOOP
 			UPDATE availability 
-				SET remaining_limit = remaining_limit + dif
+				SET remaining_limit = (CASE WHEN remaining_limit + dif >= 0 THEN remaining_limit + dif ELSE 0 END)
 				WHERE availability.phone = NEW.phone AND availability.available_date = day;
 		END LOOP;
 	END IF;
@@ -467,6 +473,7 @@ CREATE TRIGGER check_bids_no_limit
 
 DROP TRIGGER IF EXISTS bids_capable_check ON bids;
 DROP TRIGGER IF EXISTS bids_availability_check ON bids;
+DROP TRIGGER IF EXISTS bids_time_check ON bids;
 DROP TRIGGER IF EXISTS update_avail_upon_success_bid ON bids;
 DROP TRIGGER IF EXISTS update_avg_rating_limit ON bids;
 DROP TRIGGER IF EXISTS update_salary_upon_success_bid ON bids;
@@ -511,6 +518,10 @@ $bids_availability_check$
 DECLARE
 	day DATE := NEW.start_date;
 BEGIN
+	IF NEW.start_date - CURRENT_DATE < 3 THEN
+		Raise Notice 'You must place a bid at least 3 days in advance';
+		RETURN NULL;
+	END IF;
 	WHILE (day <= NEW.end_date) LOOP
 		IF day NOT IN (
 			SELECT A.available_date
@@ -535,6 +546,33 @@ CREATE TRIGGER bids_availability_check
 	BEFORE INSERT ON bids
 	FOR EACH ROW 
 	EXECUTE PROCEDURE bids_availability_check();
+
+/*
+Check that ct must accept bids 2 days in advance
+Check that po must pay 1 day in advance
+*/
+
+CREATE OR REPLACE FUNCTION bids_time_check() RETURNS TRIGGER AS
+$bids_time_check$
+BEGIN
+	IF NEW.status = 'Accepted' AND NEW.start_date - CURRENT_DATE < 2 THEN
+		Raise Notice 'You must accept a bid at least 2 days in advance';
+		RETURN NULL;
+	ELSIF NEW.status = 'Success' AND NEW.start_date - CURRENT_DATE < 1 THEN
+		Raise Notice 'You must pay for a bid at least 1 day in advance';
+		RETURN NULL;
+	ELSE
+		RETURN NEW;
+	END IF;
+END;
+$bids_time_check$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER bids_time_check
+	BEFORE UPDATE ON bids
+	FOR EACH ROW
+	WHEN (NEW.status != OLD.status)
+	EXECUTE PROCEDURE bids_time_check();
 
 /*
 After a bid has been placed successfully, aka status = 'Success',
@@ -566,7 +604,7 @@ CREATE TRIGGER update_avail_upon_success_bid
 
 /*
 When there is a new rating, 
-update the average rating, care limit & daily price of caretaker correspondingly
+update the average rating, care limit of caretaker correspondingly
 */
 
 CREATE OR REPLACE FUNCTION update_avg_rating_limit() RETURNS TRIGGER AS
@@ -592,18 +630,6 @@ BEGIN
 		UPDATE care_taker
 			SET avg_rating = avg_rt
 			WHERE phone = NEW.ct_phone;
-		FOR cat IN (SELECT category_name FROM capable WHERE phone = NEW.ct_phone) LOOP
-			SELECT base_price INTO bp FROM category WHERE category_name = cat;
-			IF avg_rt <= 4 THEN
-				UPDATE capable
-					SET daily_price = bp
-					WHERE phone = NEW.ct_phone AND category_name = cat;
-			ELSE
-				UPDATE capable
-					SET daily_price = bp + 10 * (avg_rt - 4)
-					WHERE phone = NEW.ct_phone AND category_name = cat;
-			END IF;
-		END LOOP;
 	END IF;
 	RETURN NEW;
 END;

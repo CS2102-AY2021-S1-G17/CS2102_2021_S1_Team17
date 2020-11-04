@@ -2,6 +2,8 @@ DROP PROCEDURE IF EXISTS register_pet_owner;
 DROP PROCEDURE IF EXISTS register_caretaker;
 DROP PROCEDURE IF EXISTS register_admin;
 DROP PROCEDURE IF EXISTS place_bid;
+DROP PROCEDURE IF EXISTS change_bid_status;
+DROP PROCEDURE IF EXISTS rate_service;
 DROP PROCEDURE IF EXISTS take_leave;
 DROP PROCEDURE IF EXISTS add_pet;
 DROP PROCEDURE IF EXISTS init_avail_salary_year;
@@ -153,6 +155,62 @@ $$
 LANGUAGE plpgsql;
 
 /*
+CALL change_bid_status(...);
+*/
+
+CREATE OR REPLACE PROCEDURE change_bid_status(
+	_po_phone INTEGER,
+	_ct_phone INTEGER,
+	_pet_name VARCHAR,
+	_start_date DATE,
+	_end_date DATE,
+	_status VARCHAR
+	) AS
+$$
+BEGIN
+	UPDATE bids
+		SET status = _status
+		WHERE po_phone = _po_phone AND ct_phone = _ct_phone AND pet_name = _pet_name
+		AND start_date = _start_date AND end_date = _end_date;
+END;
+$$
+LANGUAGE plpgsql;
+
+/*
+CALL rate_service(...);
+*/
+
+CREATE OR REPLACE PROCEDURE rate_service(
+	_po_phone INTEGER,
+	_ct_phone INTEGER,
+	_pet_name VARCHAR,
+	_start_date DATE,
+	_end_date DATE,
+	_rating INTEGER,
+	_comment VARCHAR(500)
+	) AS
+$$
+DECLARE
+	_status VARCHAR;
+BEGIN
+	SELECT status INTO _status
+	FROM bids 
+	WHERE po_phone = _po_phone AND ct_phone = _ct_phone AND pet_name = _pet_name 
+	AND start_date = _start_date AND end_date = _end_date;
+
+	IF _status != 'Success' THEN
+		Raise Notice 'Unsuccessful transactions cannot be rated';
+	ELSE
+		UPDATE bids
+			SET rating = _rating, comment = _comment
+			WHERE po_phone = _po_phone AND ct_phone = _ct_phone AND pet_name = _pet_name 
+			AND start_date = _start_date AND end_date = _end_date;
+	END IF;
+END;
+$$
+LANGUAGE plpgsql;
+
+/*
 CALL take_leave(...);
 */
 
@@ -232,7 +290,7 @@ BEGIN
 		d := make_date(y, 1, 1);
 		WHILE d <= ed LOOP
 			curr_m := date_part('month', d);
-			IF curr_m > m THEN
+			IF curr_m > m AND d NOT IN (SELECT S.pay_time FROM salary S WHERE S.phone = ct_phone AND S.pay_time = d) THEN
 				INSERT INTO salary (phone, pay_time, amount, pet_day) VALUES (ct_phone, d, 3000, 0);
 				m := curr_m;
 			END IF;
