@@ -123,8 +123,24 @@
                   placeholder="Pet Name" required="">
                 <label for="inputPhone" class="sr-only form-control">Preferred Care Taker's Phone No</label>
                 <input type="text" id="ctphone" name="ctphone" class="form-control"
-                  placeholder="Care Taker's Phone No (optional)" required="">
+                  placeholder="Care Taker's Phone No" required="">
+                <label for="inputName" class="sr-only form-control">Transfer Method</label>
+                <input type="text" id="petname" name="petname" class="form-control"
+                  placeholder="Transfer Method" required="">
                 <br>
+                <label for="inputCategory" class="sr-only form-control">Payment Method</label>
+                <select id="payment" name="cat" class="form-control selectpicker" multiple data-live-search="true">
+                    <option value="cash">Cash</option>
+                    <option value="card">Credit Card</option>
+                </select>
+                <p>Select Payment Method</p>
+                <label for="inputCategory" class="sr-only form-control">Transfer Method</label>
+                <select id="transfer" name="cat" class="form-control selectpicker" multiple data-live-search="true">
+                    <option value="podeliver">I deliver</option>
+                    <option value="ctpickup">Care taker pick up</option>
+                    <option value="pcs">PCS building</option>
+                </select>
+                <p>Select Transfer Method</p>
                 <input type="text" style="width: 300px;" id="daterangepicker">
                 <p>Start Date and End Date</p>
             </form>
