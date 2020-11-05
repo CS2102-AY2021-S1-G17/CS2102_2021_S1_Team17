@@ -117,19 +117,20 @@ SELECT * FROM ct_view_pending_bids(...);
 */
 
 CREATE OR REPLACE FUNCTION ct_view_pending_bids(_phone INTEGER) 
-	RETURNS TABLE (
-		petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
-		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR
-		) AS
+    RETURNS TABLE (
+        petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
+        total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR, category VARCHAR, req VARCHAR(500)
+        ) AS
 $$
 BEGIN
-	RETURN QUERY(
-		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
-			B.total_cost, B.transfer_method, B.payment_method
-		FROM bids B, pet_owner P
-		WHERE B.ct_phone = _phone AND B.status = 'Pending' AND P.phone = B.po_phone AND B.start_date >= CURRENT_DATE
-		ORDER BY B.start_date ASC
-		);
+    RETURN QUERY(
+        SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
+            B.total_cost, B.transfer_method, B.payment_method, O.category_name AS category, O.special_requirements AS req
+        FROM bids B, pet_owner P, owns_pet O
+        WHERE B.ct_phone = _phone AND B.status = 'Pending' AND P.phone = B.po_phone AND B.start_date >= CURRENT_DATE AND 
+        O.phone = P.phone AND O.name = B.pet_name
+        ORDER BY B.start_date ASC
+        );
 END;
 $$
 LANGUAGE plpgsql;
@@ -141,15 +142,16 @@ SELECT * FROM ct_view_future_work(...);
 CREATE OR REPLACE FUNCTION ct_view_future_work(_phone INTEGER)
 	RETURNS TABLE (
 		petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
-		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR
+		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR, category VARCHAR, req VARCHAR(500)
 		) AS
 $$
 BEGIN
 	RETURN QUERY(
 		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
-			B.total_cost, B.transfer_method, B.payment_method
-		FROM bids B, pet_owner P
+			B.total_cost, B.transfer_method, B.payment_method, O.category_name AS category, O.special_requirements AS req
+		FROM bids B, pet_owner P,  owns_pet O
 		WHERE B.end_date >= CURRENT_DATE AND B.ct_phone = _phone AND B.status = 'Success' AND P.phone = B.po_phone
+		AND O.phone = P.phone AND O.name = B.pet_name
 		ORDER BY B.start_date ASC
 		);
 END;

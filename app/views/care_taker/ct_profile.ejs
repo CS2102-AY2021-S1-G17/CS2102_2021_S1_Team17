@@ -3,8 +3,14 @@
     <head> 
         <title><%= title %></title> 
         <% include ../partials/_ct_header %>
-        <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-date-range-picker/0.14.2/daterangepicker.min.css">
     </head> 
     <body> 
    <div class="row justify-content-center">
@@ -20,7 +26,8 @@
                 <div class="media-body">
                     <h2 class="text-white display-6"><%= profile.name %></h2>
                     <p class="text-light"><%= profile.is_full_time ? 'Full Time Employee' : 'Part Time Employee' %></p>
-                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit">Edit Profile</a></span>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit">Update Category</a></span>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#apply">Apply for leave</a></span>
                 </div>
             </div>
         </div>
@@ -80,16 +87,18 @@
 
 <div class="row justify-content-center">
     <div class="col">
-      <font size="4">
-    <table class="table">
+      <font size="5">
+    <table class="table" style="text-align:center">
     <thead>
       <tr>
-        <th scope="col" style="width: 15%;">Pet Owner</th>
-        <th scope="col" style="width: 15%;">Pet Name</th>
-        <th scope="col" style="width: 25%;">Start Date</th>
-        <th scope="col" style="width: 25%;">End Date</th>
+        <th scope="col" style="width: 10%;">Pet Owner</th>
+        <th scope="col" style="width: 10%;">Pet Name</th>
+        <th scope="col" style="width: 15%;">Pet Category</th>
+        <th scope="col" style="width: 15%;">Start Date</th>
+        <th scope="col" style="width: 15%;">End Date</th>
+        <th scope="col" style="width: 15%;">Total Cost</th>
         <th scope="col" style="width: 5%;">View Details</th>
-        <th scope="col" style="width: 15%;">Action</th>
+        <th scope="col" style="width: 20%;">Status</th>
       </tr>
     </thead>
     <tbody>
@@ -97,26 +106,74 @@
         <% pending_bids.forEach(function (bid) { %>
             <td><%- bid.petowner %></td>
             <td><%- bid.pet_name %></td>
+            <td>
+              <%if (bid.category == 'dog') { %>
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
+              <% } %>
+              <%if (bid.category == 'cat') { %>
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
+              <% } %>
+              <%if (bid.category == 'bird') { %>
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
+              <% } %>
+            </td>
             <td><%- bid.start_date.toDateString() %></td>
             <td><%- bid.end_date.toDateString() %></td>
+            <td><%- bid.total_cost %></td>
             <td>
-              <button class="btn">
-                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/eye-regular.svg">
+              <button class="btn" data-toggle="modal"
+                data-target="#details" data-req="<%= bid.req %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+                <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
               </button>
             </td>
             <td>
-              <button class="btn">
-                <i class="fa fa-check fa-2x" style="color:green"></i>
-              </button>
-              <button class="btn">
-                <i class="fa fa-times fa-2x" style="color:red"></i>
-              </button>
+              <form action="/care_taker/update_status" method="post">
+                <input type="hidden" id="po_phone" name="po_phone" value="<%= bid.po_phone %>">
+                <input type="hidden" id="ct_phone" name="ct_phone" value="<%= profile.phone %>">
+                <input type="hidden" id="pet_name" name="pet_name" value="<%= bid.pet_name %>">
+                <input type="hidden" id="start_date" name="start_date" value="<%= bid.start_date %>">
+                <input type="hidden" id="end_date" name="end_date" value="<%= bid.end_date %>">
+                <input class="btn btn-success" type="submit" name="accept" id="accept" value="Accept">
+                <input class="btn btn-danger" type="submit" name="decline" id="decline" value="Decline">
+              </form>
             </td>
         <% }); %>
+        </tr>
+        <tr>
         <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        <% future_work.forEach(function (bid) { %>
+          <td><%- bid.petowner %></td>
+          <td><%- bid.pet_name %></td>
+          <td>
+            <%if (bid.category == 'dog') { %>
+              <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
+            <% } %>
+            <%if (bid.category == 'cat') { %>
+              <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
+            <% } %>
+            <%if (bid.category == 'bird') { %>
+              <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
+            <% } %>
+          </td>
+          <td><%- bid.start_date.toDateString() %></td>
+          <td><%- bid.end_date.toDateString() %></td>
+          <td><%- bid.total_cost %></td>
+          <td>
+            <button class="btn" data-toggle="modal"
+              data-target="#details" data-req="<%= bid.req %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+              <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
+            </button>
+          </td>
+          <td>
+            <div style="color:green">Success</div>
+          </td>
+      <% }); %>
         </tr>
       </tbody>
   </table>
+  <%if (!pending_bids || pending_bids.length < 1) {%>
+    <h5 style="text-align:center">No pending orders</h5>
+  <% } %>
 </font>
   </section>
   </div>
@@ -125,27 +182,20 @@
     <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
-      <h4 class="modal-title">Edit Profile</h4>
+      <h4 class="modal-title">Update Category</h4>
       <button type="button" class="close" data-dismiss="modal">&times;</button>
     </div>
-    <div class="modal-body">
-      <form class="form-signin" action="/" method="post">
-          <label for="inputType" class="sr-only form-control">Type</label>
-          <input type="text" id="type" name="type" class="form-control" placeholder="name" required="" value="Full-Time" readonly>
-          <label for="inputName" class="sr-only form-control">Name</label>
-          <input type="text" id="name" name="name" class="form-control" placeholder="name" required="">
-          <label for="inputPassword" class="sr-only form-control">Password</label>
-          <input type="password" id="password" name="password" 
-            class="form-control" placeholder="Password" required="">
-          <input type="text" id="signup" name="signup" value="signup" class="form-control" hidden> 
-           <label for="inputCategory" class="sr-only form-control">Category</label>
-          <select id="cat" name="cat" class="form-control selectpicker" multiple data-live-search="true">
-            <option value="dog">Dog</option>
-            <option value="cat">Cat</option>
-            <option value="bird">Bird</option>
-        </select>
+    <div class="modal-body" style="text-align:inline">
+      <form class="form-signin" action="/care_taker/category" method="post">
+      <font size="5">
+          <input type="hidden" id="po_phone" name="po_phone" value="<%= profile.phone %>">
+          <label for="inputCategory" class="sr-only form-control">Category</label>
+          <input type="checkbox" name="dog" value="cat">Cat
+          <input type="checkbox" name="dog" value="dog">Dog
+          <input type="checkbox" name="bird" value="bird">Bird<br/>
           <button class="btn btn-lg btn-primary btn-block" 
             type="submit">Update</button> 
+    </font>
       </form>
     </div>
     <div class="modal-footer">
@@ -154,5 +204,65 @@
   </div>
 </div>
 </div>
+
+<div class="modal fade" id="details" role="dialog">
+  <div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Bid Details</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body">
+    <label>Special Requirements</label>
+    <h5 id="req" style="text-align: center;"></h5>
+    <label>Transfer Method</label>
+    <h5 id="trans" style="text-align: center;"></h5>
+    <label>Payment Method</label>
+    <h5 id="pay" style="text-align: center;"></h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+</div>
+</div>
+<div class="modal fade" id="apply" role="dialog">
+  <div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Apply for leave</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body">
+    <form class="form-signin" action="/care_taker/availability" method="post">
+      <input type="hidden" id="po_phone" name="po_phone" value="<%= profile.phone %>">
+      <input type="text" style="width: 300px;" id="daterangepicker">
+      <br />
+      <button class="btn btn-lg btn-primary btn-block" 
+          type="submit">Update</button> 
+      </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+</div>
+</div>
  </body>
 </html> 
+<script>
+  $("#details").on("show.bs.modal", function (event) {
+      var button = $(event.relatedTarget); 
+      var req = button.data("req"); 
+      var trans = button.data("trans"); 
+      var pay = button.data("pay"); 
+      var modal = $(this);
+      modal.find(".modal-body #req").text(req);
+      modal.find(".modal-body #trans").text(trans);
+      modal.find(".modal-body #pay").text(pay);
+
+  });
+  $( function() {
+    $('#daterangepicker').daterangepicker();
+  });
+</script>

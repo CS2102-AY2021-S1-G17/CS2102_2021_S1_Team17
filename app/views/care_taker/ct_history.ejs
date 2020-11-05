@@ -22,15 +22,12 @@
                    </div>
                </div>
            </div>
-       </section>
-       </div>
-    </div>
+   
     <div class="row justify-content-center">
        <div class="col m-2">
            <table class="table" style="background-color:white">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Care Taker</th>
                 <th scope="col">My Pet</th>
                 <th scope="col">Date Range</th>
@@ -38,46 +35,34 @@
                 <th scope="col">Feedback</th>
             </tr>
             </thead>
-    <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <form class="form-submitfeedback" action="/" method="post">
-        <td>
-            5.0
-        </td>
-        <td>
-        Comment
-        </td>
-        </form>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>
-        5.0
-        </td>
-        <td>
-        Comment
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-        <td>
-            5.0
-        </td>
-        <td>
-        Comment
-        </td>
-      </tr>
+        <tr>
+        <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        <% history.forEach(function (bid) { %>
+            <td><%- bid.petowner %></td>
+            <td><%- bid.pet_name %></td>
+            <td>
+            
+            </td>
+            <td><%- bid.start_date.toDateString() %></td>
+            <td><%- bid.end_date.toDateString() %></td>
+            <td><%- bid.total_cost %></td>
+            <td>
+            <button class="btn" data-toggle="modal"
+                data-target="#details" data-req="<%= bid.req %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+                <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
+            </button>
+            </td>
+            <td>
+            <div style="color:green">Success</div>
+            </td>
+        <% }); %>
+                
+      </tr> 
     </tbody>
   </table>
+</section>
+</div>
+</div>
        </div>
     </div>
 </body>

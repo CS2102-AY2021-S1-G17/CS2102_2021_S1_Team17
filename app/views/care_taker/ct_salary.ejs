@@ -45,7 +45,10 @@
         // Set scale label
         label: { text: 'Month' },
         // Convert text on scale indices
-        labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        labels: [   "<%- time[0].yearmonth %>", "<%- time[1].yearmonth %>", "<%- time[2].yearmonth %>","<%- time[3] %>","<%- time[4] %>",
+                    "<%- time[5] %>", "<%- time[6] %>", "<%- time[7] %>","<%- time[8] %>","<%- time[9] %>",
+                    "<%- time[10] %>", "<%- time[11] %>", "<%- time[12] %>","<%- time[13].yearmonth%>"]
+        // labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       },
       scaleY: {
         // Scale label with unicode character
@@ -64,7 +67,10 @@
       series: [
         {
           // Plot 1 values, linear data
-          values: [2300,2000,0,2900,2500,1700,1500, 4000,2900,2500,1700,1500],
+          values: [<%- salary[0] %>, <%- salary[1] %>, <%- salary[2] %>,<%- salary[3] %>,<%- salary[4] %>,
+                    <%- salary[5] %>, <%- salary[6] %>, <%- salary[7] %>,<%- salary[8] %>,<%- salary[9] %>,
+                    <%- salary[10] %>, <%- salary[11] %>, <%- salary[12] %>,<%- salary[13]%>],
+          // values: [2300,2000,0,2900,2500,1700,1500, 4000,2900,2500,1700,1500],
           text: '$',
         }
       ]
