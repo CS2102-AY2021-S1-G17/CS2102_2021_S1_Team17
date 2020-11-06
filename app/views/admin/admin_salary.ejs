@@ -1,0 +1,65 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title><%= title %></title> 
+        <% include ../partials/_ad_header %>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+        <script>
+          $(document).ready( function () {
+            $('#b_table').DataTable();
+          });
+        </script>
+    </head> 
+    <body> 
+        <div class="row justify-content-center">
+        <div class="col m-2">
+        <section class="card">
+            <div class="twt-feed blue-bg">
+                <div class="corner-ribon black-ribon">
+                </div>
+    
+                <div class="media">
+                    <a href="#">
+                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
+                    </a>
+                    <div class="media-body">
+                        <h2 class="text-white display-6"><%= profile.name %></h2>
+                        <p class="text-light">Admin</p>
+                        <form class="form-signin" action="/admin/init" method="post">
+                                <button class="btn btn-link btn-lg"
+                                    type="submit">Initialise Salary</button> 
+                              </form>
+                        <a href="/admin/salary">View Salary</a>&nbsp;&nbsp;
+                        <a href="/admin">View Bids</a>
+                   </div>
+                </div>
+            </div>
+      <table class="table" id="b_table" style="background-color:white; text-align: center">
+        <thead>
+        <tr>
+            <th scope="col" style="width: 10%;">Care Taker</th>
+            <th scope="col" style="width: 10%;">CT's Phone</th>
+            <th scope="col">Pay Time</th>
+            <th scope="col">Amount</th>
+            <th scope="col" style="width: 10%;">Pet Day</th>
+        </tr>
+        </thead>
+        <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        <% salary.forEach(function (sa) { %>
+        <tr>
+            <td><%- sa.name %></td>
+            <td><%- sa.phone %></td>
+            <td><%- sa.pay_time.toDateString() %></td>
+            <td><%- sa.amount %></td>
+            <td><%- sa.pet_day %></td>
+        <% }); %>
+      </tr> 
+    </tbody>
+  </table> 
+    </section>
+  </div>
+</div>
+    </body>
+</html>
+

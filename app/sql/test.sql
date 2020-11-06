@@ -7,4 +7,6 @@ INSERT INTO category (category_name, base_price)
 po：0 （pet name 0）
 full time ct： 1
 */
-CALL place_bid(2, 1, '2', '2020-11-09', '2020-12-10', 'via PCS', 'Cash');
+-- CALL place_bid(2, 1, '2', '2020-11-09', '2020-12-10', 'via PCS', 'Cash');
+INSERT INTO users VALUES(8,8,'Admin');
+INSERT INTO admin VALUES (8,8,8);

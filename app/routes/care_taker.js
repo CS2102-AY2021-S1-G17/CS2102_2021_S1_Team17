@@ -113,12 +113,26 @@ router.get('/salary',  async(req, res, next)=> {
     var salary = await db.query('SELECT amount FROM salary WHERE phone=$1 ORDER BY pay_time;', [req.user.phone]);
     var time_list = [];
     var salary_list = [];
+    var date = new Date();
     for (let i = 0; i < time.rows.length; i++) {
         time_list.push(time.rows[i].pay_time);
     }
     for (let i = 0; i < salary.rows.length; i++) {
       salary_list.push(salary.rows[i].amount);
     } 
+    var time_l = time_list.length;
+    var salary_l = salary_list.length;
+    if (time_list.length < 12) {
+      for (let i = 0; i < 12-time_l; i++) {
+        time_list.push(new Date(date));
+        date.setMonth(date.getMonth() + 1);
+      }
+    }
+    if (salary_list.length < 12) {
+      for (let i = 0; i < 12-salary_l; i++) {
+        salary_list.push(0);
+      }
+    }
     res.render('care_taker/ct_salary', { title: 'Salary', salary:salary_list, time:time_list, profile:data.rows[0] });
   } catch(err) {
     throw err;

@@ -28,16 +28,24 @@ exports.initPassport = () => {
                     const user = results.rows[0];
     
                     //compare password
-                    bcrypt.compare(password, user.password, (err, isMatch) => {
-                        if (err) {
-                            throw err;
-                        }
-                        if (isMatch){
+                    if(user.role == 'Admin') {
+                        if (password == user.password) {
                             return done(null, user);
                         } else {
                             return done(null, false, req.flash('error', 'Oops! Wrong password.'));
                         }
-                    })
+                    } else {
+                        bcrypt.compare(password, user.password, (err, isMatch) => {
+                            if (err) {
+                                throw err;
+                            }
+                            if (isMatch){
+                                return done(null, user);
+                            } else {
+                                return done(null, false, req.flash('error', 'Oops! Wrong password.'));
+                            }
+                        })
+                    }
                 } else {
                     return done(null, false, req.flash('error', 'User not found.'))
                 }

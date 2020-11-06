@@ -8,7 +8,7 @@ DROP FUNCTION IF EXISTS ct_view_pending_bids;
 DROP FUNCTION IF EXISTS ct_view_future_work;
 DROP FUNCTION IF EXISTS search_ct;
 DROP FUNCTION IF EXISTS admin_view_unpaid_salary;
-DROP FUNCTION IF EXISTS admin_view_accepted_bids;
+DROP FUNCTION IF EXISTS admin_view_bids;
 DROP FUNCTION IF EXISTS ct_monthly_stats;
 DROP FUNCTION IF EXISTS ct_view_bid_details;
 DROP FUNCTION IF EXISTS underperforming_fulltime;
@@ -215,17 +215,17 @@ LANGUAGE plpgsql;
 SELECT * FROM admin_view_upcoming_bids();
 */
 
-CREATE OR REPLACE FUNCTION admin_view_accepted_bids()
+CREATE OR REPLACE FUNCTION admin_view_bids()
 	RETURNS TABLE (
 		po_phone INTEGER, ct_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE, 
-		category_name VARCHAR, total_cost FLOAT8
+		category_name VARCHAR, total_cost FLOAT8, status VARCHAR
 		) AS
 $$
 BEGIN
 	RETURN QUERY(
-		SELECT po_phone, ct_phone, pet_name, start_date, end_date, category_name, total_cost
-		FROM bids
-		WHERE start_date >= CURRENT_DATE AND status = 'Accepted'
+		SELECT B.po_phone, B.ct_phone, B.pet_name, B.start_date, B.end_date, B.category_name, B.total_cost, B.status
+		FROM bids B
+		WHERE B.start_date >= CURRENT_DATE
 		ORDER BY start_date ASC
 		);
 END;
