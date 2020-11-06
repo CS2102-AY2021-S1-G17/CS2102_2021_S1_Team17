@@ -25,7 +25,8 @@ router.get('/', async(req, res)=> {
         });
       }
       //console.log(data.rows[0]); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
-      res.render('care_taker/ct_profile', { title: 'Caretaker Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work});
+      res.render('care_taker/ct_profile', { title: 'Caretaker Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work, successFlash: req.flash("success"),
+      errorFlash: req.flash("error")});
     } catch (err) {
       throw err;
     }
@@ -58,9 +59,10 @@ router.post('/category', async(req, res)=> {
       if (bird) {
         await db.query("CALL add_capable($1, 'bird', $3);",[req.user.phone, bird_price]);
       }
+      req.flash("success", "Update successfully.");
     }
   } catch (err) {
-    throw err;
+    req.flash("error", "Unable to Update.");
   } finally {
     res.redirect("/care_taker");
   }
@@ -97,9 +99,9 @@ router.post('/update_status', async(req, res)=> {
     } else {
       await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Rejected')",[parseInt(po_phone), parseInt(ct_phone), pet_name, start, end])
     }
-    console.log(req.body);
+    req.flash("success", "Update successfully.");
   } catch (err) {
-    throw err;
+    req.flash("error", "Unable to Update.");
   } finally {
     res.redirect("/care_taker");
   }
@@ -121,9 +123,9 @@ router.post('/profile', async(req, res)=> {
       await db.query("UPDATE care_taker SET bank_account = $1 WHERE phone=$2;",
       [bank_account, req.user.phone])
     }
-    console.log(req.body);
+    req.flash("success", "Update successfully.");
   } catch (err) {
-    throw err;
+    req.flash("error", "Unable to Update.");
   } finally {
     res.redirect("/care_taker");
   }
@@ -140,9 +142,9 @@ router.post('/availability', async(req, res)=> {
     } else {
       await db.query("CALL claim_avail($1, $2, $3)",[req.user.phone, start, end]);
     }
-    console.log(req.body);
+    req.flash("success", "Update successfully.");
   } catch (err) {
-    throw err;
+    req.flash("error", "Unable to Update.");
   } finally {
     res.redirect("/care_taker");
   }
@@ -175,7 +177,8 @@ router.get('/salary',  async(req, res, next)=> {
         salary_list.push(0);
       }
     }
-    res.render('care_taker/ct_salary', { title: 'Salary', salary:salary_list, time:time_list, profile:data.rows[0] });
+    res.render('care_taker/ct_salary', { title: 'Salary', salary:salary_list, time:time_list, profile:data.rows[0], successFlash: req.flash("success"),
+    errorFlash: req.flash("error")});
   } catch(err) {
     throw err;
   }
@@ -183,7 +186,8 @@ router.get('/salary',  async(req, res, next)=> {
 
 router.get('/history', async(req, res, next)=> {
   var data3 = await db.query("SELECT * FROM ct_view_past_trans($1);",[req.user.phone]);
-  res.render('care_taker/ct_history', { title: 'History Page', history: data3.rows});
+  res.render('care_taker/ct_history', { title: 'History Page', history: data3.rows, successFlash: req.flash("success"),
+  errorFlash: req.flash("error")});
 }); 
 
 module.exports = router;
