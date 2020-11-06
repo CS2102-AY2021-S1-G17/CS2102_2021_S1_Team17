@@ -54,7 +54,7 @@ router.post('/update_status', async(req, res)=> {
   }
 });
 
-/* Update bid status. */ 
+/* Update availablity. */ 
 router.post('/availability', async(req, res)=> {
   try{
     console.log(req.body);
@@ -87,6 +87,7 @@ router.get('/profile',  async(req, res, next)=> {
 
 router.get('/salary',  async(req, res, next)=> {
   try {
+    var data = await db.query("SELECT * FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
     var time = await db.query('SELECT pay_time FROM salary WHERE phone=$1 ORDER BY pay_time;', [req.user.phone]);
     var salary = await db.query('SELECT amount FROM salary WHERE phone=$1 ORDER BY pay_time;', [req.user.phone]);
     var time_list = [];
@@ -97,8 +98,7 @@ router.get('/salary',  async(req, res, next)=> {
     for (let i = 0; i < salary.rows.length; i++) {
       salary_list.push(salary.rows[i].amount);
     } 
-    console.log(time_list);
-    res.render('care_taker/ct_salary', { title: 'Salary', salary:salary_list, time:time_list });
+    res.render('care_taker/ct_salary', { title: 'Salary', salary:salary_list, time:time_list, profile:data.rows[0] });
   } catch(err) {
     throw err;
   }

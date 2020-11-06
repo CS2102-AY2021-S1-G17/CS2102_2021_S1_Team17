@@ -24,8 +24,8 @@
                         <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                     </a>
                     <div class="media-body">
-                        <h2 class="text-white display-6">Jim Doe</h2>
-                        <p class="text-light">Full Time Employee</p>
+                        <h2 class="text-white display-6"><%= profile.name %></h2>
+                        <p class="text-light"><%= profile.is_full_time ? 'Full Time Employee' : 'Part Time Employee' %></p>
                     </div>
                 </div>
             </div>
@@ -45,14 +45,14 @@
         // Set scale label
         label: { text: 'Month' },
         // Convert text on scale indices
-        labels: [   "<%- time[0].yearmonth %>", "<%- time[1].yearmonth %>", "<%- time[2].yearmonth %>","<%- time[3] %>","<%- time[4] %>",
-                    "<%- time[5] %>", "<%- time[6] %>", "<%- time[7] %>","<%- time[8] %>","<%- time[9] %>",
-                    "<%- time[10] %>", "<%- time[11] %>", "<%- time[12] %>","<%- time[13].yearmonth%>"]
+        labels: [   "<%- time[0].toDateString() %>", "<%- time[1].toDateString() %>", "<%- time[2].toDateString() %>","<%- time[3].toDateString() %>","<%- time[4].toDateString() %>",
+                    "<%- time[5].toDateString() %>", "<%- time[6].toDateString() %>", "<%- time[7].toDateString() %>","<%- time[8].toDateString() %>","<%- time[9].toDateString() %>",
+                    "<%- time[10].toDateString() %>", "<%- time[11].toDateString() %>"]
         // labels: [ 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
       },
       scaleY: {
         // Scale label with unicode character
-        label: { text: 'Salary' }
+        //label: { text: 'Salary' }
       },
       plot: {
         // Animation docs here:
@@ -69,7 +69,7 @@
           // Plot 1 values, linear data
           values: [<%- salary[0] %>, <%- salary[1] %>, <%- salary[2] %>,<%- salary[3] %>,<%- salary[4] %>,
                     <%- salary[5] %>, <%- salary[6] %>, <%- salary[7] %>,<%- salary[8] %>,<%- salary[9] %>,
-                    <%- salary[10] %>, <%- salary[11] %>, <%- salary[12] %>,<%- salary[13]%>],
+                    <%- salary[10] %>, <%- salary[11] %>],
           // values: [2300,2000,0,2900,2500,1700,1500, 4000,2900,2500,1700,1500],
           text: '$',
         }
