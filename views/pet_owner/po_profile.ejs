@@ -67,16 +67,7 @@
           <td><%- bid.start_date.toDateString() %></td>
           <td><%- bid.end_date.toDateString() %></td>
             <td><%- bid.total_cost %></td>
-          <td>
-              <form action="/pet_owner/pay" method="post">
-                <input type="hidden" id="po_phone" name="po_phone" value="<%= profile.phone %>">
-                <input type="hidden" id="ct_phone" name="ct_phone" value="<%= bid.ct_phone %>">
-                <input type="hidden" id="pet_name" name="pet_name" value="<%= bid.pet_name %>">
-                <input type="hidden" id="start_date" name="start_date" value="<%= bid.start_date %>">
-                <input type="hidden" id="end_date" name="end_date" value="<%= bid.end_date %>">
-                <input class="btn btn-success" type="submit" name="pay" id="pay" value="Pay">
-              </form>
-            </td>
+          <td><%- bid.status %></td>
         <% }); %>
       </tr>
         <tr>
