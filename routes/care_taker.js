@@ -108,6 +108,19 @@ router.post('/update_status', async(req, res)=> {
 /* Update profile */ 
 router.post('/profile', async(req, res)=> {
   try{
+    let {transfer_location, name, bank_account} = req.body;
+    if (transfer_location) {
+      await db.query("UPDATE care_taker SET transfer_location = $1 WHERE phone=$2;",
+      [transfer_location, req.user.phone])
+    }
+    if (name) {
+      await db.query("UPDATE care_taker SET name = $1 WHERE phone=$2;",
+      [name, req.user.phone])
+    }
+    if (bank_account) {
+      await db.query("UPDATE care_taker SET bank_account = $1 WHERE phone=$2;",
+      [bank_account, req.user.phone])
+    }
     console.log(req.body);
   } catch (err) {
     throw err;
