@@ -104,7 +104,10 @@ router.get('/pets',  async(req, res, next) => {
 }); 
 
 router.get('/history', async(req, res, next)=> {
+  var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
+  var data3 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);
   console.log(data3.rows);
+  res.render('pet_owner/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows });
 });
 
 router.post('/feedback', async(req, res)=> {
@@ -117,6 +120,9 @@ router.post('/feedback', async(req, res)=> {
   }
 });
 
+router.get('/bid',  async(req, res, next)=> {
+  var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+    res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0]});
 }); 
 
 router.get('/search',  function(req, res, next) {
