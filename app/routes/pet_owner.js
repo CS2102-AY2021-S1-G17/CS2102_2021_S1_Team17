@@ -21,7 +21,7 @@ router.get('/', async(req, res)=> {
 //        Object.keys(data2.rows[i]).forEach(function(key) {
 //          cat_list.push(data2.rows[i][key])
 //        });
-      }
+      //}
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], pending_bids:pending_bids});
     } catch (err) {
@@ -60,7 +60,7 @@ router.post('/pay', async(req, res)=> {
   }
 });
 
-router.get('/pets',  function(req, res, next) {
+router.get('/pets',  async(req, res, next) => {
     try{
         var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
         var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);

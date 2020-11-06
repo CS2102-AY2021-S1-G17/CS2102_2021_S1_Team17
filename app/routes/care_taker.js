@@ -35,9 +35,20 @@ router.get('/', async(req, res)=> {
 /* Update caretaker category. */ 
 router.post('/category', async(req, res)=> {
   try{
-    let {po_phone, cat, dog, bird,} = req.body;
-    console.log(cat);
-    console.log(bird);
+    let {po_phone, cat, dog, bird} = req.body;
+    var data = await db.query("SELECT is_full_time FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
+    var fulltime = data.rows.is_full_time;
+    if (fulltime) {
+      if (cat) {
+        await db.query("INSERT INTO capable (phone, category_name, daily_price) VALUES ($1, 'cat', 1);",[req.user.phone]);
+      }
+      if (dog) {
+        await db.query("INSERT INTO capable (phone, category_name, daily_price) VALUES ($1, 'dog', 1);",[req.user.phone]);
+      }
+      if (bird) {
+        await db.query("INSERT INTO capable (phone, category_name, daily_price) VALUES ($1, 'bird', 1);",[req.user.phone]);
+      }
+    } //part time
   } catch (err) {
     throw err;
   } finally {
