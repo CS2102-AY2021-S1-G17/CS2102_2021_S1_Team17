@@ -35,7 +35,9 @@ router.get('/', async(req, res)=> {
 /* Update caretaker category. */ 
 router.post('/category', async(req, res)=> {
   try{
-    console.log(req.body);
+    let {po_phone, cat, dog, bird,} = req.body;
+    console.log(cat);
+    console.log(bird);
   } catch (err) {
     throw err;
   } finally {

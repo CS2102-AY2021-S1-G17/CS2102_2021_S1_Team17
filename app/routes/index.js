@@ -174,6 +174,10 @@ router.post("/", async function (req, res, next) {
             });
             if (user.role == "Pet Owner") {
               return res.redirect("/pet_owner");
+            } else if (user.role == "Admin"){
+              return res.redirect("/admin");
+            } else if (user.role == "Both"){
+              return res.redirect("/both");
             } else {
               return res.redirect("/care_taker");
             }
