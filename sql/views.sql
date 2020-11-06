@@ -107,7 +107,7 @@ BEGIN
 		SELECT C.name AS caretaker, B.ct_phone, B.pet_name, B.start_date, B.end_date, B.status,
 			B.total_cost, B.transfer_method, B.payment_method, B.rating, B.comment
 		FROM bids B, care_taker C
-		WHERE B.po_phone = _phone AND C.phone = B.ct_phone AND B.end_date >= CURRENT_DATE
+		WHERE B.po_phone = _phone AND C.phone = B.ct_phone AND B.end_date >= CURRENT_DATE AND B.status = 'Success'
 		ORDER BY B.start_date ASC
 		);
 END;
