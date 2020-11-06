@@ -14,7 +14,7 @@ router.all("*", function (req, res, next) {
 router.get('/', async(req, res, next) => { 
     try {
         var data = await db.query("SELECT * FROM admin ad WHERE ad.phone=$1;",[req.user.phone]);
-        var bids = await db.query("SELECT * FROM  admin_view_bids();");
+        var bids = await db.query("SELECT * FROM  admin_view_accepted_bids();");
         res.render('admin/admin', { title: 'Admin Page', bids: bids.rows, profile: data.rows[0], successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
     } catch (err) {
@@ -94,6 +94,19 @@ router.post('/init', async(req, res)=> {
       throw err;
     } finally {
       res.redirect("/admin/user");
+    }
+  });
+
+   /* Update Status */
+   router.post('/status', async(req, res)=> {
+    try{
+      console.log(req.body);
+      req.flash("success", "Update successfully.");
+    } catch (err) {
+      req.flash("error", "Unable to Update.");
+      throw err;
+    } finally {
+      res.redirect("/admin");
     }
   });
 

@@ -11,6 +11,7 @@ var indexRouter = require('./routes/index');
 var poRouter = require('./routes/pet_owner');
 var ctRouter = require('./routes/care_taker');
 var adRouter = require('./routes/admin');
+var boRouter = require('./routes/both');
 
 //passport
 var passport = require("passport");
@@ -49,6 +50,7 @@ app.use('/', indexRouter);
 app.use('/pet_owner', poRouter);
 app.use('/care_taker', ctRouter);
 app.use('/admin', adRouter);
+app.use('/both', boRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
