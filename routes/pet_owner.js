@@ -39,8 +39,11 @@ router.get('/po_profile',  async(req, res, next)=> {
     }
 });
 
-router.post('/update_location', async(req, res)=> {
+router.post('/profile', async(req, res)=> {
   try{
+    let {local} = req.body;
+    await db.query("UPDATE pet_owner SET transfer_location = $1 WHERE phone=$2;",
+    [local, req.user.phone])
     console.log(req.body);
   } catch (err) {
     throw err;
