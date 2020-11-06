@@ -266,6 +266,10 @@ LANGUAGE plpgsql;
 CALL add_capable(...);
 */
 
+/*
+CALL add_capable(...);
+*/
+
 CREATE OR REPLACE PROCEDURE add_capable(
 	_phone INTEGER, _category VARCHAR, _daily_price FLOAT8
 	) AS
@@ -285,8 +289,14 @@ BEGIN
 	ELSE
 		dp := _daily_price;
 	END IF;
-	INSERT INTO capable (phone, category_name, daily_price)
-		VALUES (_phone, _category, dp);
+	IF _category IN (SELECT category_name FROM capable WHERE phone = _phone) THEN
+		UPDATE capable
+			SET daily_price = dp
+			WHERE phone = _phone AND category_name = _category;
+	ELSE
+		INSERT INTO capable (phone, category_name, daily_price)
+			VALUES (_phone, _category, dp);
+	END IF;
 END;
 $$
 LANGUAGE plpgsql;
