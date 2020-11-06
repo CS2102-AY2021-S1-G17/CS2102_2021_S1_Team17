@@ -36,7 +36,6 @@ router.get('/', async(req, res)=> {
 router.post('/category', async(req, res)=> {
   try{
     let {ct_phone, cat, dog, bird, cat_price,dog_price,bird_price} = req.body;
-    console.log(req.body);
     var data = await db.query("SELECT is_full_time FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
     var fulltime = data.rows.is_full_time;
     if (fulltime) {
