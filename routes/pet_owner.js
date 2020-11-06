@@ -100,9 +100,10 @@ router.get('/pets',  async(req, res, next) => {
 
 router.get('/history', async(req, res, next)=> {
   var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
-  var data3 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);
+  var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);
+  var data3 = await db.query("SELECT * FROM po_view_past_trans($1);",[req.user.phone]);
   console.log(data3.rows);
-  res.render('pet_owner/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows, accepted_bids: data3.rows});
+  res.render('pet_owner/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows, accepted_bids: data2.rows, past_trans: data3.rows});
 });
 
 router.post('/feedback', async(req, res)=> {
