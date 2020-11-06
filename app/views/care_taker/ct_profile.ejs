@@ -199,6 +199,7 @@
           <input type="checkbox" name="dog" value="dog" id="update_dog" onchange="valueChanged()">Dog
           <input type="checkbox" name="bird" value="bird" id="update_bird" onchange="valueChanged()">Bird<br/>
           <!---------------------Part Time daily price------------------------>
+          <%if (!profile.is_full_time) { %>
           <div class="form-group">
             <label for="cat_price" class="sr-only form-control">Daily Price</label>
             <input type="text" id="cat_price" name="cat_price" class="form-control ct"
@@ -213,6 +214,7 @@
             <label for="bird_price" class="sr-only form-control">Daily Price</label>
             <input type="text" id="bird_price" name="bird_price" class="form-control ct"
                 placeholder="What is your daily price for bird?" style="display: none;"></div> 
+          <% } %>
           <!----------------------button-------------------------------------->
           <button class="btn btn-lg btn-primary btn-block" 
             type="submit">Update</button> 
@@ -295,21 +297,21 @@
           $('#cat_price').attr('style',"");
           $('#cat_price').attr('required', '');
         }else{
-          //$('#cat_price').hide();
+          $('#cat_price').hide();
           $('#cat_price').removeAttr('required');
         }
         if($('#update_dog').is(":checked")){   
           $('#dog_price').attr('style',"");
           $('#dog_price').attr('required', '');
         }else{
-          //$('#dog_price').hide();
+          $('#dog_price').hide();
           $('#dog_price').removeAttr('required');
         }
         if($('#update_bird').is(":checked")){   
           $('#bird_price').attr('style',"");
           $('#bird_price').attr('required', '');
         }else{
-          //$('#bird_price').hide();
+          $('#bird_price').hide();
           $('#bird_price').removeAttr('required');
         }
     }
