@@ -54,9 +54,14 @@ router.post("/signup", async function (req, res, next) {
       price = 1;
     };
     try {
-        await db.query("CALL register_caretaker($1, $2, $3, $4, $5, $6, $7, $8);",
-            [phoneno, hashedP, String(location), String(username), String(ba), Boolean(ft), category, price]);
-        req.flash("success", "Sign up success.");
+      if (ft=="TRUE") {
+        await db.query("CALL register_caretaker($1, $2, $3, $4, $5, true, $6, $7);",
+            [phoneno, hashedP, String(location), String(username), String(ba), category, price]);
+      } else {
+        await db.query("CALL register_caretaker($1, $2, $3, $4, $5, false, $6, $7);",
+        [phoneno, hashedP, String(location), String(username), String(ba), category, price]);
+      }
+      req.flash("success", "Sign up success.");
     } catch (e) {
         console.log(e);
         req.flash("error", "Sign up failed.");
@@ -71,8 +76,16 @@ router.post("/signup", async function (req, res, next) {
       b_price = 1;
     };
     try {
-        await db.query("CALL register_caretaker($1, $2, $3, $4, $5, $6, $7, $8);",
-            [phoneno, hashedP, String(c_location), String(username), String(ba), Boolean(b_ft), c_category, b_price]);
+        //await db.query("CALL register_caretaker($1, $2, $3, $4, $5, $6, $7, $8);",
+        //    [phoneno, hashedP, String(c_location), String(username), String(ba), Boolean(b_ft), c_category, b_price]);
+        
+        if (b_ft=="TRUE") {
+          await db.query("CALL register_caretaker($1, $2, $3, $4, $5, true, $6, $7);",
+              [phoneno, hashedP, String(c_location), String(username), String(ba), c_category, b_price]);
+        } else {
+          await db.query("CALL register_caretaker($1, $2, $3, $4, $5, false, $6, $7);",
+          [phoneno, hashedP, String(c_location), String(username), String(ba), c_category, b_price]);
+        }
         await db.query("CALL register_pet_owner($1, $2, $3, $4, $5, $6, $7, $8);",
             [phoneno, hashedP, p_location, username, card, petname, requirement, p_category]);
         req.flash("success", "Sign up success.");
@@ -106,8 +119,13 @@ router.post("/", async function (req, res, next) {
           price = 1;
         };
         try {
-            await db.query("CALL register_caretaker($1, $2, $3, $4, $5, $6, $7, $8);",
-                [phoneno, hashedP, String(location), String(username), String(ba), Boolean(ft), category, price]);
+          if (ft=="TRUE") {
+            await db.query("CALL register_caretaker($1, $2, $3, $4, $5, true, $6, $7);",
+                [phoneno, hashedP, String(location), String(username), String(ba), category, price]);
+          } else {
+            await db.query("CALL register_caretaker($1, $2, $3, $4, $5, false, $6, $7);",
+            [phoneno, hashedP, String(location), String(username), String(ba), category, price]);
+          }
             req.flash("success", "Sign up success.");
         } catch (e) {
             console.log(e);
@@ -123,8 +141,15 @@ router.post("/", async function (req, res, next) {
           b_price = 1;
         };
         try {
-            await db.query("CALL register_caretaker($1, $2, $3, $4, $5, $6, $7, $8);",
-                [phoneno, hashedP, String(c_location), String(username), String(ba), Boolean(b_ft), c_category, b_price]);
+            //await db.query("CALL register_caretaker($1, $2, $3, $4, $5, $6, $7, $8);",
+            //    [phoneno, hashedP, String(c_location), String(username), String(ba), Boolean(b_ft=="TRUE"), c_category, b_price]);
+            if (b_ft=="TRUE") {
+              await db.query("CALL register_caretaker($1, $2, $3, $4, $5, true, $6, $7);",
+                  [phoneno, hashedP, String(c_location), String(username), String(ba), c_category, b_price]);
+            } else {
+              await db.query("CALL register_caretaker($1, $2, $3, $4, $5, false, $6, $7);",
+              [phoneno, hashedP, String(c_location), String(username), String(ba), c_category, b_price]);
+            }
             await db.query("CALL register_pet_owner($1, $2, $3, $4, $5, $6, $7, $8);",
                 [phoneno, hashedP, p_location, username, card, petname, requirement, p_category]);
             req.flash("success", "Sign up success.");
