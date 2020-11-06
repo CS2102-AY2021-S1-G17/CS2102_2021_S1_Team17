@@ -25,7 +25,7 @@ router.get('/', async(req, res)=> {
           cat_list.push(data2.rows[i][key])
         });
       }
-      //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
+      //console.log(data.rows[0]); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('care_taker/ct_profile', { title: 'Caretaker Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work});
     } catch (err) {
       throw err;
@@ -67,6 +67,17 @@ router.post('/update_status', async(req, res)=> {
   }
 });
 
+/* Update profile */ 
+router.post('/profile', async(req, res)=> {
+  try{
+    console.log(req.body);
+  } catch (err) {
+    throw err;
+  } finally {
+    res.redirect("/care_taker");
+  }
+});
+
 /* Update availablity. */ 
 router.post('/availability', async(req, res)=> {
   try{
@@ -83,26 +94,6 @@ router.post('/availability', async(req, res)=> {
     throw err;
   } finally {
     res.redirect("/care_taker");
-  }
-});
-
-/* GET Profile page. */ 
-router.get('/profile',  async(req, res, next)=> {
-  try{
-    var data = await db.query("SELECT * FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
-    var data2 = await db.query("SELECT category_name FROM capable WHERE phone=$1;",[req.user.phone]);
-    var data3 = await db.query("SELECT * FROM ct_view_pending_bids($1);",[req.user.phone]);
-    var cat_list = [];
-    var pending_bids = data3.rows; 
-    for (let i = 0; i < data2.rows.length; i++) {
-      Object.keys(data2.rows[i]).forEach(function(key) {
-        cat_list.push(data2.rows[i][key])
-      });
-    }
-    //console.log(pending_bids); contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
-    res.render('care_taker/ct_profile', { title: 'Caretaker Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids});
-  } catch (err) {
-    throw err;
   }
 });
 
@@ -141,7 +132,6 @@ router.get('/salary',  async(req, res, next)=> {
 
 router.get('/history', async(req, res, next)=> {
   var data3 = await db.query("SELECT * FROM ct_view_past_trans($1);",[req.user.phone]);
-  console.log(data3.rows);
   res.render('care_taker/ct_history', { title: 'History Page', history: data3.rows});
 }); 
 

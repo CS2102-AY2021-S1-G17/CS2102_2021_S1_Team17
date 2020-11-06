@@ -40,21 +40,19 @@
       <table class="table" id="b_table" style="background-color:white; text-align: center">
         <thead>
         <tr>
-            <th scope="col" style="width: 10%;">Care Taker</th>
-            <th scope="col" style="width: 10%;">CT's Phone</th>
-            <th scope="col">Pay Time</th>
-            <th scope="col">Amount</th>
-            <th scope="col" style="width: 10%;">Pet Day</th>
+            <th scope="col">CT's Phone</th>
+            <th scope="col">CT's Name</th>
+            <th scope="col">CT's Bank Account</th>
+            <th scope="col">Average Rating</th>
         </tr>
         </thead>
         <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
-        <% salary.forEach(function (sa) { %>
+        <% user.forEach(function (sa) { %>
         <tr>
-            <td><%- sa.name %></td>
             <td><%- sa.phone %></td>
-            <td><%- sa.pay_time.toDateString() %></td>
-            <td><%- sa.amount %></td>
-            <td><%- sa.pet_day %></td>
+            <td><%- sa.name %></td>
+            <td><%- sa.bank_account %></td>
+            <td><%- sa.avg_rating %></td>
         <% }); %>
       </tr> 
     </tbody>

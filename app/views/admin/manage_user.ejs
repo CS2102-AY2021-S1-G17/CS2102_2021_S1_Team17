@@ -41,42 +41,22 @@
         <table class="table" id="s_table" style="background-color:white; text-align: center">
             <thead>
             <tr>
-                <th scope="col">PO's Phone</th>
-                <th scope="col">CT's Phone</th>
-                <th scope="col">Pet Name</th>
-                <th scope="col">Pet Category</th>
-                <th scope="col">Start Date</th>
-                <th scope="col">End Date</th>
-                <th scope="col">Cost</th>
-                <th scope="col">Status</th>
+                <th scope="col">Phone</th>
+                <th scope="col">Role</th>
+                <th scope="col">Action</th>
             </tr>
             </thead>
             <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
-            <% bids.forEach(function (bid) { %>
+            <% users.forEach(function (user) { %>
             <tr>
-
-                <td><%- bid.po_phone %></td>
-                <td><%- bid.ct_phone %></td>
-                <td><%- bid.pet_name %></td>
+                <td><%- user.phone %></td>
+                <td><%- user.role %></td>
                 <td>
-                  <%if (bid.category_name == 'dog') { %>
-                    <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/dog-solid.svg">
-                  <% } %>
-                  <%if (bid.category_name == 'cat') { %>
-                    <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/cat-solid.svg">
-                  <% } %>
-                  <%if (bid.category_name == 'bird') { %>
-                    <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/dove-solid.svg">
-                  <% } %>
+                    <form action="/admin/delete" method="post">
+                        <input type="hidden" id="phone" name="phone" value="<%= user.phone %>">
+                        <input class="btn btn-danger" type="submit" value="Delete">
+                    </form>
                 </td>
-                <td><%- bid.start_date.toDateString() %></td>
-                <td><%- bid.end_date.toDateString() %></td>
-                <td><%- bid.total_cost %></td>
-                <%if (bid.status == 'Success') { %>
-                <td style="color:green"><%- bid.status %></td>
-                <% } else { %>
-                <td><%- bid.status %></td>
-                <% } %>
             <% }); %>
           </tr> 
         </tbody>
