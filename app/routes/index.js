@@ -110,9 +110,9 @@ router.post("/", async function (req, res, next) {
                 errorFlash: req.flash("error")});
             }
         });
-        if (user.role == "pet_owner") {
+        if (user.role == "Pet Owner") {
           return res.redirect("/pet_owner");
-        } else if (user.role == 'care_taker') {
+        } else if (user.role == 'Caretaker') {
           return res.redirect("/care_taker");
         } else if (user.role == 'both') {
           return res.redirect("/both");

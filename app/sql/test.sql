@@ -8,5 +8,5 @@ po：0 （pet name 0）
 full time ct： 1
 */
 -- CALL place_bid(2, 1, '2', '2020-11-09', '2020-12-10', 'via PCS', 'Cash');
-INSERT INTO users VALUES(8,8,'Admin');
-INSERT INTO admin VALUES (8,8,8);
+INSERT INTO users VALUES(8,'$2b$10$SoUWO2aoWqDjIea7ro9VJuhqeBPxXMoBTG4XuEjZJMr1ijS9rtRnm','Admin');
+INSERT INTO admin VALUES (8,'$2b$10$SoUWO2aoWqDjIea7ro9VJuhqeBPxXMoBTG4XuEjZJMr1ijS9rtRnm',8);

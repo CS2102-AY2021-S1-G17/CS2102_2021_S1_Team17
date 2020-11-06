@@ -4,7 +4,7 @@ const { route } = require('.');
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
-  if (!req.user || req.user.role != 'care_taker') {
+  if (!req.user || req.user.role != 'Caretaker') {
       return res.redirect("/");
   } else {
       next();

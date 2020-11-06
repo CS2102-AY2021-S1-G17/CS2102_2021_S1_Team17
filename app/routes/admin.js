@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require('../db');
 
 router.all("*", function (req, res, next) {
-    if (!req.user || req.user.role != 'admin') {
+    if (!req.user || req.user.role != 'Admin') {
         return res.redirect("/");
     } else {
         next();
