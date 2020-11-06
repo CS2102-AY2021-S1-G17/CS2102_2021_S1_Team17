@@ -9,6 +9,7 @@ DROP FUNCTION IF EXISTS ct_view_future_work;
 DROP FUNCTION IF EXISTS search_ct;
 DROP FUNCTION IF EXISTS admin_view_unpaid_salary;
 DROP FUNCTION IF EXISTS admin_view_bids;
+DROP FUNCTION IF EXISTS admin_view_accepted_bids;
 DROP FUNCTION IF EXISTS ct_monthly_stats;
 DROP FUNCTION IF EXISTS ct_view_bid_details;
 DROP FUNCTION IF EXISTS underperforming_fulltime;
@@ -131,6 +132,27 @@ BEGIN
 		FROM bids B, care_taker C
 		WHERE B.po_phone = _phone AND C.phone = B.ct_phone AND B.start_date > CURRENT_DATE AND B.status = 'Accepted'
 		ORDER BY B.start_date ASC
+		);
+END;
+$$
+LANGUAGE plpgsql;
+
+/*
+SELECT * FROM admin_view_upcoming_bids();
+*/
+
+CREATE OR REPLACE FUNCTION admin_view_accepted_bids()
+	RETURNS TABLE (
+		po_phone INTEGER, ct_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE, 
+		category_name VARCHAR, total_cost FLOAT8
+		) AS
+$$
+BEGIN
+	RETURN QUERY(
+		SELECT B.po_phone, B.ct_phone, B.pet_name, B.start_date, B.end_date, B.category_name, B.total_cost
+		FROM bids B
+		WHERE B.start_date >= CURRENT_DATE AND B.status = 'Accepted'
+		ORDER BY start_date ASC
 		);
 END;
 $$

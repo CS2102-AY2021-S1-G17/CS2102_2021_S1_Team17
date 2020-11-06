@@ -11,6 +11,18 @@
           });
         </script>
     </head> 
+    <div>
+      <% if (successFlash.length > 0) { %>
+        <div class="alert alert-success mb-2" role="alert">
+            <%= successFlash %>
+        </div>
+      <% } %>
+      <% if (errorFlash.length > 0) { %>
+          <div class="alert alert-danger mb-2" role="alert">
+              <%= errorFlash %>
+          </div>
+      <% } %>
+    </div>
     <body> 
         <div class="row justify-content-center">
         <div class="col m-2">
@@ -34,6 +46,7 @@
                         <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin">View Bids</a>&nbsp;&nbsp;
                         <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin/underperforming">View Underperforming Staff</a>&nbsp;&nbsp;
                         <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin/user">Manage User</a>
+                        <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#add">Add Admin</a></span>
                    </div>
                 </div>
             </div>
@@ -63,5 +76,34 @@
   </div>
 </div>
     </body>
+<!---------------------Add Admin----------------------------->
+<div class="modal fade" id="add" role="dialog">
+  <div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Add Admin</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body" style="text-align:center">
+    <form class="form-signin" action="/admin/add" method="post">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      <br />
+      <label for="ph_no">Phone Number:</label>
+      <input type="text" id="ph_no" name="phone_no" required>
+      <br />
+      <label for="pwd">Password:</label>
+      <input type="text" id="pwd" name="password" required>
+      <br />
+      <button class="btn btn-lg btn-primary btn-block" 
+          type="submit">Add</button> 
+      </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+</div>
+</div>
 </html>
 
