@@ -18,7 +18,7 @@
                          <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                      </a>
                      <div class="media-body">
-                         <h2 class="text-white display-6">Jim Doe</h2>
+                         <h2 class="text-white display-6"><%= profile.name %></h2>
                          <p class="text-light">Pet Owner</p>
                          <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#addpet">Add New Pet</a>
                      </div>
@@ -26,19 +26,19 @@
              </div>
              <div class="weather-category twt-category">
                  <ul>
-                     <li class="active">
-                         <h5>88888888</h5>
-                         Phone No
-                     </li>
-                     <li>
-                         <h5>1234-1234-1234-1234</h5>
-                         Card No
-                     </li>
-                     <li>
-                         <h5>NUS</h5>
-                         Preferred Transfer Location
-                     </li>
-                 </ul>
+                   <li class="active">
+                    <h5><%= profile.phone %></h5>
+                    Phone No
+                    </li>
+                   <li>
+                       <h5><%= profile.card %></h5>
+                       Card Number
+                   </li>
+                   <li>
+                       <h5><%= profile.transfer_location %></h5>
+                       Preferred Transfer Location
+                   </li>
+               </ul>
              </div>
           </section>
         </div>
@@ -48,7 +48,6 @@
            <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">My Pet</th>
                 <th scope="col">Category</th>
                 <th scope="col">Special Requirements</th>
@@ -56,22 +55,11 @@
             </thead>
     <tbody>
       <tr>
-        <th scope="row">1</th>
-        <td>Otto</td>
-        <td>Dog</td>
-        <td>Don't feed chocolate</td>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Thornton</td>
-        <td>Cat</td>
-        <td>Null</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>the Bird</td>
-        <td>Bird</td>
-        <td>Null</td>
+        <% pets.forEach(function (bid) { %>
+          <td><%- owns_pet.name %></td>
+          <td><%- owns_pet.category_name %></td>
+          <td><%- owns_pet.special_requirements %></td>
+        <% }); %>
       </tr>
     </tbody>
   </table>

@@ -35,20 +35,31 @@ router.get('/', async(req, res)=> {
 /* Update caretaker category. */ 
 router.post('/category', async(req, res)=> {
   try{
-    let {po_phone, cat, dog, bird} = req.body;
+    let {ct_phone, cat, dog, bird, cat_price,dog_price,bird_price} = req.body;
+    console.log(req.body);
     var data = await db.query("SELECT is_full_time FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
     var fulltime = data.rows.is_full_time;
     if (fulltime) {
       if (cat) {
-        await db.query("INSERT INTO capable (phone, category_name, daily_price) VALUES ($1, 'cat', 1);",[req.user.phone]);
+        await db.query("CALL add_capable($1, 'cat', 1);",[req.user.phone]);
       }
       if (dog) {
-        await db.query("INSERT INTO capable (phone, category_name, daily_price) VALUES ($1, 'dog', 1);",[req.user.phone]);
+        await db.query("CALL add_capable($1, 'dog', 1);",[req.user.phone]);
       }
       if (bird) {
-        await db.query("INSERT INTO capable (phone, category_name, daily_price) VALUES ($1, 'bird', 1);",[req.user.phone]);
+        await db.query("CALL add_capable($1, 'bird', 1);",[req.user.phone]);
       }
-    } //part time
+    } else {
+      if (cat) {
+        await db.query("CALL add_capable($1, 'cat', $2);",[req.user.phone, cat_price]);
+      }
+      if (dog) {
+        await db.query("CALL add_capable($1, 'dog', $2);",[req.user.phone, dog_price]);
+      }
+      if (bird) {
+        await db.query("CALL add_capable($1, 'bird', $3);",[req.user.phone, bird_price]);
+      }
+    }
   } catch (err) {
     throw err;
   } finally {
@@ -59,6 +70,34 @@ router.post('/category', async(req, res)=> {
 /* Update bid status. */ 
 router.post('/update_status', async(req, res)=> {
   try{
+    let {po_phone, ct_phone, pet_name, start_date, end_date, accept,decline} = req.body;
+    
+    function convert(str) {
+      var mnths = {
+          Jan: "01",
+          Feb: "02",
+          Mar: "03",
+          Apr: "04",
+          May: "05",
+          Jun: "06",
+          Jul: "07",
+          Aug: "08",
+          Sep: "09",
+          Oct: "10",
+          Nov: "11",
+          Dec: "12"
+        },
+        date = str.split(" ");
+      return [date[3], mnths[date[1]], date[2]].join("-");
+    }
+    var start = convert(start_date);
+    var end = convert(end_date);
+
+    if (accept) {
+      await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Accepted')",[parseInt(po_phone), parseInt(ct_phone), pet_name, start, end])
+    } else {
+      await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Rejected')",[parseInt(po_phone), parseInt(ct_phone), pet_name, start, end])
+    }
     console.log(req.body);
   } catch (err) {
     throw err;
