@@ -95,7 +95,7 @@
                         <form class="form-newpet" action="/add_pet" method="post">
                             <label for="inputName" class="sr-only form-control">Pet Name</label>
                             <input type="text" id="petname" name="petname" class="form-control"
-                  placeholder="Pet Name" value="<% owns_pet.name %>">
+                  placeholder="Pet Name">
                             <br>
                             <select id="category" name="category" class="form-control" value="<% owns_pet.category_name %>">
                                 <option value="dog">Dog</option>
@@ -104,7 +104,7 @@
                             </select>
                             <label for="requirement" class="sr-only form-control">Special Requirements</label>
                             <input type="text" id="petrequire" name="petrequire" class="form-control"
-                  placeholder="Special Requirements" value="<% owns_pet.special_requirements %>">
+                  placeholder="Special Requirements">
                         </form>
                     </div>
                     <div class="modal-footer">
