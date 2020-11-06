@@ -2,6 +2,14 @@ var express = require('express');
 var db = require('../db');
 var router = express.Router();
 
+router.all("*", function (req, res, next) {
+  if (!req.user) {
+      return res.redirect("/");
+  } else {
+      next();
+  }
+});
+
 router.get('/', async(req, res, next)=> { 
   try{
     var po_info = await db.query("SELECT * FROM pet_owner WHERE phone=$1;",[req.user.phone]);

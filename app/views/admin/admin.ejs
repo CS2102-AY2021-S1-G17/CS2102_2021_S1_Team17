@@ -1,0 +1,87 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title><%= title %></title> 
+        <% include ../partials/_ad_header %>
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
+        <script>
+          $(document).ready( function () {
+            $('#s_table').DataTable();
+          });
+        </script>
+    </head> 
+    <body> 
+        <div class="row justify-content-center">
+        <div class="col m-2">
+        <section class="card">
+            <div class="twt-feed blue-bg">
+                <div class="corner-ribon black-ribon">
+                </div>
+    
+                <div class="media">
+                    <a href="#">
+                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
+                    </a>
+                    <div class="media-body">
+                        <h2 class="text-white display-6"><%= profile.name %></h2>
+                        <p class="text-light">Admin  
+                        </p>
+                        <form class="form-signin" action="/admin/init" method="post">
+                          <button class="btn btn-link btn-lg"
+                              type="submit">Initialise Salary</button> 
+                        </form>
+                        <a href="/admin/salary">View Salary</a>&nbsp;&nbsp;
+                        <a href="/admin">View Bids</a>
+                   </div>
+                </div>
+            </div>
+        <table class="table" id="s_table" style="background-color:white; text-align: center">
+            <thead>
+            <tr>
+                <th scope="col">PO's Phone</th>
+                <th scope="col">CT's Phone</th>
+                <th scope="col">Pet Name</th>
+                <th scope="col">Pet Category</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Cost</th>
+                <th scope="col">Status</th>
+            </tr>
+            </thead>
+            <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+            <% bids.forEach(function (bid) { %>
+            <tr>
+
+                <td><%- bid.po_phone %></td>
+                <td><%- bid.ct_phone %></td>
+                <td><%- bid.pet_name %></td>
+                <td>
+                  <%if (bid.category_name == 'dog') { %>
+                    <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/dog-solid.svg">
+                  <% } %>
+                  <%if (bid.category_name == 'cat') { %>
+                    <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/cat-solid.svg">
+                  <% } %>
+                  <%if (bid.category_name == 'bird') { %>
+                    <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/dove-solid.svg">
+                  <% } %>
+                </td>
+                <td><%- bid.start_date.toDateString() %></td>
+                <td><%- bid.end_date.toDateString() %></td>
+                <td><%- bid.total_cost %></td>
+                <%if (bid.status == 'Success') { %>
+                <td style="color:green"><%- bid.status %></td>
+                <% } else { %>
+                <td><%- bid.status %></td>
+                <% } %>
+            <% }); %>
+          </tr> 
+        </tbody>
+      </table>  
+    </section>
+  </div>
+</div>
+    </body>
+</html>
+
