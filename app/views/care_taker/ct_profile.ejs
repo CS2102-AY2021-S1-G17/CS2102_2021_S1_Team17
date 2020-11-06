@@ -291,7 +291,6 @@
 
   function valueChanged()
     {
-      if (!profile.is_full_time) {
         if($('#update_cat').is(":checked")){   
           $('#cat_price').attr('style',"");
           $('#cat_price').attr('required', '');
@@ -313,6 +312,5 @@
           //$('#bird_price').hide();
           $('#bird_price').removeAttr('required');
         }
-      }
     }
 </script>
