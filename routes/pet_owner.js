@@ -19,7 +19,8 @@ router.get('/', async(req, res)=> {
       var accepted_bids = data2.rows;
       var pending_bids = data3.rows;
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
-      res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids});
+      res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
+      errorFlash: req.flash("error")});
     } catch (err) {
       throw err;
     }
@@ -33,7 +34,8 @@ router.get('/po_profile',  async(req, res, next)=> {
       var accepted_bids = data2.rows;
       var pending_bids = data3.rows;
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
-      res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids});
+      res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
+      errorFlash: req.flash("error")});
     } catch (err) {
       throw err;
     }
@@ -45,7 +47,9 @@ router.post('/profile', async(req, res)=> {
     await db.query("UPDATE pet_owner SET transfer_location = $1 WHERE phone=$2;",
     [local, req.user.phone])
     console.log(req.body);
+    req.flash("success", "Update successfully.");
   } catch (err) {
+    req.flash("error", "Unable to Update.");
     throw err;
   } finally {
     res.redirect("/pet_owner");
@@ -80,7 +84,9 @@ router.post('/pay', async(req, res)=> {
     await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Success')",[parseInt(po_phone), parseInt(ct_phone), pet_name, start, end]);
 
     console.log(req.body);
+    req.flash("success", "Update successfully.");
   } catch (err) {
+    req.flash("error", "Unable to Update.");
     throw err;
   } finally {
     res.redirect("/pet_owner");
@@ -92,7 +98,8 @@ router.get('/pets',  async(req, res, next) => {
         var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
         var data2 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
         var pet_list = data2.rows;
-        res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list});
+        res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list, successFlash: req.flash("success"),
+        errorFlash: req.flash("error")});
     } catch (err) {
         throw err;
     }
@@ -102,7 +109,8 @@ router.get('/history', async(req, res, next)=> {
   var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
   var data3 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);
   console.log(data3.rows);
-  res.render('pet_owner/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows });
+  res.render('pet_owner/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows, successFlash: req.flash("success"),
+  errorFlash: req.flash("error")});
 });
 
 router.post('/feedback', async(req, res)=> {
@@ -117,10 +125,12 @@ router.post('/feedback', async(req, res)=> {
 
 router.get('/bid',  async(req, res, next)=> {
   var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
-    res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0]});
+    res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], successFlash: req.flash("success"),
+errorFlash: req.flash("error")});
 }); 
 
 router.get('/search',  function(req, res, next) {
-      res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user });
+      res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, successFlash: req.flash("success"),
+  errorFlash: req.flash("error")});
 }); 
 module.exports = router;
