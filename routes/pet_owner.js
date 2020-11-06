@@ -90,18 +90,21 @@ router.post('/pay', async(req, res)=> {
 router.get('/pets',  async(req, res, next) => {
     try{
         var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+<<<<<<< HEAD
         var data2 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
         var pet_list = data2.rows;
         res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list});
+=======
+        var data3 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
+        res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pets:data3.rows});
+>>>>>>> ed05e3a88012f475cb5b8b473335d800504a7041
     } catch (err) {
         throw err;
     }
 }); 
 
 router.get('/history', async(req, res, next)=> {
-  var data3 = await db.query("SELECT * FROM po_view_past_trans($1);",[req.user.phone]);
   console.log(data3.rows);
-  res.render('pet_owner/po_history', { title: 'History Page', history: data3.rows});
 });
 
 router.post('/feedback', async(req, res)=> {
@@ -114,8 +117,6 @@ router.post('/feedback', async(req, res)=> {
   }
 });
 
-router.get('/bid',  function(req, res, next) {
-      res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user });
 }); 
 
 router.get('/search',  function(req, res, next) {
