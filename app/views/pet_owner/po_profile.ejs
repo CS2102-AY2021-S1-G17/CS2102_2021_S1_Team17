@@ -18,24 +18,24 @@
                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                    </a>
                    <div class="media-body">
-                       <h2 class="text-white display-6">Jim Doe</h2>
+                       <h2 class="text-white display-6"><%= profile.name %></h2>
                        <p class="text-light">Pet Owner</p>
-                       <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#editpo">Edit Profile</a>
+                       <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#editpo">Update Location</a>
                    </div>
                </div>
            </div>
            <div class="weather-category twt-category">
                <ul>
                    <li class="active">
-                       <h5>88888888</h5>
-                       Phone No
-                   </li>
+                    <h5><%= profile.phone %></h5>
+                    Phone No
+                    </li>
                    <li>
-                       <h5>1234-1234-1234-1234</h5>
+                       <h5><%= profile.card %></h5>
                        Card Number
                    </li>
                    <li>
-                       <h5>NUS</h5>
+                       <h5><%= profile.transfer_location %></h5>
                        Preferred Transfer Location
                    </li>
                </ul>
@@ -49,55 +49,63 @@
            <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Care Taker</th>
+                <th scope="col">Care Taker Phone</th>
                 <th scope="col">My Pet</th>
-                <th scope="col">Date Range</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
                 <th scope="col">Status</th>
             </tr>
             </thead>
     <tbody>
-      <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <td>Pending</td>
+        <tr>
+        <% pending_payments.forEach(function (bid) { %>
+          <td><%- bid.caretaker %></td>
+          <td><%- bid.ct_phone %></td>
+          <td><%- bid.pet_name %></td>
+          <td><%- bid.start_date.toDateString() %></td>
+          <td><%- bid.end_date.toDateString() %></td>
+          <td>
+              <form action="/pet_owner/pay" method="post">
+                <input type="hidden" id="po_phone" name="po_phone" value="<%= profile.phone %>">
+                <input type="hidden" id="ct_phone" name="ct_phone" value="<%= bid.ct_phone %>">
+                <input type="hidden" id="pet_name" name="pet_name" value="<%= bid.pet_name %>">
+                <input type="hidden" id="start_date" name="start_date" value="<%= bid.start_date %>">
+                <input type="hidden" id="end_date" name="end_date" value="<%= bid.end_date %>">
+                <input class="btn btn-success" type="submit" name="pay" id="pay" value="Pay">
+              </form>
+            </td>
+        <% }); %>
       </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <td>Pending</td>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-        <td>Pending</td>
+        <tr>
+        <% pending_bids.forEach(function (bid) { %>
+          <td><%- bid.caretaker %></td>
+          <td><%- bid.ct_phone %></td>
+          <td><%- bid.pet_name %></td>
+          <td><%- bid.start_date.toDateString() %></td>
+          <td><%- bid.end_date.toDateString() %></td>
+          <td><%- bid.status %></td>
+        <% }); %>
       </tr>
     </tbody>
   </table>
+    <%if (!pending_bids || pending_bids.length < 1) {%>
+        <h5 style="text-align:center">No pending orders</h5>
+    <% } %>
        </div>
     </div>
     <div class="modal fade" id="editpo" role="dialog">
     <div class="modal-dialog">
   <div class="modal-content">
     <div class="modal-header">
-      <h4 class="modal-title">Edit Profile</h4>
+      <h4 class="modal-title">Update Location</h4>
       <button type="button" class="close" data-dismiss="modal">&times;</button>
     </div>
     <div class="modal-body">
-      <form class="form-signin" action="/" method="post">
-          <label for="inputName" class="sr-only form-control">Name</label>
-          <input type="text" id="name" name="name" class="form-control" placeholder="name" required="">
-          <label for="inputCard" class="sr-only form-control">Card Number</label>
-          <input type="text" id="card" name="card" class="form-control" placeholder="card number" required="">
-          <label for="inputPassword" class="sr-only form-control">Password</label>
-          <input type="password" id="password" name="password" 
-            class="form-control" placeholder="Password" required="">
+      <form class="form-signin" action="/update_location" method="post">
+          <input type="hidden" id="po_phone" name="po_phone" value="<%= profile.phone %>">
+          <label for="inputLocation" class="sr-only form-control">Transfer Location</label>
+          <input type="text" id="name" name="name" class="form-control" placeholder="Transfer Location" required="">
           <button class="btn btn-lg btn-primary btn-block" 
             type="submit">Update</button> 
       </form>

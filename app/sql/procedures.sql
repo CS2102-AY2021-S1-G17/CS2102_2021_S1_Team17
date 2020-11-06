@@ -5,6 +5,7 @@ DROP PROCEDURE IF EXISTS place_bid;
 DROP PROCEDURE IF EXISTS change_bid_status;
 DROP PROCEDURE IF EXISTS rate_service;
 DROP PROCEDURE IF EXISTS take_leave;
+DROP PROCEDURE IF EXISTS claim_avail;
 DROP PROCEDURE IF EXISTS add_pet;
 DROP PROCEDURE IF EXISTS init_avail_salary_year;
 
@@ -106,7 +107,7 @@ CALL register_admin(...);
 */
 
 CREATE OR REPLACE PROCEDURE register_admin(
-	_phone VARCHAR,
+	_phone INTEGER,
 	_password VARCHAR,
 	_name VARCHAR
 	) AS
@@ -220,6 +221,27 @@ BEGIN
 	-- if avail triggers violated, deletion will fail with notice here
 	DELETE FROM availability 
 		WHERE phone = _phone AND available_date >= _start AND available_date <= _end;
+END;
+$$
+LANGUAGE plpgsql;
+
+/*
+CALL claim_avail(...);
+*/
+
+CREATE OR REPLACE PROCEDURE claim_avail(_phone INTEGER, _start DATE, _end DATE) AS
+$$
+DECLARE
+	day DATE := _start;
+	rl INTEGER;
+BEGIN
+	SELECT C.care_limit INTO rl FROM care_taker C WHERE C.phone = _phone;
+	WHILE day <= _end LOOP
+		IF NOT EXISTS (SELECT * FROM availability A WHERE A.phone = _phone AND A.available_date = day) THEN
+			INSERT INTO availability (phone, available_date, remaining_limit) VALUES (_phone, day, rl);
+		END IF;
+		day := day + INTEGER '1';
+	END LOOP;
 END;
 $$
 LANGUAGE plpgsql;

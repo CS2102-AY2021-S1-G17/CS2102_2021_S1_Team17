@@ -114,7 +114,9 @@ router.post("/", async function (req, res, next) {
           return res.redirect("/pet_owner");
         } else if (user.role == 'Caretaker') {
           return res.redirect("/care_taker");
-        } else {
+        } else if (user.role == 'Both') {
+          return res.redirect("/both");
+        }else {
           return res.redirect("/admin");
         }
     })(req, res, next);

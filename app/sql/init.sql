@@ -656,6 +656,7 @@ DECLARE
 	pt DATE;
 	ft BOOLEAN;
 	pd INTEGER;
+	dif INTEGER;
 BEGIN
 	y := date_part('year', NEW.start_date);
 	m := date_part('month', NEW.start_date);
@@ -672,9 +673,17 @@ BEGIN
 	END IF;
 	
 	IF ft AND pd < 60 THEN
-		UPDATE salary
-			SET pet_day = pet_day + (NEW.end_date - NEW.start_date + 1)
-			WHERE phone = NEW.ct_phone AND pay_time = pt;
+		dif := 60 - pd;
+		IF (NEW.end_date - NEW.start_date + 1) < dif THEN
+			UPDATE salary
+				SET pet_day = pet_day + (NEW.end_date - NEW.start_date + 1)
+				WHERE phone = NEW.ct_phone AND pay_time = pt;
+		ELSE
+			UPDATE salary
+				SET pet_day = 60, 
+					amount = amount + 0.8 * (NEW.end_date - NEW.start_date + 1 - dif) * NEW.daily_price
+				WHERE phone = NEW.ct_phone AND pay_time = pt;
+		END IF;
 	ELSIF ft AND pd >= 60 THEN
 		UPDATE salary
 			SET amount = amount + 0.8 * NEW.total_cost

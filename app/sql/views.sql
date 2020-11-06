@@ -3,6 +3,7 @@ DROP FUNCTION IF EXISTS po_view_past_trans;
 DROP FUNCTION IF EXISTS ct_view_capable;
 DROP FUNCTION IF EXISTS ct_view_past_trans;
 DROP FUNCTION IF EXISTS po_view_upcoming_bids;
+DROP FUNCTION IF EXISTS po_view_accepted_bids;
 DROP FUNCTION IF EXISTS ct_view_pending_bids;
 DROP FUNCTION IF EXISTS ct_view_future_work;
 DROP FUNCTION IF EXISTS search_ct;
@@ -10,6 +11,7 @@ DROP FUNCTION IF EXISTS admin_view_unpaid_salary;
 DROP FUNCTION IF EXISTS admin_view_bids;
 DROP FUNCTION IF EXISTS ct_monthly_stats;
 DROP FUNCTION IF EXISTS ct_view_bid_details;
+DROP FUNCTION IF EXISTS underperforming_fulltime;
 
 /*
 SELECT * FROM po_view_pets(...);
@@ -113,24 +115,45 @@ $$
 LANGUAGE plpgsql;
 
 /*
+SELECT * FROM po_view_accepted_bids(...);
+*/
+
+CREATE OR REPLACE FUNCTION po_view_accepted_bids(_phone INTEGER) 
+	RETURNS TABLE (
+		caretaker VARCHAR, ct_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE, status VARCHAR,
+		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR, rating INTEGER, comment VARCHAR(500)
+		) AS
+$$
+BEGIN
+	RETURN QUERY(
+		SELECT C.name AS caretaker, B.ct_phone, B.pet_name, B.start_date, B.end_date, B.status,
+			B.total_cost, B.transfer_method, B.payment_method, B.rating, B.comment
+		FROM bids B, care_taker C
+		WHERE B.po_phone = _phone AND C.phone = B.ct_phone AND B.start_date > CURRENT_DATE AND B.status = 'Accepted'
+		ORDER BY B.start_date ASC
+		);
+END;
+$$
+LANGUAGE plpgsql;
+
+/*
 SELECT * FROM ct_view_pending_bids(...);
 */
 
 CREATE OR REPLACE FUNCTION ct_view_pending_bids(_phone INTEGER) 
-    RETURNS TABLE (
-        petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
-        total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR, category VARCHAR, req VARCHAR(500)
-        ) AS
+	RETURNS TABLE (
+		petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
+		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR
+		) AS
 $$
 BEGIN
-    RETURN QUERY(
-        SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
-            B.total_cost, B.transfer_method, B.payment_method, O.category_name AS category, O.special_requirements AS req
-        FROM bids B, pet_owner P, owns_pet O
-        WHERE B.ct_phone = _phone AND B.status = 'Pending' AND P.phone = B.po_phone AND B.start_date >= CURRENT_DATE AND 
-        O.phone = P.phone AND O.name = B.pet_name
-        ORDER BY B.start_date ASC
-        );
+	RETURN QUERY(
+		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
+			B.total_cost, B.transfer_method, B.payment_method
+		FROM bids B, pet_owner P
+		WHERE B.ct_phone = _phone AND B.status = 'Pending' AND P.phone = B.po_phone AND B.start_date >= CURRENT_DATE
+		ORDER BY B.start_date ASC
+		);
 END;
 $$
 LANGUAGE plpgsql;
@@ -142,16 +165,15 @@ SELECT * FROM ct_view_future_work(...);
 CREATE OR REPLACE FUNCTION ct_view_future_work(_phone INTEGER)
 	RETURNS TABLE (
 		petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
-		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR, category VARCHAR, req VARCHAR(500)
+		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR
 		) AS
 $$
 BEGIN
 	RETURN QUERY(
 		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
-			B.total_cost, B.transfer_method, B.payment_method, O.category_name AS category, O.special_requirements AS req
-		FROM bids B, pet_owner P,  owns_pet O
+			B.total_cost, B.transfer_method, B.payment_method
+		FROM bids B, pet_owner P
 		WHERE B.end_date >= CURRENT_DATE AND B.ct_phone = _phone AND B.status = 'Success' AND P.phone = B.po_phone
-		AND O.phone = P.phone AND O.name = B.pet_name
 		ORDER BY B.start_date ASC
 		);
 END;
@@ -286,12 +308,30 @@ $$
 LANGUAGE plpgsql;
 
 /*
+SELECT * FROM underperforming_fulltime(...);
+*/
 
 CREATE OR REPLACE FUNCTION underperforming_fulltime(y INTEGER)
-	RETURNS TABLE () AS
+	RETURNS TABLE (phone INTEGER, name VARCHAR, bank_account VARCHAR, avg_rating FLOAT8) AS
 $$
 DECLARE
+	year_start DATE := make_date(y,1,1);
+	year_end DATE := make_date(y,12,31);
 BEGIN
+	RETURN QUERY(
+		SELECT C.phone, C.name, C.bank_account, C.avg_rating
+		FROM care_taker C LEFT JOIN salary S ON C.phone = S.phone
+		WHERE C.is_full_time AND S.pay_time >= year_start AND S.pay_time <= year_end
+		AND S.pet_day <= (
+			SELECT AVG(pet_day) 
+			FROM salary 
+			WHERE pet_day > 0 AND pay_time >= year_start AND pay_time <= year_end)
+		GROUP BY C.phone
+		HAVING COUNT(*) >= 9
+		ORDER BY C.avg_rating ASC
+		);
+	
 END;
 $$
-LANGUAGE plpgsql;*/
+LANGUAGE plpgsql;
+
