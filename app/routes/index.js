@@ -110,11 +110,11 @@ router.post("/", async function (req, res, next) {
                 errorFlash: req.flash("error")});
             }
         });
-        if (user.role == "Pet Owner") {
+        if (user.role == "pet_owner") {
           return res.redirect("/pet_owner");
-        } else if (user.role == 'Caretaker') {
+        } else if (user.role == 'care_taker') {
           return res.redirect("/care_taker");
-        } else if (user.role == 'Both') {
+        } else if (user.role == 'both') {
           return res.redirect("/both");
         }else {
           return res.redirect("/admin");

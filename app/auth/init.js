@@ -25,11 +25,12 @@ exports.initPassport = () => {
                     throw err;
                 }
                 if (results.rows.length > 0) {
-                    const user = results.rows[0];
+                    var user = results.rows[0];
     
                     //compare password
                     if(user.role == 'Admin') {
                         if (password == user.password) {
+                            user = {...user, role: req.body.role};
                             return done(null, user);
                         } else {
                             return done(null, false, req.flash('error', 'Oops! Wrong password.'));
@@ -40,6 +41,7 @@ exports.initPassport = () => {
                                 throw err;
                             }
                             if (isMatch){
+                                user = {...user, role: req.body.role};
                                 return done(null, user);
                             } else {
                                 return done(null, false, req.flash('error', 'Oops! Wrong password.'));
