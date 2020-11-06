@@ -59,6 +59,34 @@ router.post('/category', async(req, res)=> {
 /* Update bid status. */ 
 router.post('/update_status', async(req, res)=> {
   try{
+    let {po_phone, ct_phone, pet_name, start_date, end_date, accept,decline} = req.body;
+    
+    function convert(str) {
+      var mnths = {
+          Jan: "01",
+          Feb: "02",
+          Mar: "03",
+          Apr: "04",
+          May: "05",
+          Jun: "06",
+          Jul: "07",
+          Aug: "08",
+          Sep: "09",
+          Oct: "10",
+          Nov: "11",
+          Dec: "12"
+        },
+        date = str.split(" ");
+      return [date[3], mnths[date[1]], date[2]].join("-");
+    }
+    var start = convert(start_date);
+    var end = convert(end_date);
+
+    if (accept) {
+      await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Accepted')",[parseInt(po_phone), parseInt(ct_phone), pet_name, start, end])
+    } else {
+      await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Rejected')",[parseInt(po_phone), parseInt(ct_phone), pet_name, start, end])
+    }
     console.log(req.body);
   } catch (err) {
     throw err;
