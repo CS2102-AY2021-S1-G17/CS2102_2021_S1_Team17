@@ -56,7 +56,7 @@ router.post('/category', async(req, res)=> {
         await db.query("CALL add_capable($1, 'dog', $2);",[req.user.phone, dog_price]);
       }
       if (bird) {
-        await db.query("CALL add_capable($1, 'bird', $3);",[req.user.phone, bird_price]);
+        await db.query("CALL add_capable($1, 'bird', $2);",[req.user.phone, bird_price]);
       }
       req.flash("success", "Update successfully.");
     }
