@@ -44,7 +44,7 @@
                               type="submit">Initialise Salary</button> 
                         </form>
                         <a style="color:white" data-role="button" class="btn btn-link btn-lg"  href="/admin/salary">View Salary</a>&nbsp;&nbsp;
-                        <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin">View Bids</a>&nbsp;&nbsp;
+                        <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin">View Accepted Bids</a>&nbsp;&nbsp;
                         <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin/underperforming">View Underperforming Staff</a>&nbsp;&nbsp;
                         <a style="color:white"data-role="button" class="btn btn-link btn-lg" href="/admin/user">Manage User</a>
                         <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#add">Add Admin</a></span>
@@ -88,7 +88,16 @@
                 <%if (bid.status == 'Success') { %>
                 <td style="color:green"><%- bid.status %></td>
                 <% } else { %>
-                <td><%- bid.status %></td>
+                <td>
+                  <form action="/admin/status" method="post">
+                    <input type="hidden" id="po_phone" name="po_phone" value="<%= bid.po_phone %>">
+                    <input type="hidden" id="ct_phone" name="ct_phone" value="<%= bid.ct_phone %>">
+                    <input type="hidden" id="pet_name" name="pet_name" value="<%= bid.pet_name %>">
+                    <input type="hidden" id="start_date" name="start_date" value="<%= bid.start_date %>">
+                    <input type="hidden" id="end_date" name="end_date" value="<%= bid.end_date %>">
+                    <input class="btn btn-success" type="submit" name="paid" id="paid" value="Paid">
+                  </form>
+                </td>
                 <% } %>
             <% }); %>
           </tr> 
