@@ -32,104 +32,56 @@
            <table class="table">
             <thead>
             <tr>
-                <th scope="col">#</th>
                 <th scope="col">Care Taker</th>
+                <th scope="col">Care Taker Phone</th>
                 <th scope="col">My Pet</th>
-                <th scope="col">Date Range</th>
+                <th scope="col">Category</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Total Cost</th>
+                <th scope="col">Transfer</th>
+                <th scope="col">Payment</th>
                 <th scope="col">Rating</th>
-                <th scope="col">Feedback</th>
+                <th scope="col">Comment</th>
             </tr>
             </thead>
     <tbody>
       <tr>
-        <th scope="row">1</th>
-        <td>Mark</td>
-        <td>Otto</td>
-        <td>@mdo</td>
-        <form class="form-submitfeedback" action="/" method="post">
-        <td>
-        <div class="rate">
-            <input type="radio" id="star5" name="rate" value="5" />
-            <label for="star5" title="text">5 stars</label>
-            <input type="radio" id="star4" name="rate" value="4" />
-            <label for="star4" title="text">4 stars</label>
-            <input type="radio" id="star3" name="rate" value="3" />
-            <label for="star3" title="text">3 stars</label>
-            <input type="radio" id="star2" name="rate" value="2" />
-            <label for="star2" title="text">2 stars</label>
-            <input type="radio" id="star1" name="rate" value="1" />
-            <label for="star1" title="text">1 star</label>
-        </div>
-        </td>
-        <td>
-        <label for="inputComment" class="sr-only form-control">Comment</label>
-        <input type="text" id="comment" name="comment" class="form-control"
-                  placeholder="Comment" required="">
-        </td>
-        <td>
-        <button class="btn btn-fb btn-primary btn-block" type="submit">Submit</button>
-        </td>
-        </form>
-      </tr>
-      <tr>
-        <th scope="row">2</th>
-        <td>Jacob</td>
-        <td>Thornton</td>
-        <td>@fat</td>
-        <form class="form-submitfeedback" action="/" method="post">
-        <td>
-        <div class="rate">
-            <input type="radio" id="star5" name="rate" value="5" />
-            <label for="star5" title="text">5 stars</label>
-            <input type="radio" id="star4" name="rate" value="4" />
-            <label for="star4" title="text">4 stars</label>
-            <input type="radio" id="star3" name="rate" value="3" />
-            <label for="star3" title="text">3 stars</label>
-            <input type="radio" id="star2" name="rate" value="2" />
-            <label for="star2" title="text">2 stars</label>
-            <input type="radio" id="star1" name="rate" value="1" />
-            <label for="star1" title="text">1 star</label>
-        </div>
-        </td>
-        <td>
-        <label for="inputComment" class="sr-only form-control">Comment</label>
-        <input type="text" id="comment" name="comment" class="form-control"
-                  placeholder="Comment" required="">
-        </td>
-        <td>
-        <button class="btn btn-fb btn-primary btn-block" type="submit">Submit</button>
-        </td>
-        </form>
-      </tr>
-      <tr>
-        <th scope="row">3</th>
-        <td>Larry</td>
-        <td>the Bird</td>
-        <td>@twitter</td>
-        <form class="form-submitfeedback" action="/" method="post">
-        <td>
-        <div class="rate">
-            <input type="radio" id="star5" name="rate" value="5" />
-            <label for="star5" title="text">5 stars</label>
-            <input type="radio" id="star4" name="rate" value="4" />
-            <label for="star4" title="text">4 stars</label>
-            <input type="radio" id="star3" name="rate" value="3" />
-            <label for="star3" title="text">3 stars</label>
-            <input type="radio" id="star2" name="rate" value="2" />
-            <label for="star2" title="text">2 stars</label>
-            <input type="radio" id="star1" name="rate" value="1" />
-            <label for="star1" title="text">1 star</label>
-        </div>
-        </td>
-        <td>
-        <label for="inputComment" class="sr-only form-control">Comment</label>
-        <input type="text" id="comment" name="comment" class="form-control"
-                  placeholder="Comment" required="">
-        </td>
-        <td>
-        <button class="btn btn-fb btn-primary btn-block" type="submit">Submit</button>
-        </td>
-        </form>
+        <% pending_bids.forEach(function (bid) { %>
+          <td><%- bid.caretaker %></td>
+          <td><%- bid.ct_phone %></td>
+          <td><%- bid.pet_name %></td>
+          <td><%- bid.category_name %></td>
+          <td><%- bid.start_date.toDateString() %></td>
+          <td><%- bid.end_date.toDateString() %></td>
+          <td><%- bid.total_cost %></td>
+          <td><%- bid.transfer_method %></td>
+          <td><%- bid.payment_method %></td>
+          <form class="form-submitfeedback" action="/feedback" method="post">
+            <td>
+            <div class="rate">
+                <input type="radio" id="star5" name="rate" value="<%= bid.rating %>" />
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rate" value="<%= bid.rating %>" />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rate" value="<%= bid.rating %>" />
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rate" value="<%= bid.rating %>" />
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rate" value="<%= bid.rating %>" />
+                <label for="star1" title="text">1 star</label>
+            </div>
+            </td>
+            <td>
+                <label for="inputComment" class="sr-only form-control">Comment</label>
+                <input type="text" id="comment" name="comment" class="form-control"
+                  placeholder="Comment" value="<%= bid.comment %>">
+            </td>
+            <td>
+                <button class="btn btn-fb btn-primary btn-block" type="submit">Submit</button>
+            </td>
+            </form>
+        <% }); %>
       </tr>
     </tbody>
   </table>
