@@ -90,9 +90,9 @@ router.post('/pay', async(req, res)=> {
 router.get('/pets',  async(req, res, next) => {
     try{
         var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
-        var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
-        var pending_bids = data3.rows;
-        res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pending_bids:pending_bids});
+        var data2 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
+        var pet_list = data2.rows;
+        res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list});
     } catch (err) {
         throw err;
     }
