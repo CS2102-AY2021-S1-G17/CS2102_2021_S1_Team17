@@ -17,7 +17,7 @@ router.get('/', async(req, res)=> {
       var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1)",[req.user.phone]);
       var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
       var accepted_bids = data2.rows;
-      var pending_bids = data3.rows；
+      var pending_bids = data3.rows;
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids});
     } catch (err) {
@@ -31,7 +31,7 @@ router.get('/po_profile',  async(req, res, next)=> {
       var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1)",[req.user.phone]);
       var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
       var accepted_bids = data2.rows;
-      var pending_bids = data3.rows；
+      var pending_bids = data3.rows;
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids});
     } catch (err) {
