@@ -70,6 +70,14 @@ router.post('/update_status', async(req, res)=> {
 /* Update availablity. */ 
 router.post('/availability', async(req, res)=> {
   try{
+    let {start, end} = req.body;
+    var data = await db.query("SELECT is_full_time FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
+    var fulltime = data.rows.is_full_time;
+    if (fulltime) {
+      await db.query("CALL take_leave($1, $2, $3)",[req.user.phone, start, end]);
+    } else {
+      await db.query("CALL claim_avail($1, $2, $3)",[req.user.phone, start, end]);
+    }
     console.log(req.body);
   } catch (err) {
     throw err;
