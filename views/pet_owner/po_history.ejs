@@ -69,7 +69,11 @@
           <td><%- bid.total_cost %></td>
           <td><%- bid.transfer_method %></td>
           <td><%- bid.payment_method %></td>
-          <form class="form-submitfeedback" action="/feedback" method="post" value="<% bid.rating %>">
+          <%if (bid.rating!=null) { %>
+            <td><%- bid.rating %></td>
+            <td><%- bid.comment %></td>
+        <% } else { %>
+          <form class="form-submitfeedback" action="/pet_owner/feedback" method="post">
             <td>
             <div class="rate">
                 <input type="radio" id="star5" name="rate" value="5" />
@@ -88,11 +92,17 @@
                 <label for="inputComment" class="sr-only form-control">Comment</label>
                 <input type="text" id="comment" name="comment" class="form-control"
                   placeholder="Comment" value="<%= bid.comment %>">
+
+                <input type="hidden" id="ct_phone" name="ct_phone" value="<%= bid.ct_phone %>">
+                <input type="hidden" id="pet_name" name="pet_name" value="<%= bid.pet_name %>">
+                <input type="hidden" id="start_date" name="start_date" value="<%= bid.start_date %>">
+                <input type="hidden" id="end_date" name="end_date" value="<%= bid.end_date %>">
             </td>
             <td>
                 <button class="btn btn-fb btn-primary btn-block" type="submit">Submit</button>
             </td>
             </form>
+            <% } %>
         </tr>
         <% }); %>
     </tbody>

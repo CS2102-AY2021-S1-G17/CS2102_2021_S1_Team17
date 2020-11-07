@@ -149,12 +149,33 @@ router.get('/history', async(req, res, next)=> {
 });
 
 router.post('/feedback', async(req, res)=> {
+  function convert(str) {
+    var mnths = {
+        Jan: "01",
+        Feb: "02",
+        Mar: "03",
+        Apr: "04",
+        May: "05",
+        Jun: "06",
+        Jul: "07",
+        Aug: "08",
+        Sep: "09",
+        Oct: "10",
+        Nov: "11",
+        Dec: "12"
+      },
+      date = str.split(" ");
+    return [date[3], mnths[date[1]], date[2]].join("-");
+  }
   try{
-    console.log(req.body);
+    let {rate, comment,ct_phone, pet_name,start_date, end_date} = req.body;
+    var start = convert(start_date);
+    var end = convert(end_date)
+    db.query("CALL rate_service($1, $2, $3, $4, $5, $6, $7)",[req.user.phone, parseInt(ct_phone), pet_name,start, end,parseInt(rate),comment]);
   } catch (err) {
     throw err;
   } finally {
-    res.redirect("/pet_owner");
+    res.redirect("/pet_owner/history");
   }
 });
 
