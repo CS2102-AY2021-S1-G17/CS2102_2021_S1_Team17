@@ -117,12 +117,20 @@
                 <input type="text" id="inputlocation" name="inputlocation" class="form-control"
                   placeholder="Transfer Location" required="">
                 <br>
-                <label for="inputCategory" class="sr-only form-control">Payment Method</label>
+                <label for="inputPayment" class="sr-only form-control">Payment Method</label>
                 <select id="payment" name="payment" class="form-control selectpicker" data-live-search="true">
-                    <option value="cash">Cash</option>
-                    <option value="card">Credit Card</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Credit Card">Credit Card</option>
                 </select>
                 <p>Select Payment Method</p>
+                <br>
+                <label for="inputTransfer" class="sr-only form-control">Transfer Method</label>
+                <select id="transmethod" name="transmethod" class="form-control selectpicker" data-live-search="true">
+                    <option value="PO deliver">I Deliver</option>
+                    <option value="CT pick up">Care Taker Pick Up</option>
+                    <option value="via PCS">PSC Building</option>
+                </select>
+                <p>Select Transfer Method</p>
                 <br>
                 <label for="start">Start date:</label>
                 <input type="date" id="start" name="start">
