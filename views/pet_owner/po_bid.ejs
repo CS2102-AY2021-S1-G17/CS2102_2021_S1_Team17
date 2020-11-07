@@ -79,6 +79,8 @@
                 <th>Care Taker</th>
                 <th>Transfer Location</th>
                 <th>Average Rating</th>
+                <th>View Capable Category</th>
+                <th>View Comments</th>
                 <th>Bid</th>
             </tr>
         </thead>
@@ -89,7 +91,9 @@
           <td><%- care_taker.name %></td>
           <td><%- care_taker.transfer_location %></td>
           <td><%- care_taker.avg_rating %></td>
-          <th><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></th>
+          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#viewcat">Category</button></td>
+          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#viewcom">Comments</button></td>
+          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></td>
         </tr>
         <% }); %>
         </tbody>
@@ -98,6 +102,7 @@
 </section>
 </div>
 </div>
+<!--    Create New Bid -->
     <div class="modal fade" id="create" role="dialog">
         <div class="modal-dialog">
                     
@@ -151,6 +156,7 @@
         </div>
         </div>
     </div>
+<!--    Search Care Takers -->
     <div class="modal fade" id="search" role="dialog">
         <div class="modal-dialog">
                     
@@ -165,14 +171,6 @@
                 <input type="text" id="translocation" name="translocation" class="form-control"
                   placeholder="Search by Transfer Location">
                 <br>
-<!--
-                <label for="inputCategory" class="form-check">Pet's Category</label>
-                <select id="category" name="category" class="form-control selectcat" data-live-search="true">
-                    <option value="cat">Cat</option>
-                    <option value="dog">Dog</option>
-                    <option value="bird">Bird</option>
-                </select>
---> 
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="category" id="selectcat" value="cat" required>
                     <label class="form-check-label" for="selectcat">Cat</label>
@@ -193,6 +191,68 @@
                 <br />
                 <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
             </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+        </div>
+    </div>
+    <!--    View Capable Category-->
+    <div class="modal fade" id="viewcat" role="dialog">
+        <div class="modal-dialog">
+                    
+        <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title"><%- care_taker.name %>'s Capable Category</h4>
+            <button class="close" type="button" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table id="table" class="display" style="width:100%">
+                <thead>
+                    <th>Category</th>
+                    <th>Daily Price</th>
+                </thead>
+                <tbody>
+                    <% capable.forEach(function (bid) { %>
+                        <tr>
+                            <td><%- capable.category_name %></td>
+                            <td>$<%- capable.daily_price %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+        </div>
+        </div>
+    </div>
+<!--    View Comments-->
+    <div class="modal fade" id="viewcom" role="dialog">
+        <div class="modal-dialog">
+                    
+        <div class="modal-content">
+        <div class="modal-header">
+            <h4 class="modal-title">Comments to <%- care_taker.name %></h4>
+            <button class="close" type="button" data-dismiss="modal">&times;</button>
+        </div>
+        <div class="modal-body">
+            <table id="table" class="display" style="width:100%">
+                <thead>
+                    <th>Rating</th>
+                    <th>Comment</th>
+                </thead>
+                <tbody>
+                    <% past_trans.forEach(function (bid) { %>
+                        <tr>
+                            <td><%- bid.rating %>/5.0</td>
+                            <td><%- bid.comment %></td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
         </div>
         <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
