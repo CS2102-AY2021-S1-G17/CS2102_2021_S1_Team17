@@ -1,0 +1,358 @@
+<!DOCTYPE html> 
+<html> 
+    <head> 
+        <title><%= title %></title> 
+        <% include ../partials/_both_header %>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
+    </head> 
+    <div>
+      <% if (successFlash.length > 0) { %>
+        <div class="alert alert-success mb-2" role="alert">
+            <%= successFlash %>
+        </div>
+      <% } %>
+      <% if (errorFlash.length > 0) { %>
+          <div class="alert alert-danger mb-2" role="alert">
+              <%= errorFlash %>
+          </div>
+      <% } %>
+    </div>
+    <body> 
+   <div class="row justify-content-center">
+   <div class="col m-2">
+    <section class="card">
+        <div class="twt-feed blue-bg">
+            <div class="corner-ribon black-ribon">
+            </div>
+            <div class="media">
+                <a href="#">
+                    <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
+                </a>
+                <div class="media-body">
+                    <h2 class="text-white display-6"><%= profile.name %></h2>
+                    <p class="text-light"><%= profile.is_full_time ? 'Full Time Employee' : 'Part Time Employee' %></p>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#profileEdit">Update Profile</a></span>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#apply"><%= profile.is_full_time ? 'Apply For Leave' : 'Set Availability' %></a></span>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit"><%= profile.is_full_time ? 'Add Category' : 'Add Category / Edit Price' %></a></span>
+                </div>
+            </div>
+        </div>
+        <div class="weather-category twt-category">
+            <ul>
+                <li class="active">
+                    <h5><%= profile.phone %></h5>
+                    Phone No
+                </li>
+                <li>
+                  <%if (profile.avg_rating >=1) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=2) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=3) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=4) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <%if (profile.avg_rating >=5) { %>
+                    <span class="fa fa-star checked"></span>
+                  <% } else { %>
+                    <span class="fa fa-star"></span>
+                  <% } %>
+                  <!-- <i class="fa fa-star-half-full"></i> -->
+                    <h5><%= profile.avg_rating %>/5</h5>
+                    Rating
+                </li>
+                <li><span>
+                  <% cat_list.forEach(function (cat) { %>
+                    <%if (cat == 'dog') { %>
+                      <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
+                    <% } %>
+                    <%if (cat == 'cat') { %>
+                      <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
+                    <% } %>
+                    <%if (cat == 'bird') { %>
+                      <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
+                    <% } %>
+                  <% }) %>
+                      <br/>
+                    Category
+                </li>
+            </ul>
+        </div>
+
+<div class="row justify-content-center">
+    <div class="col">
+      <font size="5">
+    <table class="table" style="text-align:center">
+    <thead>
+      <tr>
+        <th scope="col" style="width: 10%;">Pet Owner</th>
+        <th scope="col" style="width: 10%;">Pet Name</th>
+        <th scope="col" style="width: 15%;">Pet Category</th>
+        <th scope="col" style="width: 15%;">Start Date</th>
+        <th scope="col" style="width: 15%;">End Date</th>
+        <th scope="col" style="width: 15%;">Total Cost</th>
+        <th scope="col" style="width: 5%;">View Details</th>
+        <th scope="col" style="width: 20%;">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+        <% pending_bids.forEach(function (bid) { %>
+      <tr>
+            <td><%- bid.petowner %></td>
+            <td><%- bid.pet_name %></td>
+            <td>
+              <%if (bid.category_name == 'dog') { %>
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
+              <% } %>
+              <%if (bid.category_name == 'cat') { %>
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
+              <% } %>
+              <%if (bid.category_name == 'bird') { %>
+                <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
+              <% } %>
+            </td>
+            <td><%- bid.start_date.toDateString() %></td>
+            <td><%- bid.end_date.toDateString() %></td>
+            <td><%- bid.total_cost %></td>
+            <td>
+              <button class="btn" data-toggle="modal"
+                data-target="#details" data-req="<%= bid.special_requirements %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+                <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
+              </button>
+            </td>
+            <td>
+              <form action="/both/update_status" method="post">
+                <input type="hidden" id="po_phone" name="po_phone" value="<%= bid.po_phone %>">
+                <input type="hidden" id="ct_phone" name="ct_phone" value="<%= profile.phone %>">
+                <input type="hidden" id="pet_name" name="pet_name" value="<%= bid.pet_name %>">
+                <input type="hidden" id="start_date" name="start_date" value="<%= bid.start_date %>">
+                <input type="hidden" id="end_date" name="end_date" value="<%= bid.end_date %>">
+                <input class="btn btn-success" type="submit" name="accept" id="accept" value="Accept">
+                <input class="btn btn-danger" type="submit" name="decline" id="decline" value="Decline">
+              </form>
+            </td>
+        <% }); %>
+        </tr>
+        <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        <% future_work.forEach(function (bid) { %>
+        <tr>
+          <td><%- bid.petowner %></td>
+          <td><%- bid.pet_name %></td>
+          <td>
+            <%if (bid.category_name == 'dog') { %>
+              <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
+            <% } %>
+            <%if (bid.category_name == 'cat') { %>
+              <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
+            <% } %>
+            <%if (bid.category_name == 'bird') { %>
+              <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
+            <% } %>
+          </td>
+          <td><%- bid.start_date.toDateString() %></td>
+          <td><%- bid.end_date.toDateString() %></td>
+          <td><%- bid.total_cost %></td>
+          <td>
+            <button class="btn" data-toggle="modal"
+              data-target="#details" data-req="<%= bid.special_requirements %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+              <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
+            </button>
+          </td>
+          <td>
+            <div style="color:green">Success</div>
+          </td>
+      <% }); %>
+        </tr>
+      </tbody>
+  </table>
+  <%if (!pending_bids || pending_bids.length < 1) {%>
+    <h5 style="text-align:center">No pending orders</h5>
+  <% } %>
+  <%if (!future_work || future_work.length < 1) {%>
+    <h5 style="text-align:center">No future orders</h5>
+  <% } %>
+</font>
+  </section>
+  </div>
+  </div>
+
+  <!--------------------update category-------------------------->
+  <div class="modal fade" id="edit" role="dialog">
+    <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Add Category</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body" style="text-align:inline">
+      <form class="form-signin" action="/both/category" method="post">
+      <font size="5">
+          <input type="hidden" id="ct_phone" name="ct_phone" value="<%= profile.phone %>">
+          <input type="hidden" id="ct_cat" name="is_full_time" value="<%= profile.is_full_time %>">
+          <label for="inputCategory" class="sr-only form-control">Category</label>
+          <input type="checkbox" name="cat" value="cat" id="update_cat" onchange="valueChanged()">Cat
+          <input type="checkbox" name="dog" value="dog" id="update_dog" onchange="valueChanged()">Dog
+          <input type="checkbox" name="bird" value="bird" id="update_bird" onchange="valueChanged()">Bird<br/>
+          <!---------------------Part Time daily price------------------------>
+          <%if (!profile.is_full_time) { %>
+          <div class="form-group">
+            <label for="cat_price" class="sr-only form-control">Daily Price</label>
+            <input type="text" id="cat_price" name="cat_price" class="form-control ct"
+                placeholder="What is your daily price for cat?" style="display: none;"></div> 
+
+          <div class="form-group">
+            <label for="dog_price" class="sr-only form-control">Daily Price</label>
+            <input type="text" id="dog_price" name="dog_price" class="form-control ct"
+                placeholder="What is your daily price for dog?" style="display: none;"></div> 
+          
+          <div class="form-group">
+            <label for="bird_price" class="sr-only form-control">Daily Price</label>
+            <input type="text" id="bird_price" name="bird_price" class="form-control ct"
+                placeholder="What is your daily price for bird?" style="display: none;"></div> 
+          <% } %>
+          <!----------------------button-------------------------------------->
+          <button class="btn btn-lg btn-primary btn-block" 
+            type="submit">Update</button> 
+    </font>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="modal fade" id="details" role="dialog">
+  <div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Bid Details</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body">
+    <label>Special Requirements</label>
+    <h5 id="req" style="text-align: center;"></h5>
+    <label>Transfer Method</label>
+    <h5 id="trans" style="text-align: center;"></h5>
+    <label>Payment Method</label>
+    <h5 id="pay" style="text-align: center;"></h5>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+</div>
+</div>
+<!---------------------Apply leave----------------------------->
+<div class="modal fade" id="apply" role="dialog">
+  <div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title"><%= profile.is_full_time ? 'Apply For Leave' : 'Set Availability' %></h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body" style="text-align:center">
+    <form class="form-signin" action="/both/availability" method="post">
+      <input type="hidden" id="po_phone" name="ct_phone" value="<%= profile.phone %>">
+      <label for="start">Start date:</label>
+      <input type="date" id="start" name="start">
+      <br />
+      <label for="end">End date:</label>
+      <input type="date" id="end" name="end">
+      <br />
+      <button class="btn btn-lg btn-primary btn-block" 
+          type="submit">Update</button> 
+      </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+</div>
+</div>
+<!---------------------Update Profile----------------------------->
+<div class="modal fade" id="profileEdit" role="dialog">
+  <div class="modal-dialog">
+<div class="modal-content">
+  <div class="modal-header">
+    <h4 class="modal-title">Update Profile</h4>
+    <button type="button" class="close" data-dismiss="modal">&times;</button>
+  </div>
+  <div class="modal-body" style="text-align:center">
+    <form class="form-signin" action="/both/profile" method="post">
+      <input type="hidden" id="po_phone" name="ct_phone" value="<%= profile.phone %>">
+      <label for="loc">Transfer Location:</label>
+      <input type="text" id="loc" name="transfer_location" value="<%= profile.transfer_location%>">
+      <br />
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required value="<%= profile.name%>"> 
+      <br />
+      <label for="acc">Bank Account:</label>
+      <input type="text" id="acc" name="bank_account" required value="<%= profile.bank_account%>">
+      <br />
+      <button class="btn btn-lg btn-primary btn-block" 
+          type="submit">Update</button> 
+      </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+  </div>
+</div>
+</div>
+</div>
+ </body>
+</html> 
+<script>
+  $("#details").on("show.bs.modal", function (event) {
+      var button = $(event.relatedTarget); 
+      var req = button.data("req"); 
+      var trans = button.data("trans"); 
+      var pay = button.data("pay"); 
+      var modal = $(this);
+      modal.find(".modal-body #req").text(req);
+      modal.find(".modal-body #trans").text(trans);
+      modal.find(".modal-body #pay").text(pay);
+
+  });
+</script>
+<script>
+
+  function valueChanged()
+    {
+        if($('#update_cat').is(":checked")){   
+          $('#cat_price').attr('style',"");
+          $('#cat_price').attr('required', '');
+        }else{
+          $('#cat_price').hide();
+          $('#cat_price').removeAttr('required');
+        }
+        if($('#update_dog').is(":checked")){   
+          $('#dog_price').attr('style',"");
+          $('#dog_price').attr('required', '');
+        }else{
+          $('#dog_price').hide();
+          $('#dog_price').removeAttr('required');
+        }
+        if($('#update_bird').is(":checked")){   
+          $('#bird_price').attr('style',"");
+          $('#bird_price').attr('required', '');
+        }else{
+          $('#bird_price').hide();
+          $('#bird_price').removeAttr('required');
+        }
+    }
+</script>

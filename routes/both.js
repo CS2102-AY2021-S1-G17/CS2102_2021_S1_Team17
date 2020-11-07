@@ -27,7 +27,7 @@ router.get('/', async(req, res)=> {
         });
       }
       //console.log(data.rows[0]); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
-      res.render('both/profile', { title: 'CT & PO\'s Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work, successFlash: req.flash("success"),
+      res.render('both/ct_profile', { title: 'CT & PO\'s Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
     } catch (err) {
       throw err;
@@ -202,7 +202,7 @@ router.get('/po_profile', async(req, res)=> {
     var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
     var accepted_bids = data2.rows;
     var pending_bids = data3.rows;
-    res.render('both/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
+    res.render('both/po_profile', { title: 'CT & PO\'s Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
     errorFlash: req.flash("error")});
   } catch (err) {
     throw err;
@@ -222,6 +222,8 @@ router.post('/po_profile', async(req, res)=> {
     res.redirect("/both/po_profile");
   }
 });
+
+
 /*==================Pet page====================== */
 router.get('/pets', async(req, res)=>{
     try{
