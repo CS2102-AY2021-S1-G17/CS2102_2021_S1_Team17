@@ -267,6 +267,49 @@ router.post('/feedback', async(req, res)=> {
   }
 });
 
+/*==================Pet bid====================== */
+router.get('/bid',  async(req, res, next)=> {
+  var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+  var data2 = await db.query("SELECT * FROM care_taker;");
+  res.render('both/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows , successFlash: req.flash("success"),
+errorFlash: req.flash("error")});
+}); 
+
+router.post('/create_bid', async(req, res)=> {
+  try{
+    await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);", [
+        req.user.phone,
+        req.body.ctphone,
+        req.body.petname,
+        req.body.start,
+        req.body.end,
+        req.body.transmethod,
+        req.body.payment
+      ]);
+    req.flash("success", "Bid successfully.");
+  } catch (err) {
+    console.log(err);
+    console.log(req.body);
+    req.flash("error", "Bid Should Be placed 3 days in advance.");
+    throw err;
+  } finally {
+    res.redirect("/both/bid");
+  }
+});
+router.post('/search',  async(req, res)=> {
+  try{
+    var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+    var data2 = await db.query("SELECT * FROM search_ct($1,$2,$3,$4,$5);",[req.user.phone, req.body.category, req.body.start, req.body.end, req.body.translocation]);
+    console.log(req.body);
+  } catch (err) {
+    console.log(err);
+    console.log(req.body);
+    req.flash("error", "An error occured while searching");
+  } finally {
+    res.render('both/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows,
+        successFlash: req.flash("success"), errorFlash: req.flash("error")});
+  }
+}); 
 /*==================Pet page====================== */
 router.get('/pets', async(req, res)=>{
     try{
