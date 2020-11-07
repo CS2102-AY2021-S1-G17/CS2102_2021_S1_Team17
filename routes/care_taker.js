@@ -36,27 +36,37 @@ router.get('/', async(req, res)=> {
 router.post('/category', async(req, res)=> {
   try{
     let {ct_phone, cat, dog, bird, cat_price,dog_price,bird_price} = req.body;
-    var data = await db.query("SELECT is_full_time FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
-    var fulltime = data.rows.is_full_time;
-    if (fulltime) {
+    if (req.body.is_full_time) {
       if (cat) {
         await db.query("CALL add_capable($1, 'cat', 1);",[req.user.phone]);
+      } else {
+        await db.query("DELETE FROM capable WHERE phone=$1 AND category_name='cat';",[req.user.phone]);
       }
       if (dog) {
         await db.query("CALL add_capable($1, 'dog', 1);",[req.user.phone]);
+      } else {
+        await db.query("DELETE FROM capable WHERE phone=$1 AND category_name='dog';",[req.user.phone]);
       }
       if (bird) {
         await db.query("CALL add_capable($1, 'bird', 1);",[req.user.phone]);
+      } else {
+        await db.query("DELETE FROM capable WHERE phone=$1 AND category_name='bird';",[req.user.phone]);
       }
     } else {
       if (cat) {
         await db.query("CALL add_capable($1, 'cat', $2);",[req.user.phone, cat_price]);
+      }else {
+        await db.query("DELETE FROM capable WHERE phone=$1 AND category_name='cat';",[req.user.phone]);
       }
       if (dog) {
         await db.query("CALL add_capable($1, 'dog', $2);",[req.user.phone, dog_price]);
+      }else {
+        await db.query("DELETE FROM capable WHERE phone=$1 AND category_name='dog';",[req.user.phone]);
       }
       if (bird) {
         await db.query("CALL add_capable($1, 'bird', $2);",[req.user.phone, bird_price]);
+      }else {
+        await db.query("DELETE FROM capable WHERE phone=$1 AND category_name='bird';",[req.user.phone]);
       }
       req.flash("success", "Update successfully.");
     }
