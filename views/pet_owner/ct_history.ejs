@@ -29,11 +29,15 @@
                        <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
                    </a>
                    <div class="media-body">
-                       <h2 class="text-white display-6">My History Transactions</h2>
-                       <p class="text-light">View Past Transactions, Ratings and Comments</p>
+                       <h2 class="text-white display-6">Care Taker's Details</h2>
+                       <p class="text-light">View Care Taker's Past Transactions, Ratings and Comments</p>
                    </div>
+                   <form method="get" action="/pet_owner/bid">
+                       <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
+                   </form>
                </div>
            </div>
+        </section>
    
     <div class="row justify-content-center">
        <div class="col m-2">
@@ -49,6 +53,7 @@
             </tr>
             </thead>
         <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        <tbody>
         <% history.forEach(function (bid) { %>
         <tr>
             <td><%- bid.petowner %></td>
@@ -57,15 +62,13 @@
             <td><%- bid.end_date.toDateString() %></td>
             <td><%- bid.rating %></td>
             <td><%- bid.comment %></td>
-        <% }); %>
-                
+        <% }); %>        
       </tr> 
     </tbody>
   </table>
   <%if (!history || history.length < 1) {%>
     <h5 style="text-align:center">No past orders</h5>
   <% } %>
-</section>
 </div>
 </div>
        </div>
