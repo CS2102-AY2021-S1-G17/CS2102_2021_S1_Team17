@@ -128,11 +128,11 @@
                 <br>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="deliver" id="selectdeliver" value="PO deliver">
-                    <label class="form-check-label" for="selectdeliver">I Deliver</label>
+                    <label class="form-check-label" for="selectdeliver">I Deliver</label><br />
                     <input class="form-check-input" type="radio" name="pickup" id="selectpickup" value="CT pick up">
-                    <label class="form-check-label" for="selectpickup">Care Taker Pick Up</label>
+                    <label class="form-check-label" for="selectpickup">Care Taker Pick Up</label><br />
                     <input class="form-check-input" type="radio" name="pcs" id="selectpcs" value="via PCS">
-                    <label class="form-check-label" for="selectpcs">PCS Building</label>
+                    <label class="form-check-label" for="selectpcs">PCS Building</label><br />
                 </div>
                 <p>Select Transfer Method</p>
                 <br>
@@ -163,7 +163,7 @@
             <form class="form-newpet" action="/pet_owner/search" method="post">
                 <label for="inputName" class="sr-only form-control">Transfer Location</label>
                 <input type="text" id="translocation" name="translocation" class="form-control"
-                  placeholder="Search by Transfer Location" required="">
+                  placeholder="Search by Transfer Location">
                 <br>
 <!--
                 <label for="inputCategory" class="form-check">Pet's Category</label>
@@ -175,18 +175,18 @@
 -->
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="cat" id="selectcat" value="cat">
-                    <label class="form-check-label" for="selectcat">Cat</label>
+                    <label class="form-check-label" for="selectcat">Cat</label><br />
                     <input class="form-check-input" type="radio" name="dog" id="selectdog" value="dog">
-                    <label class="form-check-label" for="selectdog">Dog</label>
+                    <label class="form-check-label" for="selectdog">Dog</label><br />
                     <input class="form-check-input" type="radio" name="bird" id="selectbird" value="bird">
                     <label class="form-check-label" for="selectbird">Bird</label>
                 </div>
                 <br>
                 <label for="start">Start date:</label>
-                <input type="date" id="start" name="start">
+                <input type="date" id="start" name="start" required>
                 <br />
                 <label for="end">End date:  </label>
-                <input type="date" id="end" name="end">
+                <input type="date" id="end" name="end" required>
                 <br />
                 <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
             </form>

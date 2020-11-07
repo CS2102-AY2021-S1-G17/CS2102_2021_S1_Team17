@@ -77,7 +77,7 @@
           <td><%- bid.end_date.toDateString() %></td>
           <td><%- bid.total_cost %></td>
           <td>
-            <div style="color:green"><%- bid.status %></div>
+            <div style="color:red">Pending Payment</div>
           </td>
         </tr>
         <% }); %>
@@ -89,7 +89,7 @@
           <td><%- bid.start_date.toDateString() %></td>
           <td><%- bid.end_date.toDateString() %></td>
           <td><%- bid.total_cost %></td>
-          <td><%- bid.status %></td>
+          <td style="color:green"><%- bid.status %></td>
         </tr>
         <% }); %>
     </tbody>
