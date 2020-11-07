@@ -114,7 +114,19 @@ router.post('/pets', async function(req, res) {
     req.flash("error", "Unable to Update.");
     throw err;
   } finally {
-    res.redirect("/pet_owner");
+    res.redirect("/pets");
+  }
+});
+
+router.post('/pet_owner/delete', async function(req, res) {
+  try {
+    await db.query("DELETE FROM owns_pet WHERE phone=$1 AND name=$2", [user.phone, req.pet]);
+    req.flash("success", "Delate successfully.");
+  }  catch (err) {
+    req.flash("error", "Unable to Delete.");
+    throw err;
+  } finally {
+    res.redirect("/pets");
   }
 });
 
