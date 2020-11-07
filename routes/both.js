@@ -154,6 +154,7 @@ router.post('/availability', async(req, res)=> {
   }
 });
 
+/*==================Salary====================== */
 router.get('/salary',  async(req, res, next)=> {
   try {
     var data = await db.query("SELECT * FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
@@ -188,6 +189,7 @@ router.get('/salary',  async(req, res, next)=> {
   }
 }); 
 
+/*==================CT history====================== */
 router.get('/history', async(req, res, next)=> {
   var data3 = await db.query("SELECT * FROM ct_view_past_trans($1);",[req.user.phone]);
   res.render('both/ct_history', { title: 'History Page', history: data3.rows, successFlash: req.flash("success"),
@@ -223,6 +225,47 @@ router.post('/po_profile', async(req, res)=> {
   }
 });
 
+/*==================PO history====================== */
+router.get('/po_history', async(req, res, next)=> {
+  var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
+  var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);  
+  var data3 = await db.query("SELECT * FROM po_view_past_trans($1);",[req.user.phone]);
+  console.log(data3.rows);
+  res.render('both/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows, accepted_bids: data2.rows, past_trans: data3.rows,
+  successFlash: req.flash("success"),
+  errorFlash: req.flash("error")});
+});
+
+router.post('/feedback', async(req, res)=> {
+  function convert(str) {
+    var mnths = {
+        Jan: "01",
+        Feb: "02",
+        Mar: "03",
+        Apr: "04",
+        May: "05",
+        Jun: "06",
+        Jul: "07",
+        Aug: "08",
+        Sep: "09",
+        Oct: "10",
+        Nov: "11",
+        Dec: "12"
+      },
+      date = str.split(" ");
+    return [date[3], mnths[date[1]], date[2]].join("-");
+  }
+  try{
+    let {rate, comment,ct_phone, pet_name,start_date, end_date} = req.body;
+    var start = convert(start_date);
+    var end = convert(end_date)
+    db.query("CALL rate_service($1, $2, $3, $4, $5, $6, $7)",[req.user.phone, parseInt(ct_phone), pet_name,start, end,parseInt(rate),comment]);
+  } catch (err) {
+    throw err;
+  } finally {
+    res.redirect("/both/history");
+  }
+});
 
 /*==================Pet page====================== */
 router.get('/pets', async(req, res)=>{
