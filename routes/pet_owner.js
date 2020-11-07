@@ -106,7 +106,7 @@ router.get('/pets',  async(req, res, next) => {
     }
 }); 
 
-router.post('/pets', async function(req, res) {
+router.post('/add_pet', async function(req, res) {
   try {
     await db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.petname,  req.requirement, req.category]);
     req.flash("success", "Update successfully.");
