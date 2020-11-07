@@ -1,6 +1,7 @@
 var express = require('express');
 var db = require('../db');
 const { route } = require('.');
+const { syncBuiltinESMExports } = require('module');
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
@@ -95,17 +96,27 @@ router.post('/pay', async(req, res)=> {
 
 router.get('/pets',  async(req, res, next) => {
     try{
-        var owns_pet;
         var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
         var data2 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
         var pet_list = data2.rows;
         res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list, successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
-        db.query("CALL add_pet($1, $2, $3, $4);", req.user.phone, req.owns_pet.name, req.owns_pet.special_requirements, req.owns_pet.category_name)
     } catch (err) {
         throw err;
     }
 }); 
+
+router.post('/pets', async function(req, res) {
+  try {
+    db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.owns_pet.name,  req.owns_pet.special_requirements, req.owns_pet.category_name]);
+    req.flash("success", "Update successfully.");
+  }  catch (err) {
+    req.flash("error", "Unable to Update.");
+    throw err;
+  } finally {
+    res.redirect("/pet_owner");
+  }
+});
 
 router.get('/history', async(req, res, next)=> {
   var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
