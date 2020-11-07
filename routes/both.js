@@ -310,6 +310,7 @@ router.post('/search',  async(req, res)=> {
         successFlash: req.flash("success"), errorFlash: req.flash("error")});
   }
 }); 
+
 router.post('/view_details', async(req, res) =>{
   let {details} = req.body;
   var data3 = await db.query("SELECT * FROM ct_view_past_trans($1);",[details]);
