@@ -207,6 +207,7 @@
       <form class="form-signin" action="/care_taker/category" method="post">
       <font size="5">
           <input type="hidden" id="ct_phone" name="ct_phone" value="<%= profile.phone %>">
+          <input type="hidden" id="ct_cat" name="is_full_time" value="<%= profile.is_full_time %>">
           <label for="inputCategory" class="sr-only form-control">Category</label>
           <input type="checkbox" name="cat" value="cat" id="update_cat" onchange="valueChanged()">Cat
           <input type="checkbox" name="dog" value="dog" id="update_dog" onchange="valueChanged()">Dog

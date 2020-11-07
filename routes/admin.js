@@ -15,6 +15,7 @@ router.get('/', async(req, res, next) => {
     try {
         var data = await db.query("SELECT * FROM admin ad WHERE ad.phone=$1;",[req.user.phone]);
         var bids = await db.query("SELECT * FROM  admin_view_accepted_bids();");
+        console.log(bids.rows);
         res.render('admin/admin', { title: 'Admin Page', bids: bids.rows, profile: data.rows[0], successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
     } catch (err) {
@@ -70,7 +71,6 @@ router.post('/init', async(req, res)=> {
   /* Delete User */
   router.post('/delete', async(req, res)=> {
     try{
-      console.log(req.body);
       //DELETE FROM table_name WHERE condition;
       await db.query("DELETE FROM users WHERE phone=$1;",[req.body.phone]);
       req.flash("success", "Delete user successfully.");
@@ -99,11 +99,40 @@ router.post('/init', async(req, res)=> {
 
    /* Update Status */
    router.post('/status', async(req, res)=> {
+    console.log(req.body);
+    function convert(str) {
+      var mnths = {
+          Jan: "01",
+          Feb: "02",
+          Mar: "03",
+          Apr: "04",
+          May: "05",
+          Jun: "06",
+          Jul: "07",
+          Aug: "08",
+          Sep: "09",
+          Oct: "10",
+          Nov: "11",
+          Dec: "12"
+        },
+        date = str.split(" ");
+      return [date[3], mnths[date[1]], date[2]].join("-");
+    }
+    var start = convert(req.body.start_date);
+    var end = convert(req.body.end_date);
+    var po_p = parseInt(req.body.po_phone);
+    var ct_p = parseInt(req.body.ct_phone);
+    console.log(start);
+    console.log(end);
+    console.log(po_p);
+    console.log(ct_p);
+
     try{
-      console.log(req.body);
+      await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Success')",[po_p, ct_p, req.body.pet_name, start, end]);
       req.flash("success", "Update successfully.");
     } catch (err) {
-      req.flash("error", "Unable to Update.");
+      console.log(err);
+      req.flash("error", err);
       throw err;
     } finally {
       res.redirect("/admin");
