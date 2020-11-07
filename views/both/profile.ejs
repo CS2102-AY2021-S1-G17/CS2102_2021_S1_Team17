@@ -2,7 +2,7 @@
 <html> 
     <head> 
         <title><%= title %></title> 
-        <% include ../partials/_ct_header %>
+        <% include ../partials/_both_header %>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
     </head> 
@@ -34,7 +34,7 @@
                     <p class="text-light"><%= profile.is_full_time ? 'Full Time Employee & Pet Owner' : 'Part Time Employee & Pet Owner' %></p>
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#profileEdit">Update CT's Profile</a></span>
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#apply"><%= profile.is_full_time ? 'Apply For Leave' : 'Set Availability' %></a></span>
-                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit">Update Category</a></span>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit"><%= profile.is_full_time ? 'Add Category' : 'Add Category / Edit Price' %></a></span>
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#location">Update Location</a>
                 </div>
             </div>
