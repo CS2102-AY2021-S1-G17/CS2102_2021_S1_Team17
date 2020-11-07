@@ -140,7 +140,8 @@ router.post('/feedback', async(req, res)=> {
 
 router.get('/bid',  async(req, res, next)=> {
   var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
-    res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], successFlash: req.flash("success"),
+  var data2 = await db.query("SELECT * FROM care_taker;");
+  res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows , successFlash: req.flash("success"),
 errorFlash: req.flash("error")});
 }); 
 
