@@ -24,7 +24,7 @@ router.get('/', async(req, res)=> {
           cat_list.push(data2.rows[i][key])
         });
       }
-      //console.log(data.rows[0]); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
+      console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('care_taker/ct_profile', { title: 'Caretaker Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
     } catch (err) {

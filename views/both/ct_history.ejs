@@ -48,9 +48,9 @@
                 <th scope="col">Comment</th>
             </tr>
             </thead>
-        <tr>
         <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
         <% history.forEach(function (bid) { %>
+        <tr>
             <td><%- bid.petowner %></td>
             <td><%- bid.pet_name %></td>
             <td><%- bid.start_date.toDateString() %></td>
