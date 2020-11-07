@@ -108,7 +108,7 @@ router.get('/pets',  async(req, res, next) => {
     }
 }); 
 
-router.post('/add_pet', async function(req, res) {
+router.post('/pet_owner/pets', async function(req, res) {
   try {
     await db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.petname,  req.requirement, req.category]);
     req.flash("success", "Update successfully.");
@@ -116,7 +116,7 @@ router.post('/add_pet', async function(req, res) {
     req.flash("error", "Unable to Update.");
     throw err;
   } finally {
-    res.redirect("/pets");
+    res.redirect("/pet_owner/pets");
   }
 });
 
@@ -128,7 +128,7 @@ router.post('/pet_owner/delete', async function(req, res) {
     req.flash("error", "Unable to Delete.");
     throw err;
   } finally {
-    res.redirect("/pets");
+    res.redirect("/pet_owner/pets");
   }
 });
 
