@@ -184,10 +184,15 @@ errorFlash: req.flash("error")});
 
 router.post('/create_bid', async(req, res)=> {
   try{
-    if (req.body.payment == 'cash')
-      await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user.phone, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transmethod, "Cash"]);
-    else    
-      await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user.phone, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transmethod, "Credit Card"]);
+    await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);", [
+        req.user.phone,
+        req.body.ctphone,
+        req.body.petname,
+        req.body.start,
+        req.body.end,
+        req.body.transmethod,
+        req.body.payment
+      ]);
     req.flash("success", "Bid successfully.");
   } catch (err) {
     console.log(err);
