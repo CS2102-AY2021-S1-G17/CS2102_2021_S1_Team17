@@ -41,6 +41,7 @@
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#profileEdit">Update CT's Profile</a></span>
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#apply"><%= profile.is_full_time ? 'Apply For Leave' : 'Set Availability' %></a></span>
                     <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#edit">Update Category</a></span>
+                    <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#location">Update Location</a>
                 </div>
             </div>
         </div>
@@ -318,6 +319,30 @@
     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
   </div>
 </div>
+</div>
+</div>
+<!---------------------Update Location----------------------------->  
+     <div class="modal fade" id="location" role="dialog">
+  <div class="modal-dialog">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h4 class="modal-title">Update Location</h4>
+      <button type="button" class="close" data-dismiss="modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form class="form-signin" action="/both/location" method="post">
+          <input type="hidden" id="po_phone" name="po_phone" value="<%= profile.phone %>">
+          <label for="local" class="sr-only form-control">Transfer Location</label>
+          <input type="text" id="local" name="local" class="form-control" placeholder="Transfer Location" required="">
+          
+          <button class="btn btn-lg btn-primary btn-block" 
+            type="submit">Update</button> 
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+  </div>
 </div>
 </div>
  </body>

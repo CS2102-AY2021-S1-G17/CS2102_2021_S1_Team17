@@ -1,0 +1,117 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>Pets Profile</title> 
+    <% include ../partials/_both_header %>
+    <link href="/stylesheets/ct_availability.css" rel="stylesheet">
+</head> 
+<div>
+    <% if (successFlash.length > 0) { %>
+      <div class="alert alert-success mb-2" role="alert">
+          <%= successFlash %>
+      </div>
+    <% } %>
+    <% if (errorFlash.length > 0) { %>
+        <div class="alert alert-danger mb-2" role="alert">
+            <%= errorFlash %>
+        </div>
+    <% } %>
+  </div>
+<body>
+    <div class="row justify-content-center">
+        <div class="col m-2">
+         <section class="card">
+             <div class="twt-feed blue-bg">
+                 <div class="corner-ribon black-ribon">
+                 </div>
+     
+                 <div class="media">
+                     <a href="#">
+                         <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
+                     </a>
+                     <div class="media-body">
+                         <h2 class="text-white display-6"><%= profile.name %></h2>
+                         <p class="text-light">Pet Owner</p>
+                         <a data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#addpet">Add New Pet</a>
+                     </div>
+                 </div>
+             </div>
+             <div class="weather-category twt-category">
+                 <ul>
+                   <li class="active">
+                    <h5><%= profile.phone %></h5>
+                    Phone No
+                    </li>
+                   <li>
+                       <h5><%= profile.card %></h5>
+                       Card Number
+                   </li>
+                   <li>
+                       <h5><%= profile.transfer_location %></h5>
+                       Preferred Transfer Location
+                   </li>
+               </ul>
+             </div>
+          </section>
+        </div>
+      </div>
+    <div class="row justify-content-center">
+       <div class="col m-2">
+           <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">My Pet</th>
+                <th scope="col">Category</th>
+                <th scope="col">Special Requirements</th>
+                <th scope="col">Action</th>
+            </tr>
+            </thead>
+    <tbody>
+      <tr>
+        <% pet_list.forEach(function (owns_pet) { %>
+          <td><%- owns_pet.name %></td>
+          <td><%- owns_pet.category_name %></td>
+          <td><%- owns_pet.special_requirements %></td>
+          <td>
+            <form action="/both/delete_pet" method="post">
+                <input type="hidden" id="pet" name="pet" value="<%= owns_pet.name %>">
+                <input class="btn btn-danger" type="submit" value="Delete">
+            </form>
+          </td>
+        <% }); %>
+      </tr>
+    </tbody>
+  </table>
+       </div>
+    </div>
+    <div class="modal fade" id="addpet" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Add Pet</h4>
+                    <button class="close" type="button" data-dismiss="modal">&times;</button>
+                </div>
+                    <div class="modal-body">
+                        <form class="form-newpet" action="/both/add_pet" method="post">
+                            <label for="inputName" class="sr-only form-control">Pet Name</label>
+                            <input type="text" id="petname" name="petname" class="form-control"
+                  placeholder="Pet Name">
+                            <br>
+                            <select id="category" name="category" class="form-control">
+                                <option value="dog">Dog</option>
+                                <option value="cat">Cat</option>
+                                <option value="bird">Bird</option>
+                            </select>
+                            <label for="requirement" class="sr-only form-control">Special Requirements</label>
+                            <input type="text" id="petrequire" name="petrequire" class="form-control"
+                  placeholder="Special Requirements">
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+                    </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

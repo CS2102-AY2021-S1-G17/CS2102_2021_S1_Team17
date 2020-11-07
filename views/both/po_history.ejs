@@ -1,0 +1,103 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>History Transactions</title> 
+    <% include ../partials/_both_header %>
+    <link href="/stylesheets/ct_availability.css" rel="stylesheet">
+    <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head> 
+<div>
+    <% if (successFlash.length > 0) { %>
+      <div class="alert alert-success mb-2" role="alert">
+          <%= successFlash %>
+      </div>
+    <% } %>
+    <% if (errorFlash.length > 0) { %>
+        <div class="alert alert-danger mb-2" role="alert">
+            <%= errorFlash %>
+        </div>
+    <% } %>
+  </div>
+<body>
+    <div class="row justify-content-center">
+   <div class="col m-2">
+       <section class="card">
+           <div class="twt-feed blue-bg">
+               <div class="corner-ribon black-ribon">
+               </div>
+               <div class="media">
+                   <a href="#">
+                       <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
+                   </a>
+                   <div class="media-body">
+                       <h2 class="text-white display-6">My History Transactions</h2>
+                       <p class="text-light">View Past Transactions | Rate Our Care Takers | Leave Comments</p>
+                   </div>
+               </div>
+           </div>
+       </section>
+       </div>
+    </div>
+    <div class="row justify-content-center">
+       <div class="col m-2">
+           <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">Care Taker</th>
+                <th scope="col">Care Taker Phone</th>
+                <th scope="col">My Pet</th>
+                <th scope="col">Category</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Total Cost</th>
+                <th scope="col">Transfer</th>
+                <th scope="col">Payment</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Comment</th>
+            </tr>
+            </thead>
+    <tbody>
+      <tr>
+        <% past_trans.forEach(function (bid) { %>
+          <td><%- bid.caretaker %></td>
+          <td><%- bid.ct_phone %></td>
+          <td><%- bid.pet_name %></td>
+          <td><%- bid.category_name %></td>
+          <td><%- bid.start_date.toDateString() %></td>
+          <td><%- bid.end_date.toDateString() %></td>
+          <td><%- bid.total_cost %></td>
+          <td><%- bid.transfer_method %></td>
+          <td><%- bid.payment_method %></td>
+          <form class="form-submitfeedback" action="/both/feedback" method="post" value="<% bid.rating %>">
+            <td>
+            <div class="rate">
+                <input type="radio" id="star5" name="rate" value="5" />
+                <label for="star5" title="text">5 stars</label>
+                <input type="radio" id="star4" name="rate" value="4" />
+                <label for="star4" title="text">4 stars</label>
+                <input type="radio" id="star3" name="rate" value="3" />
+                <label for="star3" title="text">3 stars</label>
+                <input type="radio" id="star2" name="rate" value="2" />
+                <label for="star2" title="text">2 stars</label>
+                <input type="radio" id="star1" name="rate" value="1" />
+                <label for="star1" title="text">1 star</label>
+            </div>
+            </td>
+            <td>
+                <label for="inputComment" class="sr-only form-control">Comment</label>
+                <input type="text" id="comment" name="comment" class="form-control"
+                  placeholder="Comment" value="<%= bid.comment %>">
+            </td>
+            <td>
+                <button class="btn btn-fb btn-primary btn-block" type="submit">Submit</button>
+            </td>
+            </form>
+        <% }); %>
+      </tr>
+    </tbody>
+  </table>
+       </div>
+    </div>
+</body>
+</html>
