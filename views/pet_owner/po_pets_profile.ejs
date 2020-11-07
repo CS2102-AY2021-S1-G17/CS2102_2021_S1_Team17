@@ -68,7 +68,7 @@
             </thead>
     <tbody>
         <% pet_list.forEach(function (owns_pet) { %>
-      <tr>
+        <tr>
           <td><%- owns_pet.name %></td>
           <td><%- owns_pet.category_name %></td>
           <td><%- owns_pet.special_requirements %></td>
@@ -78,8 +78,8 @@
                 <input class="btn btn-danger" type="submit" value="Delete">
             </form>
           </td>
+        </tr>
         <% }); %>
-      </tr>
     </tbody>
   </table>
        </div>

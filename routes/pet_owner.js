@@ -1,5 +1,10 @@
 var express = require('express');
 var db = require('../db');
+<<<<<<< HEAD
+=======
+const { route } = require('.');
+const { syncBuiltinESMExports } = require('module');
+>>>>>>> f93e430f3c750d9cc9ca1e9461435e9e173a5b2c
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
@@ -94,23 +99,36 @@ router.post('/pay', async(req, res)=> {
 
 router.get('/pets',  async(req, res, next) => {
     try{
-        var owns_pet;
         var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
         var data2 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
         var pet_list = data2.rows;
         res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list, successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
         //db.query("CALL add_pet($1, $2, $3, $4);", req.user.phone, req.owns_pet.name, req.owns_pet.special_requirements, req.owns_pet.category_name)
+
     } catch (err) {
         throw err;
     }
 }); 
 
-router.post('/pets', async(req, res) =>{
-  try{
-    console.log(req.body);
-  } catch(err) {
-    req.flash("error", "Unable to Add Pet.");
+router.post('/pets', async function(req, res) {
+  try {
+    await db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.petname,  req.requirement, req.category]);
+    req.flash("success", "Update successfully.");
+  }  catch (err) {
+    req.flash("error", "Unable to Update.");
+    throw err;
+  } finally {
+    res.redirect("/pets");
+  }
+});
+
+router.post('/pet_owner/delete', async function(req, res) {
+  try {
+    await db.query("DELETE FROM owns_pet WHERE phone=$1 AND name=$2", [user.phone, req.pet]);
+    req.flash("success", "Delate successfully.");
+  }  catch (err) {
+    req.flash("error", "Unable to Delete.");
     throw err;
   } finally {
     res.redirect("/pets");
@@ -139,7 +157,8 @@ router.post('/feedback', async(req, res)=> {
 
 router.get('/bid',  async(req, res, next)=> {
   var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
-    res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], successFlash: req.flash("success"),
+  var data2 = await db.query("SELECT * FROM care_taker;");
+  res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows , successFlash: req.flash("success"),
 errorFlash: req.flash("error")});
 }); 
 
