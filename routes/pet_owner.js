@@ -108,7 +108,7 @@ router.get('/pets',  async(req, res, next) => {
 
 router.post('/pets', async function(req, res) {
   try {
-    db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.owns_pet.name,  req.owns_pet.special_requirements, req.owns_pet.category_name]);
+    await db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.petname,  req.requirement, req.category]);
     req.flash("success", "Update successfully.");
   }  catch (err) {
     req.flash("error", "Unable to Update.");
