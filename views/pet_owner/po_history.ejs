@@ -36,12 +36,10 @@
                    </div>
                </div>
            </div>
-       </section>
-       </div>
-    </div>
+    
     <div class="row justify-content-center">
        <div class="col m-2">
-           <table class="table">
+           <table class="table" style="text-align:center">
             <thead>
             <tr>
                 <th scope="col">Care Taker</th>
@@ -107,7 +105,13 @@
         <% }); %>
     </tbody>
   </table>
+    <%if (!past_trans || past_trans.length < 1) {%>
+    <h5 style="text-align:center">No past transaction</h5>
+    <% } %>     
        </div>
     </div>
+</section>
+</div>
+</div>
 </body>
 </html>

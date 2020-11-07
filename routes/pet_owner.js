@@ -20,8 +20,6 @@ router.get('/', async(req, res)=> {
       var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
       var accepted_bids = data2.rows;
       var pending_bids = data3.rows;
-      console.log(accepted_bids);
-      console.log(pending_bids);
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
@@ -35,8 +33,6 @@ router.get('/po_profile',  async(req, res, next)=> {
       var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
       var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1)",[req.user.phone]);
       var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
-      var accepted_bids = data2.rows;
-      var pending_bids = data3.rows;z
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
@@ -188,7 +184,10 @@ errorFlash: req.flash("error")});
 
 router.post('/create_bid', async(req, res)=> {
   try{
-    await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transfer, req.body.payment]);
+    if (req.body.payment == 'cash')
+      await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user.phone, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transmethod, "Cash"]);
+    else    
+      await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user.phone, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transmethod, "Credit Card"]);
     req.flash("success", "Bid successfully.");
   } catch (err) {
     console.log(err);
@@ -200,8 +199,18 @@ router.post('/create_bid', async(req, res)=> {
   }
 });
 
-router.get('/search',  function(req, res, next) {
-      res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, successFlash: req.flash("success"),
-  errorFlash: req.flash("error")});
+router.post('/search',  async(req, res)=> {
+  try{
+    var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+    var data2 = await db.query("SELECT * FROM search_ct($1,$2,$3,$4,$5);",[req.user.phone, req.body.category, req.body.start, req.body.end, req.body.translocation]);
+    console.log(req.body);
+  } catch (err) {
+    console.log(err);
+    console.log(req.body);
+    req.flash("error", "An error occured while searching");
+  } finally {
+    res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows,
+        successFlash: req.flash("success"), errorFlash: req.flash("error")});
+  }
 }); 
 module.exports = router;

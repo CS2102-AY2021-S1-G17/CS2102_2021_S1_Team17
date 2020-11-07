@@ -10,6 +10,7 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
         <script>
         $( function() {
             $('#daterangepickerbid').daterangepicker();
@@ -18,10 +19,9 @@
             $('#daterangepickersearch').daterangepicker();
         } );
         $(document).ready( function () {
-            $('#table').DataTable();
+            $('#b_table').DataTable();
         } );
         </script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 </head>
 <div>
     <% if (successFlash.length > 0) { %>
@@ -70,11 +70,9 @@
                    </li>
                </ul>
              </div>
-          </section>
-        </div>
-      </div>
-    <div class="row justify-content-center">
-    <table id="table" class="display" style="width:80%">
+       
+    <!-- <div class="row justify-content-center"> -->
+    <table id="b_table" class="display" style="text-align:center">
         <thead>
             <tr>
                 <th>Care Taker Phone</th>
@@ -96,7 +94,10 @@
         <% }); %>
         </tbody>
     </table>
-    </div>
+    <!-- </div> -->
+</section>
+</div>
+</div>
     <div class="modal fade" id="create" role="dialog">
         <div class="modal-dialog">
                     
