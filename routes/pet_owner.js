@@ -222,7 +222,10 @@ router.post('/search',  async(req, res)=> {
 router.post('/view_details', async(req, res) =>{
   let {details} = req.body;
   var data3 = await db.query("SELECT * FROM ct_view_past_trans($1);",[details]);
-  res.render('pet_owner/ct_history', { title: 'History Page', history: data3.rows, successFlash: req.flash("success"),
+  var data = await db.query("SELECT * FROM capable WHERE phone=$1",[details]);
+  var capable = data.rows;
+  console.log(capable);
+  res.render('pet_owner/ct_history', { title: 'History Page', capable: capable,history: data3.rows, successFlash: req.flash("success"),
   errorFlash: req.flash("error")});
 })
 module.exports = router;
