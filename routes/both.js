@@ -11,6 +11,7 @@ router.all("*", function (req, res, next) {
   }
 });
 
+/*==================CT profile====================== */
 router.get('/', async(req, res)=> { 
     try{
       var data = await db.query("SELECT * FROM care_taker ct WHERE ct.phone=$1;",[req.user.phone]);
@@ -26,7 +27,7 @@ router.get('/', async(req, res)=> {
         });
       }
       //console.log(data.rows[0]); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
-      res.render('both/profile', { title: 'CT & PO\'s Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work, successFlash: req.flash("success"),
+      res.render('both/ct_profile', { title: 'CT & PO\'s Page', profile:data.rows[0], cat_list: cat_list, pending_bids:pending_bids, future_work: future_work, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
     } catch (err) {
       throw err;
@@ -192,6 +193,36 @@ router.get('/history', async(req, res, next)=> {
   res.render('both/ct_history', { title: 'History Page', history: data3.rows, successFlash: req.flash("success"),
   errorFlash: req.flash("error")});
 }); 
+
+/*==================PO profile====================== */
+router.get('/po_profile', async(req, res)=> {
+  try{
+    var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+    var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1)",[req.user.phone]);
+    var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
+    var accepted_bids = data2.rows;
+    var pending_bids = data3.rows;
+    res.render('both/po_profile', { title: 'CT & PO\'s Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
+    errorFlash: req.flash("error")});
+  } catch (err) {
+    throw err;
+  }
+});
+router.post('/po_profile', async(req, res)=> {
+  try{
+    let {local} = req.body;
+    await db.query("UPDATE pet_owner SET transfer_location = $1 WHERE phone=$2;",
+    [local, req.user.phone])
+    console.log(req.body);
+    req.flash("success", "Update successfully.");
+  } catch (err) {
+    req.flash("error", "Unable to Update.");
+    throw err;
+  } finally {
+    res.redirect("/both/po_profile");
+  }
+});
+
 
 /*==================Pet page====================== */
 router.get('/pets', async(req, res)=>{
