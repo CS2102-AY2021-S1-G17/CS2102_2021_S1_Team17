@@ -2,7 +2,7 @@
 <html> 
 <head> 
     <title>History Transactions</title> 
-    <% include ../partials/_po_header %>
+    <% include ../partials/_both_header %>
     <link href="/stylesheets/ct_availability.css" rel="stylesheet">
     <link rel="stylesheet" href="path/to/font-awesome/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -58,8 +58,8 @@
             </tr>
             </thead>
     <tbody>
-        <% past_trans.forEach(function (bid) { %>
       <tr>
+        <% past_trans.forEach(function (bid) { %>
           <td><%- bid.caretaker %></td>
           <td><%- bid.ct_phone %></td>
           <td><%- bid.pet_name %></td>
@@ -69,7 +69,7 @@
           <td><%- bid.total_cost %></td>
           <td><%- bid.transfer_method %></td>
           <td><%- bid.payment_method %></td>
-          <form class="form-submitfeedback" action="/feedback" method="post" value="<% bid.rating %>">
+          <form class="form-submitfeedback" action="/both/feedback" method="post" value="<% bid.rating %>">
             <td>
             <div class="rate">
                 <input type="radio" id="star5" name="rate" value="5" />

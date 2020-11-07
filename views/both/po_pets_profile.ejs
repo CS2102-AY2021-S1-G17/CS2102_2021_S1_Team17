@@ -2,7 +2,7 @@
 <html> 
 <head> 
     <title>Pets Profile</title> 
-    <% include ../partials/_po_header %>
+    <% include ../partials/_both_header %>
     <link href="/stylesheets/ct_availability.css" rel="stylesheet">
 </head> 
 <div>
@@ -67,13 +67,13 @@
             </tr>
             </thead>
     <tbody>
-        <% pet_list.forEach(function (owns_pet) { %>
       <tr>
+        <% pet_list.forEach(function (owns_pet) { %>
           <td><%- owns_pet.name %></td>
           <td><%- owns_pet.category_name %></td>
           <td><%- owns_pet.special_requirements %></td>
           <td>
-            <form action="/pet_owner/delete" method="post">
+            <form action="/both/delete_pet" method="post">
                 <input type="hidden" id="pet" name="pet" value="<%= owns_pet.name %>">
                 <input class="btn btn-danger" type="submit" value="Delete">
             </form>
@@ -92,7 +92,7 @@
                     <button class="close" type="button" data-dismiss="modal">&times;</button>
                 </div>
                     <div class="modal-body">
-                        <form class="form-newpet" action="/add_pet" method="post">
+                        <form class="form-newpet" action="/both/add_pet" method="post">
                             <label for="inputName" class="sr-only form-control">Pet Name</label>
                             <input type="text" id="petname" name="petname" class="form-control"
                   placeholder="Pet Name">

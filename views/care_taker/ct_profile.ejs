@@ -5,12 +5,6 @@
         <% include ../partials/_ct_header %>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-date-range-picker/0.14.2/daterangepicker.min.css">
     </head> 
     <div>
       <% if (successFlash.length > 0) { %>
@@ -115,18 +109,18 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
         <% pending_bids.forEach(function (bid) { %>
+      <tr>
             <td><%- bid.petowner %></td>
             <td><%- bid.pet_name %></td>
             <td>
-              <%if (bid.category == 'dog') { %>
+              <%if (bid.category_name == 'dog') { %>
                 <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
               <% } %>
-              <%if (bid.category == 'cat') { %>
+              <%if (bid.category_name == 'cat') { %>
                 <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
               <% } %>
-              <%if (bid.category == 'bird') { %>
+              <%if (bid.category_name == 'bird') { %>
                 <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
               <% } %>
             </td>
@@ -135,7 +129,7 @@
             <td><%- bid.total_cost %></td>
             <td>
               <button class="btn" data-toggle="modal"
-                data-target="#details" data-req="<%= bid.req %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+                data-target="#details" data-req="<%= bid.special_requirements %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
                 <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
               </button>
             </td>
@@ -152,19 +146,19 @@
             </td>
         <% }); %>
         </tr>
-        <tr>
         <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
         <% future_work.forEach(function (bid) { %>
+        <tr>
           <td><%- bid.petowner %></td>
           <td><%- bid.pet_name %></td>
           <td>
-            <%if (bid.category == 'dog') { %>
+            <%if (bid.category_name == 'dog') { %>
               <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dog-solid.svg">
             <% } %>
-            <%if (bid.category == 'cat') { %>
+            <%if (bid.category_name == 'cat') { %>
               <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/cat-solid.svg">
             <% } %>
-            <%if (bid.category == 'bird') { %>
+            <%if (bid.category_name == 'bird') { %>
               <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg">
             <% } %>
           </td>
@@ -173,7 +167,7 @@
           <td><%- bid.total_cost %></td>
           <td>
             <button class="btn" data-toggle="modal"
-              data-target="#details" data-req="<%= bid.req %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
+              data-target="#details" data-req="<%= bid.special_requirements %>" data-trans="<%= bid.transfer_method%>" data-pay="<%= bid.payment_method %>">
               <img class="align-self-center rounded-circle mr-3" style="width:30px; height:30px;" alt="" src="../images/eye-regular.svg">
             </button>
           </td>
@@ -334,6 +328,9 @@
       modal.find(".modal-body #pay").text(pay);
 
   });
+</script>
+<script>
+
   function valueChanged()
     {
         if($('#update_cat').is(":checked")){   
