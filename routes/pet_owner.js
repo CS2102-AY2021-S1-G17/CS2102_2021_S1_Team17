@@ -1,4 +1,5 @@
 var express = require('express');
+const { syncBuiltinESMExports } = require('module');
 var db = require('../db');
 //const { route } = require('.');
 //const { syncBuiltinESMExports } = require('module');
@@ -161,6 +162,11 @@ router.get('/bid',  async(req, res, next)=> {
   res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows , successFlash: req.flash("success"),
 errorFlash: req.flash("error")});
 }); 
+
+router.post('/bid/create_bid', async(req, res)=> {
+  await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transfer, req.body.payment]);
+  req.flash("success", "Bid successfully.");
+});
 
 router.get('/search',  function(req, res, next) {
       res.render('pet_owner/po_bid', { title: 'Bid Page', user : req.user, successFlash: req.flash("success"),
