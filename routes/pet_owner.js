@@ -1,6 +1,5 @@
 var express = require('express');
 var db = require('../db');
-const { route } = require('.');
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
@@ -101,11 +100,22 @@ router.get('/pets',  async(req, res, next) => {
         var pet_list = data2.rows;
         res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list, successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
-        db.query("CALL add_pet($1, $2, $3, $4);", req.user.phone, req.owns_pet.name, req.owns_pet.special_requirements, req.owns_pet.category_name)
+        //db.query("CALL add_pet($1, $2, $3, $4);", req.user.phone, req.owns_pet.name, req.owns_pet.special_requirements, req.owns_pet.category_name)
     } catch (err) {
         throw err;
     }
 }); 
+
+router.post('/pets', async(req, res) =>{
+  try{
+    console.log(req.body);
+  } catch(err) {
+    req.flash("error", "Unable to Add Pet.");
+    throw err;
+  } finally {
+    res.redirect("/pets");
+  }
+});
 
 router.get('/history', async(req, res, next)=> {
   var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
