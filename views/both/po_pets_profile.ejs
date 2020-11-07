@@ -80,6 +80,9 @@
         <% }); %>
     </tbody>
   </table>
+  <%if (!pet_list || pet_list.length < 1) {%>
+    <h5 style="text-align:center">No pet</h5>
+    <% } %> 
        </div>
     </div>
 </section>
