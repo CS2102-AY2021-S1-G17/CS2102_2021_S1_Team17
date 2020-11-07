@@ -107,9 +107,9 @@
                 <label for="inputPhone" class="sr-only form-control">Preferred Care Taker's Phone No</label>
                 <input type="text" id="ctphone" name="ctphone" class="form-control"
                   placeholder="Care Taker's Phone No" required="">
-                <label for="inputName" class="sr-only form-control">Transfer Method</label>
+                <label for="inputLocation" class="sr-only form-control">Transfer Location</label>
                 <input type="text" id="petname" name="petname" class="form-control"
-                  placeholder="Transfer Method" required="">
+                  placeholder="Transfer Location" required="">
                 <br>
                 <label for="inputCategory" class="sr-only form-control">Payment Method</label>
                 <select id="payment" name="cat" class="form-control selectpicker" multiple data-live-search="true">
@@ -117,23 +117,18 @@
                     <option value="card">Credit Card</option>
                 </select>
                 <p>Select Payment Method</p>
-                <label for="inputCategory" class="sr-only form-control">Transfer Method</label>
-                <select id="transfer" name="cat" class="form-control selectpicker" multiple data-live-search="true">
-                    <option value="podeliver">I deliver</option>
-                    <option value="ctpickup">Care taker pick up</option>
-                    <option value="pcs">PCS building</option>
-                </select>
-                <p>Select Transfer Method</p>
                 <br>
                 <label for="start">Start date:</label>
                 <input type="date" id="start" name="start">
                 <br />
                 <label for="end">End date:</label>
                 <input type="date" id="end" name="end">
+                <br>
+                <button type="submit" class="btn btn-lg btn-primary btn-block">Bid</button>
             </form>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-lg btn-primary btn-block">Bid</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
         </div>
         </div>
@@ -166,10 +161,11 @@
                 <label for="end">End date:</label>
                 <input type="date" id="end" name="end">
                 <br />
+                <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
             </form>
         </div>
         <div class="modal-footer">
-            <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
         </div>
         </div>
         </div>
