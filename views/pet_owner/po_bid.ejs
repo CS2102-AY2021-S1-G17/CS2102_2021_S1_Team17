@@ -85,15 +85,15 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-        <% search_ct.forEach(function (care_taker) { %>
+        <% search_ct.forEach(function (bid) { %>
+        <tr>
           <td><%- care_taker.phone %></td>
           <td><%- care_taker.name %></td>
           <td><%- care_taker.transfer_location %></td>
           <td><%- care_taker.avg_rating %></td>
           <th><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></th>
+        </tr>
         <% }); %>
-      </tr>
         </tbody>
     </table>
     </div>
