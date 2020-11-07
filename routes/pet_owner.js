@@ -172,6 +172,7 @@ router.post('/create_bid', async(req, res)=> {
   } catch (err) {
     console.log(err);
     console.log(req.body);
+    req.flash("error", "Bid Should Be placed 3 days in advance.");
     throw err;
   } finally {
     res.redirect("/pet_owner/bid");
