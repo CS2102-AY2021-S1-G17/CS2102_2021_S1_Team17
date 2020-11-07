@@ -71,8 +71,8 @@
             </tr>
             </thead>
     <tbody>
-        <tr>
         <% accepted_bids.forEach(function (bid) { %>
+        <tr>
           <td><%- bid.caretaker %></td>
           <td><%- bid.ct_phone %></td>
           <td><%- bid.pet_name %></td>
@@ -82,8 +82,8 @@
           <td><%- bid.status %></td>
         <% }); %>
       </tr>
-        <tr>
         <% pending_bids.forEach(function (bid) { %>
+        <tr>
           <td><%- bid.caretaker %></td>
           <td><%- bid.ct_phone %></td>
           <td><%- bid.pet_name %></td>

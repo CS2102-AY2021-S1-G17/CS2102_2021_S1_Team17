@@ -46,7 +46,7 @@ BEGIN
 		SELECT C.name AS caretaker, B.ct_phone, B.pet_name, B.category_name, B.start_date, B.end_date, 
 			B.total_cost, B.transfer_method, B.payment_method, B.rating, B.comment
 		FROM bids B, care_taker C
-		WHERE B.po_phone = _phone AND C.phone = B.ct_phone AND B.status = 'Success'
+		WHERE B.po_phone = _phone AND C.phone = B.ct_phone AND B.status = 'Success' AND B.end_date <= CURRENT_DATE
 		ORDER BY B.start_date DESC
 		);
 END;
@@ -86,7 +86,7 @@ BEGIN
 		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.category_name, B.start_date, B.end_date, 
 			B.total_cost, B.transfer_method, B.payment_method, B.rating, B.comment
 		FROM bids B, pet_owner P
-		WHERE B.ct_phone = _phone AND P.phone = B.po_phone AND B.status = 'Success'
+		WHERE B.ct_phone = _phone AND P.phone = B.po_phone AND B.status = 'Success' AND B.end_date <= CURRENT_DATE
 		ORDER BY B.start_date DESC
 		);
 END;
@@ -165,15 +165,17 @@ SELECT * FROM ct_view_pending_bids(...);
 CREATE OR REPLACE FUNCTION ct_view_pending_bids(_phone INTEGER) 
 	RETURNS TABLE (
 		petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
-		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR
+		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR,category_name VARCHAR, special_requirements VARCHAR(500)
 		) AS
 $$
 BEGIN
 	RETURN QUERY(
 		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
-			B.total_cost, B.transfer_method, B.payment_method
-		FROM bids B, pet_owner P
+			B.total_cost, B.transfer_method, B.payment_method, O.category_name, O.special_requirements 
+		FROM bids B, pet_owner P, owns_pet O
 		WHERE B.ct_phone = _phone AND B.status = 'Pending' AND P.phone = B.po_phone AND B.start_date >= CURRENT_DATE
+		AND P.phone = B.po_phone
+		AND O.phone=P.phone AND O.name=P.name
 		ORDER BY B.start_date ASC
 		);
 END;
@@ -187,15 +189,16 @@ SELECT * FROM ct_view_future_work(...);
 CREATE OR REPLACE FUNCTION ct_view_future_work(_phone INTEGER)
 	RETURNS TABLE (
 		petowner VARCHAR, po_phone INTEGER, pet_name VARCHAR, start_date DATE, end_date DATE,
-		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR
+		total_cost FLOAT8, transfer_method VARCHAR, payment_method VARCHAR, category_name VARCHAR, special_requirements VARCHAR(500)
 		) AS
 $$
 BEGIN
 	RETURN QUERY(
 		SELECT P.name AS petowner, B.po_phone, B.pet_name, B.start_date, B.end_date,
-			B.total_cost, B.transfer_method, B.payment_method
-		FROM bids B, pet_owner P
+			B.total_cost, B.transfer_method, B.payment_method, O.category_name, O.special_requirements
+		FROM bids B, pet_owner P, owns_pet O
 		WHERE B.end_date >= CURRENT_DATE AND B.ct_phone = _phone AND B.status = 'Success' AND P.phone = B.po_phone
+		AND O.phone=P.phone AND O.name=P.name
 		ORDER BY B.start_date ASC
 		);
 END;
