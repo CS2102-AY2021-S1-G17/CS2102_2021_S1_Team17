@@ -118,11 +118,12 @@
                 <input type="text" id="inputlocation" name="inputlocation" class="form-control"
                   placeholder="Transfer Location" required="">
                 <br>
-                <label for="inputPayment" class="sr-only form-control">Payment Method</label>
-                <select id="payment" name="payment" class="form-control selectpicker" data-live-search="true">
-                    <option value="Cash">Cash</option>
-                    <option value="Credit Card">Credit Card</option>
-                </select>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="cash" id="selectcash" value="Cash">
+                    <label class="form-check-label" for="selectcash">Pay by Cash</label>
+                    <input class="form-check-input" type="radio" name="card" id="selectcard" value="Credit Card">
+                    <label class="form-check-label" for="selectcard">Pay by Credit Card</label>
+                </div>
                 <p>Select Payment Method</p>
                 <br>
                 <div class="form-check">
