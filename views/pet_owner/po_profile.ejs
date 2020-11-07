@@ -78,10 +78,12 @@
           <td><%- bid.pet_name %></td>
           <td><%- bid.start_date.toDateString() %></td>
           <td><%- bid.end_date.toDateString() %></td>
-            <td><%- bid.total_cost %></td>
-          <td><%- bid.status %></td>
+          <td><%- bid.total_cost %></td>
+          <td>
+            <div style="color:green">Success</div>
+          </td>
+        </tr>
         <% }); %>
-      </tr>
         <% pending_bids.forEach(function (bid) { %>
         <tr>
           <td><%- bid.caretaker %></td>
@@ -91,8 +93,8 @@
           <td><%- bid.end_date.toDateString() %></td>
           <td><%- bid.total_cost %></td>
           <td><%- bid.status %></td>
+        </tr>
         <% }); %>
-      </tr>
     </tbody>
   </table>
     <%if (!pending_bids || pending_bids.length < 1) {%>

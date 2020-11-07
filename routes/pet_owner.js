@@ -1,7 +1,7 @@
 var express = require('express');
 var db = require('../db');
-const { route } = require('.');
-const { syncBuiltinESMExports } = require('module');
+//const { route } = require('.');
+//const { syncBuiltinESMExports } = require('module');
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
@@ -101,6 +101,8 @@ router.get('/pets',  async(req, res, next) => {
         var pet_list = data2.rows;
         res.render('pet_owner/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list, successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
+        //db.query("CALL add_pet($1, $2, $3, $4);", req.user.phone, req.owns_pet.name, req.owns_pet.special_requirements, req.owns_pet.category_name)
+
     } catch (err) {
         throw err;
     }
