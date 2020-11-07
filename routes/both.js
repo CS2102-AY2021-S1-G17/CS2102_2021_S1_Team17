@@ -193,4 +193,43 @@ router.get('/history', async(req, res, next)=> {
   errorFlash: req.flash("error")});
 }); 
 
+/*==================Pet page====================== */
+router.get('/pets', async(req, res)=>{
+    try{
+      var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
+      var data2 = await db.query("SELECT * FROM po_view_pets($1);",[req.user.phone]);
+      var pet_list = data2.rows;
+      res.render('both/po_pets_profile', { title: 'PetOwner Page', profile:data.rows[0], pet_list:pet_list, successFlash: req.flash("success"),
+      errorFlash: req.flash("error")});
+      //db.query("CALL add_pet($1, $2, $3, $4);", req.user.phone, req.owns_pet.name, req.owns_pet.special_requirements, req.owns_pet.category_name)
+
+    } catch (err) {
+        throw err;
+    }
+});
+router.post('/pets', async function(req, res) {
+  try {
+    await db.query("CALL add_pet($1, $2, $3, $4);", [req.user.phone, req.body.petname,  req.body.petrequire, req.body.category]);
+    req.flash("success", "Update successfully.");
+  }  catch (err) {
+    console.log(req.body);
+    console.log(err);
+    req.flash("error", "Unable to Update.");
+    throw err;
+  } finally {
+    res.redirect("/both/pets");
+  }
+});
+router.post('/delete', async function(req, res) {
+  try {
+    await db.query("DELETE FROM owns_pet WHERE phone=$1 AND name=$2", [req.user.phone, req.body.pet]);
+    req.flash("success", "Delate successfully.");
+  }  catch (err) {
+    console.log(req.body);
+    req.flash("error", "Unable to Delete.");
+    throw err;
+  } finally {
+    res.redirect("/both/pets");
+  }
+});
 module.exports = router;
