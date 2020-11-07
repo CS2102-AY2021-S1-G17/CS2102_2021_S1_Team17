@@ -80,7 +80,7 @@
           <td><%- bid.end_date.toDateString() %></td>
           <td><%- bid.total_cost %></td>
           <td>
-            <div style="color:green">Success</div>
+            <div style="color:green"><%- bid.status %></div>
           </td>
         </tr>
         <% }); %>

@@ -97,11 +97,14 @@
                           <input type="text" id="petname" name="petname" class="form-control"
                 placeholder="Pet Name" required>
                         <br>
-                        <select id="category" name="category" class="form-control">
-                            <option value="dog">Dog</option>
-                            <option value="cat">Cat</option>
-                            <option value="bird">Bird</option>
-                        </select>
+                        <div class="form-check">
+                    <input class="form-check-input" type="radio" name="cat" id="selectcat" value="cat">
+                    <label class="form-check-label" for="selectcat">Cat</label>
+                    <input class="form-check-input" type="radio" name="dog" id="selectdog" value="dog">
+                    <label class="form-check-label" for="selectdog">Dog</label>
+                    <input class="form-check-input" type="radio" name="bird" id="selectbird" value="bird">
+                    <label class="form-check-label" for="selectbird">Bird</label>
+                </div>
                         <label for="requirement" class="sr-only form-control">Special Requirements</label>
                           <input type="text" id="petrequire" name="petrequire" class="form-control"
                 placeholder="Special Requirements">

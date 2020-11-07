@@ -118,12 +118,14 @@
                 </select>
                 <p>Select Payment Method</p>
                 <br>
-                <label for="inputTransfer" class="sr-only form-control">Transfer Method</label>
-                <select id="transmethod" name="transmethod" class="form-control selectpicker" data-live-search="true">
-                    <option value="PO deliver">I Deliver</option>
-                    <option value="CT pick up">Care Taker Pick Up</option>
-                    <option value="via PCS">PSC Building</option>
-                </select>
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" name="deliver" id="selectdeliver" value="PO deliver">
+                    <label class="form-check-label" for="selectdeliver">I Deliver</label>
+                    <input class="form-check-input" type="radio" name="pickup" id="selectpickup" value="CT pick up">
+                    <label class="form-check-label" for="selectpickup">Care Taker Pick Up</label>
+                    <input class="form-check-input" type="radio" name="pcs" id="selectpcs" value="via PCS">
+                    <label class="form-check-label" for="selectpcs">PCS Building</label>
+                </div>
                 <p>Select Transfer Method</p>
                 <br>
                 <label for="start">Start date:</label>
@@ -155,18 +157,19 @@
                 <input type="text" id="translocation" name="translocation" class="form-control"
                   placeholder="Search by Transfer Location" required="">
                 <br>
-                <label for="inputCategory" class="sr-only form-control">Pet's Category</label>
-                <select id="category" name="category" class="form-control selectpicker" data-live-search="true">
-                    <option value="cat">Cat</option>
-                    <option value="dog">Dog</option>
-                    <option value="bird">Bird</option>
-                </select>
-                <p>Search by Pet's Category</p>
+               <div class="form-check">
+                    <input class="form-check-input" type="radio" name="cat" id="selectcat" value="cat">
+                    <label class="form-check-label" for="selectcat">Cat</label>
+                    <input class="form-check-input" type="radio" name="dog" id="selectdog" value="dog">
+                    <label class="form-check-label" for="selectdog">Dog</label>
+                    <input class="form-check-input" type="radio" name="bird" id="selectbird" value="bird">
+                    <label class="form-check-label" for="selectbird">Bird</label>
+                </div>
                 <br>
                 <label for="start">Start date:</label>
                 <input type="date" id="start" name="start">
                 <br />
-                <label for="end">End date:</label>
+                <label for="end">End date:  </label>
                 <input type="date" id="end" name="end">
                 <br />
                 <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
