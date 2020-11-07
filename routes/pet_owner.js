@@ -20,6 +20,8 @@ router.get('/', async(req, res)=> {
       var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
       var accepted_bids = data2.rows;
       var pending_bids = data3.rows;
+      console.log(accepted_bids);
+      console.log(pending_bids);
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
@@ -34,7 +36,7 @@ router.get('/po_profile',  async(req, res, next)=> {
       var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1)",[req.user.phone]);
       var data3 = await db.query("SELECT * FROM po_view_upcoming_bids($1)",[req.user.phone]);
       var accepted_bids = data2.rows;
-      var pending_bids = data3.rows;
+      var pending_bids = data3.rows;z
       //console.log(future_work); //contains [petowner, po_phone, pet_name, start_date ,end_date, total_cost, transfer_method, payment_method]
       res.render('pet_owner/po_profile', { title: 'Petowner Page', profile:data.rows[0], accepted_bids:accepted_bids, pending_bids:pending_bids, successFlash: req.flash("success"),
       errorFlash: req.flash("error")});
@@ -138,7 +140,7 @@ router.post('/delete', async function(req, res) {
 
 router.get('/history', async(req, res, next)=> {
   var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
-  var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);
+  var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);  
   var data3 = await db.query("SELECT * FROM po_view_past_trans($1);",[req.user.phone]);
   console.log(data3.rows);
   res.render('pet_owner/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows, accepted_bids: data2.rows, past_trans: data3.rows,
@@ -163,9 +165,17 @@ router.get('/bid',  async(req, res, next)=> {
 errorFlash: req.flash("error")});
 }); 
 
-router.post('/bid/create_bid', async(req, res)=> {
-  await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transfer, req.body.payment]);
-  req.flash("success", "Bid successfully.");
+router.post('/create_bid', async(req, res)=> {
+  try{
+    await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);",[req.user, req.body.ctphone, req.body.petname, req.body.start, req.body.end, req.body.transfer, req.body.payment]);
+    req.flash("success", "Bid successfully.");
+  } catch (err) {
+    console.log(err);
+    console.log(req.body);
+    throw err;
+  } finally {
+    res.redirect("/pet_owner/bid");
+  }
 });
 
 router.get('/search',  function(req, res, next) {
