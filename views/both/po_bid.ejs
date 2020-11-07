@@ -10,12 +10,18 @@
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
         <script>
+        $( function() {
+            $('#daterangepickerbid').daterangepicker();
+        } );
+        $( function() {
+            $('#daterangepickersearch').daterangepicker();
+        } );
         $(document).ready( function () {
-            $('#table').DataTable();
+            $('#b_table').DataTable();
         } );
         </script>
-        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.22/js/jquery.dataTables.js"></script>
 </head>
 <div>
     <% if (successFlash.length > 0) { %>
@@ -66,9 +72,9 @@
              </div>
           </section>
         </div>
-      </div>
-    <div class="row justify-content-center">
-    <table id="table" class="display" style="width:100%">
+      </div>      
+    <!-- <div class="row justify-content-center"> -->
+    <table id="b_table" class="display" style="text-align:center">
         <thead>
             <tr>
                 <th>Care Taker Phone</th>
@@ -81,7 +87,7 @@
             </tr>
         </thead>
         <tbody>
-        <% search_ct.forEach(function (bid) { %>
+        <% search_ct.forEach(function (care_taker) { %>
         <tr>
           <td><%- care_taker.phone %></td>
           <td><%- care_taker.name %></td>
@@ -91,11 +97,7 @@
           <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#viewcom">Comments</button></td>
           <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></td>
         </tr>
-        <% }); %>
-        </tbody>
-    </table>
-    </div>
-<!--    Create a New Bid-->
+        <!--    Create a New Bid-->
     <div class="modal fade" id="create" role="dialog">
         <div class="modal-dialog">
                     
@@ -162,22 +164,25 @@
             <form class="form-newpet" action="/both/search" method="post">
                 <label for="inputName" class="sr-only form-control">Transfer Location</label>
                 <input type="text" id="translocation" name="translocation" class="form-control"
-                  placeholder="Search by Transfer Location" required="">
+                  placeholder="Search by Transfer Location">
                 <br>
-               <div class="form-check">
+                <div class="form-check">
                     <input class="form-check-input" type="radio" name="category" id="selectcat" value="cat" required>
                     <label class="form-check-label" for="selectcat">Cat</label>
+                    <br>
                     <input class="form-check-input" type="radio" name="category" id="selectdog" value="dog">
                     <label class="form-check-label" for="selectdog">Dog</label>
+                    <br>
                     <input class="form-check-input" type="radio" name="category" id="selectbird" value="bird">
                     <label class="form-check-label" for="selectbird">Bird</label>
+                    <br>
                 </div>
                 <br>
                 <label for="start">Start date:</label>
-                <input type="date" id="start" name="start">
+                <input type="date" id="start" name="start" required>
                 <br />
                 <label for="end">End date:  </label>
-                <input type="date" id="end" name="end">
+                <input type="date" id="end" name="end" required>
                 <br />
                 <button type="submit" class="btn btn-lg btn-primary btn-block">Search</button>
             </form>
@@ -250,5 +255,8 @@
         </div>
         </div>
     </div>
+        <% }); %>
+        </tbody>
+    </table>
 </body>
 </html>
