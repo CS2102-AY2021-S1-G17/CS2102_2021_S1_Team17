@@ -1,0 +1,74 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+    <title>History Transactions</title> 
+    <% include ../partials/_ct_header %>
+    <link href="/stylesheets/ct_availability.css" rel="stylesheet">
+</head> 
+<div>
+    <% if (successFlash.length > 0) { %>
+      <div class="alert alert-success mb-2" role="alert">
+          <%= successFlash %>
+      </div>
+    <% } %>
+    <% if (errorFlash.length > 0) { %>
+        <div class="alert alert-danger mb-2" role="alert">
+            <%= errorFlash %>
+        </div>
+    <% } %>
+  </div>
+<body>
+    <div class="row justify-content-center">
+   <div class="col m-2">
+       <section class="card">
+           <div class="twt-feed blue-bg">
+               <div class="corner-ribon black-ribon">
+               </div>
+               <div class="media">
+                   <a href="#">
+                       <img class="align-self-center rounded-circle mr-3" style="width:85px; height:85px;" alt="" src="../images/paw-solid.svg">
+                   </a>
+                   <div class="media-body">
+                       <h2 class="text-white display-6">My History Transactions</h2>
+                       <p class="text-light">View Past Transactions, Ratings and Comments</p>
+                   </div>
+               </div>
+           </div>
+   
+    <div class="row justify-content-center">
+       <div class="col m-2">
+           <table class="table" style="background-color:white; text-align: center">
+            <thead>
+            <tr>
+                <th scope="col">Care Taker</th>
+                <th scope="col">My Pet</th>
+                <th scope="col">Start Date</th>
+                <th scope="col">End Date</th>
+                <th scope="col">Rating</th>
+                <th scope="col">Comment</th>
+            </tr>
+            </thead>
+        <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
+        <% history.forEach(function (bid) { %>
+        <tr>
+            <td><%- bid.petowner %></td>
+            <td><%- bid.pet_name %></td>
+            <td><%- bid.start_date.toDateString() %></td>
+            <td><%- bid.end_date.toDateString() %></td>
+            <td><%- bid.rating %></td>
+            <td><%- bid.comment %></td>
+        <% }); %>
+                
+      </tr> 
+    </tbody>
+  </table>
+  <%if (!history || history.length < 1) {%>
+    <h5 style="text-align:center">No past orders</h5>
+  <% } %>
+</section>
+</div>
+</div>
+       </div>
+    </div>
+</body>
+</html>
