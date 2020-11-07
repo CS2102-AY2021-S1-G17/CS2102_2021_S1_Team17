@@ -2,7 +2,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <head>
     <title><%= title %></title> 
-        <% include ../partials/_both_header %>
+    <% include ../partials/_both_header %>
         <link href="/stylesheets/ct_availability.css" rel="stylesheet">
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
         <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
@@ -70,9 +70,7 @@
                    </li>
                </ul>
              </div>
-          </section>
-        </div>
-      </div>      
+       
     <!-- <div class="row justify-content-center"> -->
     <table id="b_table" class="display" style="text-align:center">
         <thead>
@@ -81,8 +79,6 @@
                 <th>Care Taker</th>
                 <th>Transfer Location</th>
                 <th>Average Rating</th>
-                <th>View Capable Category</th>
-                <th>View Comments</th>
                 <th>Bid</th>
             </tr>
         </thead>
@@ -93,65 +89,64 @@
           <td><%- care_taker.name %></td>
           <td><%- care_taker.transfer_location %></td>
           <td><%- care_taker.avg_rating %></td>
-          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#viewcat">Category</button></td>
-          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#viewcom">Comments</button></td>
-          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></td>
+          <th><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></th>
         </tr>
-        <!--    Create a New Bid-->
-    <div class="modal fade" id="create" role="dialog">
-        <div class="modal-dialog">
-                    
-        <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">Create New Bid</h4>
-            <button class="close" type="button" data-dismiss="modal">&times;</button>
+        <div class="modal fade" id="create" role="dialog">
+            <div class="modal-dialog">
+                        
+            <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Create New Bid</h4>
+                <button class="close" type="button" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form class="form-newpet" action="/both/create_bid" method="post">
+                    <label for="inputName" class="sr-only form-control">Pet Name</label>
+                    <input type="text" id="petname" name="petname" class="form-control"
+                      placeholder="Pet Name" required="">
+                    <label for="inputPhone" class="sr-only form-control">Preferred Care Taker's Phone No</label>
+                    <input type="hidden" id="ctphone" name="ctphone" value=<%- care_taker.phone %>>
+                    <br>
+                    <p>Select Payment Method</p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="payment" id="selectcash" value="Cash" required>
+                        <label class="form-check-label" for="selectcash">Pay by Cash</label><br />
+                        <input class="form-check-input" type="radio" name="payment" id="selectcard" value="Credit Card">
+                        <label class="form-check-label" for="selectcard">Pay by Credit Card</label>
+                    </div>
+                    <br>
+                    <p>Select Transfer Method</p>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="transmethod" id="selectdeliver" value="PO deliver" required>
+                        <label class="form-check-label" for="selectdeliver">I Deliver</label><br />
+                        <input class="form-check-input" type="radio" name="transmethod" id="selectpickup" value="CT pick up">
+                        <label class="form-check-label" for="selectpickup">Care Taker Pick Up</label><br />
+                        <input class="form-check-input" type="radio" name="transmethod" id="selectpcs" value="via PCS">
+                        <label class="form-check-label" for="selectpcs">PCS Building</label><br />
+                    </div>
+                    <br>
+                    <label for="start">Start date:</label>
+                    <input type="date" id="start" name="start" required>
+                    <br />
+                    <label for="end">End date:</label>
+                    <input type="date" id="end" name="end" required>
+                    <br>
+                    <button type="submit" class="btn btn-lg btn-primary btn-block">Bid</button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+            </div>
+            </div>
         </div>
-        <div class="modal-body">
-            <form class="form-newpet" action="/both/create_bid" method="post">
-                <label for="inputName" class="sr-only form-control">Pet Name</label>
-                <input type="text" id="petname" name="petname" class="form-control"
-                  placeholder="Pet Name" required="">
-                <label for="inputPhone" class="sr-only form-control">Preferred Care Taker's Phone No</label>
-                <input type="text" id="ctphone" name="ctphone" class="form-control"
-                  placeholder="Care Taker's Phone No" required="">
-                <label for="inputLocation" class="sr-only form-control">Transfer Location</label>
-                <input type="text" id="petname" name="petname" class="form-control"
-                  placeholder="Transfer Location" required="">
-                <br>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="payment" id="selectcash" value="Cash" required>
-                    <label class="form-check-label" for="selectcash">Pay by Cash</label>
-                    <input class="form-check-input" type="radio" name="payment" id="selectcard" value="Credit Card">
-                    <label class="form-check-label" for="selectcard">Pay by Credit Card</label>
-                </div>
-                <p>Select Payment Method</p>
-                <br>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" name="transmethod" id="selectdeliver" value="PO deliver" required>
-                    <label class="form-check-label" for="selectdeliver">I Deliver</label>
-                    <input class="form-check-input" type="radio" name="transmethod" id="selectpickup" value="CT pick up">
-                    <label class="form-check-label" for="selectpickup">Care Taker Pick Up</label>
-                    <input class="form-check-input" type="radio" name="transmethod" id="selectpcs" value="via PCS">
-                    <label class="form-check-label" for="selectpcs">PCS Building</label>
-                </div>
-                <p>Select Transfer Method</p>
-                <br>
-                <label for="start">Start date:</label>
-                <input type="date" id="start" name="start">
-                <br />
-                <label for="end">End date:</label>
-                <input type="date" id="end" name="end">
-                <br>
-                <button type="submit" class="btn btn-lg btn-primary btn-block">Bid</button>
-            </form>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-        </div>
-    </div>
-<!--    Search Care Takers-->
+        <% }); %>
+        </tbody>
+    </table>
+    <!-- </div> -->
+</section>
+</div>
+</div>
     <div class="modal fade" id="search" role="dialog">
         <div class="modal-dialog">
                     
@@ -163,9 +158,17 @@
         <div class="modal-body">
             <form class="form-newpet" action="/both/search" method="post">
                 <label for="inputName" class="sr-only form-control">Transfer Location</label>
-                <input type="text" id="translocation" name="translocation" class="form-control"
+                <input type="text" id="translocation" name="translocation" class="form-control"
                   placeholder="Search by Transfer Location">
                 <br>
+<!--
+                <label for="inputCategory" class="form-check">Pet's Category</label>
+                <select id="category" name="category" class="form-control selectcat" data-live-search="true">
+                    <option value="cat">Cat</option>
+                    <option value="dog">Dog</option>
+                    <option value="bird">Bird</option>
+                </select>
+--> 
                 <div class="form-check">
                     <input class="form-check-input" type="radio" name="category" id="selectcat" value="cat" required>
                     <label class="form-check-label" for="selectcat">Cat</label>
@@ -193,70 +196,5 @@
         </div>
         </div>
     </div>
-<!--    View Capable Category-->
-    <div class="modal fade" id="viewcat" role="dialog">
-        <div class="modal-dialog">
-                    
-        <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title"><%- care_taker.name %>'s Capable Category</h4>
-            <button class="close" type="button" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-            <table id="table" class="display" style="width:100%">
-                <thead>
-                    <th>Category</th>
-                    <th>Daily Price</th>
-                </thead>
-                <tbody>
-                    <% view_capable.forEach(function (bid) { %>
-                        <tr>
-                            <td><%- capable.category_name %></td>
-                            <td>$<%- capable.daily_price %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-        </div>
-    </div>
-<!--    View Comments-->
-    <div class="modal fade" id="viewcom" role="dialog">
-        <div class="modal-dialog">
-                    
-        <div class="modal-content">
-        <div class="modal-header">
-            <h4 class="modal-title">Comments to <%- care_taker.name %></h4>
-            <button class="close" type="button" data-dismiss="modal">&times;</button>
-        </div>
-        <div class="modal-body">
-            <table id="table" class="display" style="width:100%">
-                <thead>
-                    <th>Rating</th>
-                    <th>Comment</th>
-                </thead>
-                <tbody>
-                    <% past_trans.forEach(function (bid) { %>
-                        <tr>
-                            <td><%- bid.rating %>/5.0</td>
-                            <td><%- bid.comment %></td>
-                        </tr>
-                    <% }); %>
-                </tbody>
-            </table>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-        </div>
-        </div>
-    </div>
-        <% }); %>
-        </tbody>
-    </table>
 </body>
 </html>
