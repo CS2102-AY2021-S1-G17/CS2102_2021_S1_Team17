@@ -1,10 +1,7 @@
 var express = require('express');
 var db = require('../db');
-<<<<<<< HEAD
-=======
-const { route } = require('.');
-const { syncBuiltinESMExports } = require('module');
->>>>>>> f93e430f3c750d9cc9ca1e9461435e9e173a5b2c
+//const { route } = require('.');
+//const { syncBuiltinESMExports } = require('module');
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
