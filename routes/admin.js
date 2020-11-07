@@ -128,8 +128,7 @@ router.post('/init', async(req, res)=> {
     console.log(ct_p);
 
     try{
-      await db.query("UPDATE bids SET status='Success' WHERE po_phone=$1 AND ct_phone=$2 AND pet_name=$3 AND start_date=$4 AND end_date=$5;",
-      [po_p, ct_p, req.pet_name, req.body.start_date, req.body.end_date]);
+      await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Success')",[po_p, ct_p, req.body.pet_name, start, end]);
       req.flash("success", "Update successfully.");
     } catch (err) {
       console.log(err);
