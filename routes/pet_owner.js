@@ -108,27 +108,30 @@ router.get('/pets',  async(req, res, next) => {
     }
 }); 
 
-router.post('/add_pet', async function(req, res) {
+router.post('/pets', async function(req, res) {
   try {
-    await db.query("CALL add_pet($1, $2, $3, $4);", [user.phone, req.petname,  req.requirement, req.category]);
+    await db.query("CALL add_pet($1, $2, $3, $4);", [req.user.phone, req.body.petname,  req.body.petrequire, req.body.category]);
     req.flash("success", "Update successfully.");
   }  catch (err) {
+    console.log(req.body);
+    console.log(err);
     req.flash("error", "Unable to Update.");
     throw err;
   } finally {
-    res.redirect("/pets");
+    res.redirect("/pet_owner/pets");
   }
 });
 
-router.post('/pet_owner/delete', async function(req, res) {
+router.post('/delete', async function(req, res) {
   try {
-    await db.query("DELETE FROM owns_pet WHERE phone=$1 AND name=$2", [user.phone, req.pet]);
+    await db.query("DELETE FROM owns_pet WHERE phone=$1 AND name=$2", [req.user.phone, req.body.pet]);
     req.flash("success", "Delate successfully.");
   }  catch (err) {
+    console.log(req.body);
     req.flash("error", "Unable to Delete.");
     throw err;
   } finally {
-    res.redirect("/pets");
+    res.redirect("/pet_owner/pets");
   }
 });
 
