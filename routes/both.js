@@ -3,7 +3,6 @@ var db = require('../db');
 var router = express.Router();
 
 router.all("*", function (req, res, next) {
-  console.log(req.user)
   if (!req.user || req.user.role != 'Both') {
       return res.redirect("/");
   } else {
@@ -215,7 +214,6 @@ router.post('/po_profile', async(req, res)=> {
     let {local} = req.body;
     await db.query("UPDATE pet_owner SET transfer_location = $1 WHERE phone=$2;",
     [local, req.user.phone])
-    console.log(req.body);
     req.flash("success", "Update successfully.");
   } catch (err) {
     req.flash("error", "Unable to Update.");
@@ -230,7 +228,6 @@ router.get('/po_history', async(req, res, next)=> {
   var data = await db.query("SELECT * FROM po_view_upcoming_bids($1);",[req.user.phone]);
   var data2 = await db.query("SELECT * FROM po_view_accepted_bids($1);",[req.user.phone]);  
   var data3 = await db.query("SELECT * FROM po_view_past_trans($1);",[req.user.phone]);
-  console.log(data3.rows);
   res.render('both/po_history', { title: 'History Page', po_history: data3.rows, pending_bids: data.rows, accepted_bids: data2.rows, past_trans: data3.rows,
   successFlash: req.flash("success"),
   errorFlash: req.flash("error")});
@@ -279,7 +276,7 @@ router.post('/create_bid', async(req, res)=> {
   try{
     await db.query("CALL place_bid($1,$2,$3,$4,$5,$6,$7);", [
         req.user.phone,
-        req.body.ctphone,
+        parseInt(req.body.ctphone),
         req.body.petname,
         req.body.start,
         req.body.end,
@@ -288,8 +285,6 @@ router.post('/create_bid', async(req, res)=> {
       ]);
     req.flash("success", "Bid successfully.");
   } catch (err) {
-    console.log(err);
-    console.log(req.body);
     req.flash("error", "Bid Should Be placed 3 days in advance.");
     throw err;
   } finally {
@@ -300,10 +295,7 @@ router.post('/search',  async(req, res)=> {
   try{
     var data = await db.query("SELECT * FROM pet_owner po WHERE po.phone=$1;",[req.user.phone]);
     var data2 = await db.query("SELECT * FROM search_ct($1,$2,$3,$4,$5);",[req.user.phone, req.body.category, req.body.start, req.body.end, req.body.translocation]);
-    console.log(req.body);
   } catch (err) {
-    console.log(err);
-    console.log(req.body);
     req.flash("error", "An error occured while searching");
   } finally {
     res.render('both/po_bid', { title: 'Bid Page', user : req.user, profile:data.rows[0], search_ct:data2.rows,
@@ -316,7 +308,6 @@ router.post('/view_details', async(req, res) =>{
   var data3 = await db.query("SELECT * FROM ct_view_past_trans($1);",[details]);
   var data = await db.query("SELECT * FROM capable WHERE phone=$1",[details]);
   var capable = data.rows;
-  console.log(capable);
   res.render('pet_owner/ct_history', { title: 'History Page', capable: capable,history: data3.rows, successFlash: req.flash("success"),
   errorFlash: req.flash("error")});
 })
@@ -339,8 +330,6 @@ router.post('/pets', async function(req, res) {
     await db.query("CALL add_pet($1, $2, $3, $4);", [req.user.phone, req.body.petname,  req.body.petrequire, req.body.category]);
     req.flash("success", "Update successfully.");
   }  catch (err) {
-    console.log(req.body);
-    console.log(err);
     req.flash("error", "Unable to Update.");
     throw err;
   } finally {
@@ -352,7 +341,6 @@ router.post('/delete', async function(req, res) {
     await db.query("DELETE FROM owns_pet WHERE phone=$1 AND name=$2", [req.user.phone, req.body.pet]);
     req.flash("success", "Delate successfully.");
   }  catch (err) {
-    console.log(req.body);
     req.flash("error", "Unable to Delete.");
     throw err;
   } finally {

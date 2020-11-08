@@ -144,6 +144,9 @@ DECLARE
 	_daily_price FLOAT8;
 	_total_cost FLOAT8;
 BEGIN
+	IF _pet_name NOT IN (SELECT O.name FROM owns_pet O WHERE O.phone = _po_phone) THEN
+		Raise Notice 'Pet does not belong to this owner';
+	END IF;
 	SELECT P.category_name INTO _category FROM owns_pet P WHERE P.phone = _po_phone AND P.name = _pet_name;
 	SELECT C.daily_price INTO _daily_price FROM capable C WHERE C.phone = _ct_phone AND C.category_name = _category;
 	_total_cost = _daily_price * (_end_date - _start_date + 1);

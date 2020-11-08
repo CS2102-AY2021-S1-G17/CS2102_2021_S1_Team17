@@ -5,8 +5,6 @@
         <% include ../partials/_po_header %>
         <link href="/stylesheets/ct_availability.css" rel="stylesheet">
         <link rel="stylesheet" href="/css/bootstrap.min.css" />
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
         <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
         <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.22/css/jquery.dataTables.css">
@@ -94,7 +92,7 @@
             <input type="hidden" id="details" name="details" value="<%- care_taker.phone %>">
             <td><button data-role="button" class="btn btn-link btn-lg">Check Details</button></td>
           </form>
-          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create">Bid</button></td>
+          <td><button data-role="button" class="btn btn-link btn-lg" data-toggle="modal" data-target="#create" data-ct="<%- care_taker.phone %>">Bid</button></td>
         </tr>
         <!--    Create New Bid -->
         <div class="modal fade" id="create" role="dialog">
@@ -111,7 +109,7 @@
                     <input type="text" id="petname" name="petname" class="form-control"
                       placeholder="Pet Name" required="">
                     <label for="inputPhone" class="sr-only form-control">Preferred Care Taker's Phone No</label>
-                    <input type="hidden" id="ctphone" name="ctphone" value=<%- care_taker.phone %>>
+                    <input type="hidden" id="ctphone" name="ctphone">
                     <br>
                     <p>Select Payment Method</p>
                     <div class="form-check">
@@ -205,3 +203,11 @@
 </div>
 </body>
 </html>
+<script>
+    $("#create").on("show.bs.modal", function (event) {
+        var button = $(event.relatedTarget); 
+        var ct = button.data("ct"); 
+        var modal = $(this);
+        modal.find(".modal-body #ctphone").val(ct);
+    });
+  </script>
