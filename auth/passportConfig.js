@@ -4,17 +4,13 @@ const db = require('../db');
 const bcrypt = require("bcrypt");
 
 function initialize(passport) {
-    console.log('passport initialize');
 
     const authenticateUser = (phone, password, done)=>{
         db.query("select * from users u join where u.phone = $1",[phone], (err, results)=>{
-            console.log("sql");
             if(err){
-                console.log("sql select err");
                 throw err;
             }
 
-            console.log(results.rows);
 
             if (results.rows.length > 0) {
                 const user = results.rows[0];

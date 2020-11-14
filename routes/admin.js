@@ -15,7 +15,6 @@ router.get('/', async(req, res, next) => {
     try {
         var data = await db.query("SELECT * FROM admin ad WHERE ad.phone=$1;",[req.user.phone]);
         var bids = await db.query("SELECT * FROM  admin_view_accepted_bids();");
-        console.log(bids.rows);
         res.render('admin/admin', { title: 'Admin Page', bids: bids.rows, profile: data.rows[0], successFlash: req.flash("success"),
         errorFlash: req.flash("error")});
     } catch (err) {
@@ -154,10 +153,6 @@ router.post('/init', async(req, res)=> {
     var end = convert(req.body.end_date);
     var po_p = parseInt(req.body.po_phone);
     var ct_p = parseInt(req.body.ct_phone);
-    console.log(start);
-    console.log(end);
-    console.log(po_p);
-    console.log(ct_p);
 
     try{
       await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Success')",[po_p, ct_p, req.body.pet_name, start, end]);
