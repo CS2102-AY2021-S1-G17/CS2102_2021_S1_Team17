@@ -42,7 +42,6 @@ router.post("/signup", async function (req, res, next) {
             [phoneno, hashedP, location, username, card, petname, requirement, category]);
         req.flash("success", "Sign up success.");
     } catch (e) {
-        console.log(e);
         req.flash("error", "Sign up failed.");
     } finally {
         res.redirect("/");
@@ -63,7 +62,6 @@ router.post("/signup", async function (req, res, next) {
       }
       req.flash("success", "Sign up success.");
     } catch (e) {
-        console.log(e);
         req.flash("error", "Sign up failed.");
     } finally {
         res.redirect("/");
@@ -90,7 +88,6 @@ router.post("/signup", async function (req, res, next) {
             [phoneno, hashedP, p_location, username, card, petname, requirement, p_category]);
         req.flash("success", "Sign up success.");
     } catch (e) {
-        console.log(e);
         req.flash("error", "Sign up failed.");
     } finally {
         res.redirect("/");
@@ -110,7 +107,6 @@ router.post("/", async function (req, res, next) {
                 errorFlash: req.flash("error")});
             }
         });
-        console.log(user.role)
         if (user.role == "Pet Owner") {
           return res.redirect("/pet_owner");
         } else if (user.role == 'Caretaker') {

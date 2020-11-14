@@ -119,7 +119,6 @@ router.post('/init', async(req, res)=> {
       }
       let {phone, ct_phone, ct_pay_time} = req.body;
       await db.query("INSERT INTO pay VALUES ($1, $2, $3)",[parseInt(phone), parseInt(ct_phone), convert(ct_pay_time)]);
-      console.log(req.body);
     } catch (err) {
       req.flash("error", "Unable to Update.");
       throw err;
@@ -130,7 +129,6 @@ router.post('/init', async(req, res)=> {
 
    /* Update Status */
    router.post('/status', async(req, res)=> {
-    console.log(req.body);
     function convert(str) {
       var mnths = {
           Jan: "01",
@@ -158,7 +156,6 @@ router.post('/init', async(req, res)=> {
       await db.query("CALL change_bid_status($1, $2, $3,$4, $5,'Success')",[po_p, ct_p, req.body.pet_name, start, end]);
       req.flash("success", "Update successfully.");
     } catch (err) {
-      console.log(err);
       req.flash("error", err);
       throw err;
     } finally {

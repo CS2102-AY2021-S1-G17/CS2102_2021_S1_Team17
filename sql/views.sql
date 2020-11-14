@@ -175,7 +175,7 @@ BEGIN
 		FROM bids B, pet_owner P, owns_pet O
 		WHERE B.ct_phone = _phone AND B.status = 'Pending' AND P.phone = B.po_phone AND B.start_date >= CURRENT_DATE
 		AND P.phone = B.po_phone
-		AND O.phone=P.phone AND O.name=P.name
+		AND O.phone=P.phone AND O.name=B.pet_name
 		ORDER BY B.start_date ASC
 		);
 END;
@@ -198,7 +198,7 @@ BEGIN
 			B.total_cost, B.transfer_method, B.payment_method, O.category_name, O.special_requirements
 		FROM bids B, pet_owner P, owns_pet O
 		WHERE B.end_date >= CURRENT_DATE AND B.ct_phone = _phone AND B.status = 'Success' AND P.phone = B.po_phone
-		AND O.phone=P.phone AND O.name=P.name
+		AND O.phone=P.phone AND O.name=B.pet_name
 		ORDER BY B.start_date ASC
 		);
 END;
