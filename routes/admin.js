@@ -97,6 +97,18 @@ router.post('/init', async(req, res)=> {
     }
   });
 
+    /* Update ct salary */
+    router.post('/update_salary', async(req, res)=> {
+    try{
+      console.log(req.body);
+    } catch (err) {
+      req.flash("error", "Unable to Update.");
+      throw err;
+    } finally {
+      res.redirect("/admin/salary");
+    }
+  });
+
    /* Update Status */
    router.post('/status', async(req, res)=> {
     console.log(req.body);

@@ -58,6 +58,7 @@
             <th scope="col">Pay Time</th>
             <th scope="col">Amount</th>
             <th scope="col" style="width: 10%;">Pet Day</th>
+            <th scope="col" style="width: 10%;">Action</th>
         </tr>
         </thead>
         <!-- <img class="align-self-center rounded-circle mr-3" style="width:40px; height:40px;" alt="" src="../images/dove-solid.svg"></td> -->
@@ -68,6 +69,14 @@
             <td><%- sa.pay_time.toDateString() %></td>
             <td><%- sa.amount %></td>
             <td><%- sa.pet_day %></td>
+            <td>
+              <form action="/admin/update_salary" method="post">
+                <input type="hidden" id="phone" name="phone" value="<%= profile.phone %>">
+                <input type="hidden" id="ct_phone" name="ct_phone" value="<%= sa.phone %>">
+                <input type="hidden" id="ct_pay_time" name="ct_pay_time" value="<%= sa.pay_time %>">
+                <input class="btn btn-success" type="submit" value="Update">
+            </form>
+            </td>
         <% }); %>
       </tr> 
     </tbody>
