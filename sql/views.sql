@@ -258,6 +258,26 @@ $$
 LANGUAGE plpgsql;
 
 /*
+SELECT * FROM admin_view_unpaid_salary_all();
+*/
+
+CREATE OR REPLACE FUNCTION admin_view_unpaid_salary_all()
+	RETURNS TABLE (name VARCHAR, phone INTEGER, pay_time DATE, amount FLOAT8, pet_day INTEGER) AS
+$$
+BEGIN
+	RETURN QUERY(
+		SELECT C.name, S.phone, S.pay_time, S.amount, S.pet_day
+		FROM salary S 
+		LEFT JOIN pay P ON S.phone = P.ct_phone AND S.pay_time = P.pay_time
+		LEFT JOIN care_taker C ON S.phone = C.phone
+		WHERE S.amount > 0 AND P.ad_phone IS NULL
+		ORDER BY S.pay_time ASC
+		);
+END;
+$$
+LANGUAGE plpgsql;
+
+/*
 SELECT * FROM admin_view_unpaid_salary();
 */
 
@@ -270,7 +290,7 @@ BEGIN
 		FROM salary S 
 		LEFT JOIN pay P ON S.phone = P.ct_phone AND S.pay_time = P.pay_time
 		LEFT JOIN care_taker C ON S.phone = C.phone
-		WHERE S.amount > 0 AND P.ad_phone IS NULL
+		WHERE S.amount > 0 AND P.ad_phone IS NULL AND S.pay_time < (SELECT CURRENT_DATE)
 		ORDER BY S.pay_time ASC
 		);
 END;
