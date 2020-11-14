@@ -1,3 +1,7 @@
+Demo video [here](https://youtu.be/Jh4bKPk7zmY)
+
+Heroku page [here](https://cs2102-petcare.herokuapp.com/)
+
 ## Getting started
 1. Create a database by running `CREATE DATABASE petcare` in sql terminal.
 2. Create a file `.env` under the root directory for database setup. 
